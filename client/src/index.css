@@ -1249,7 +1249,7 @@ code {
   flex: 1 0 295px;
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 textarea {
@@ -1387,7 +1387,7 @@ textarea {
   /* min-width: 300px; */
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: flex-start;
   /* height: 200px; */
 }
 
@@ -1402,7 +1402,7 @@ textarea {
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: flex-start;
   overflow: auto;
 }
 

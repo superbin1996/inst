@@ -1,6 +1,6 @@
 import { useEffect } from "react"
-import { Loading, Post, UploadModal } from "../../components/index"
-import { useAppContext } from "../../context/appContext"
+import { Loading, Post } from "./index"
+import { useAppContext } from "../context/appContext"
 // import Wrapper from "../../assets/wrappers/Home"
 import { Outlet } from "react-router-dom"
 import { useParams } from "react-router-dom"
@@ -16,7 +16,6 @@ const Home = () => {
     getPosts,
     posts,
     clearStates,
-    showUploadModal,
   } = useAppContext()
 
   const params = useParams()
@@ -25,7 +24,6 @@ const Home = () => {
     if(user){
       clearStates()
       getPosts()
-      // document.body.style.overflowY = 'auto'
     }
     else {
       login()
@@ -33,9 +31,11 @@ const Home = () => {
   }, [user])
 
   useEffect(() => {
-    console.log(params);
-    clearStates()
-    // document.body.style.overflowY = 'auto'
+    // only clear states when navigate back to home
+    if (Object.keys(params).length === 0){
+      console.log(params, 'clear state run')
+      clearStates()
+    }
   }, [params])
 
   if (isLoading) {

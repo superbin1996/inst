@@ -7,8 +7,6 @@ import { HiOutlineEmojiHappy } from 'react-icons/hi';
 import { useAppContext } from '../context/appContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import Loading from './Loading';
-import OptionModal from './OptionModal';
-
 
 const PostModal = () => {
 

@@ -111,13 +111,12 @@ const AppProvider = ({ children }) => {
   }
 
   const togglePostModal = (postId) => {
-    console.log(`postId:`, postId);
-    if (postId === -1) {
-      dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post: {}, showPostModal: false } })
-      return
-    }
+    console.log(`postId:`, postId)
     const post = state.posts.find(post => parseInt(post.id) === parseInt(postId))
-    getOtherComments(postId)
+    // getOtherComments is used in useEffect in home component
+    if (postId > 0){
+      getOtherComments(postId)
+    }
     dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post, showPostModal: true } })
   }
 
@@ -173,10 +172,6 @@ const AppProvider = ({ children }) => {
     dispatch({ type: TOGGLE_OPTION_MODAL, payload: { post } })
   }
 
-  const hideOptionModal = () => {
-    dispatch({ type: HIDE_OPTION_MODAL })
-  }
-
 
   return (
     <AppContext.Provider
@@ -194,7 +189,6 @@ const AppProvider = ({ children }) => {
         changeImagePath,
         addPost,
         toggleOptionModal,
-        hideOptionModal,
       }}
     >
       {children}

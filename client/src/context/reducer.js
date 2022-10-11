@@ -77,20 +77,30 @@ const reducer = (state, action) => {
 
   if (action.type === CLEAR_STATES) {
     const initialState = {
+      isLoading: false,
       // alert
       showAlert: false,
       alertText: '',
       alertType: '',
+      // user
+      // user: user ? JSON.parse(user) : null,
       // posts
       // posts: [],
+      // profile posts
+      profilePosts: [],
       // profile
       profileId: -1,
-      profilePosts: [],
       // postModal
-      // showPostModal: false,
       postId: -1,
+      showPostModal: false,
       post: {},
       otherComments: [],
+      // add post
+      status: '',
+      // upload modal
+      showUpLoad: false,
+      // Option modal
+      showOptionModal: false,
     }
     return {
       ...state,
@@ -123,6 +133,13 @@ const reducer = (state, action) => {
     return {
       ...state,
       showOptionModal: false,
+    }
+  }
+
+  if(action.type === TOGGLE_EDIT_MODAL){
+    return {
+      ...state,
+      
     }
   }
 }

@@ -1,8 +1,7 @@
-import Wrapper from "../../assets/wrappers/SharedLayout"
-import { Header, OptionModal, UploadModal } from '../../components/index'
-import Home from "./Home"
+import { Header, OptionModal, UploadModal, Home } from '../components/index'
 import { useEffect } from "react"
-import { useAppContext } from "../../context/appContext"
+import { useAppContext } from "../context/appContext"
+import Wrapper from '../assets/wrappers/SharedLayout'
 
 const SharedLayout = () => {
   const {

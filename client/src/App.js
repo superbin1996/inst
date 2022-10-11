@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { PostModal } from './components/index';
-import { SharedLayout, Profile } from './pages/dashboard/index';
+import { PostModal, Profile } from './components/index';
+import { SharedLayout } from './pages/index';
 // import { Error } from './pages/index'
 
 function App() {
