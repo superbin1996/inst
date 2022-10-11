@@ -3,7 +3,7 @@ import {AiOutlinePicture} from 'react-icons/ai'
 import {BiArrowBack} from 'react-icons/bi'
 import {HiOutlineEmojiHappy} from 'react-icons/hi';
 import Wrapper from '../assets/wrappers/UploadModal';
-import { useAppContext } from '../context/AppContext';
+import { useAppContext } from '../context/appContext';
 
 export default function UploadModal() {
   const {

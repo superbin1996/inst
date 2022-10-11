@@ -4,7 +4,7 @@ import {FiSend} from 'react-icons/fi';
 import {BsPlusSquare} from 'react-icons/bs';
 import {AiOutlineHeart} from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom'
-import { useAppContext } from '../context/AppContext';
+import { useAppContext } from '../context/appContext';
 
 export default function Header() {
 

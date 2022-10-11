@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import { useState, useEffect} from 'react'
 import { BsThreeDots } from 'react-icons/bs';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { FaRegComment } from 'react-icons/fa';
@@ -7,17 +7,13 @@ import { BsBookmark } from 'react-icons/bs';
 import { VscDebugStackframeDot } from 'react-icons/vsc';
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
-import { Outlet } from 'react-router-dom';
-import { PostModal } from './index';
+import { useAppContext } from '../context/appContext';
 
 const Post = ({ post }) => {
   const navigate = useNavigate()
   const {
     showProfile,
-    setPostModal,
-    togglePostModal,
-    // getProfilePosts,
+    toggleOptionModal,
   } = useAppContext()
 
   const [userComments, setUserComments] = useState([])
@@ -60,7 +56,7 @@ const Post = ({ post }) => {
               {post.user__username}
             </div>
           </div>
-          <BsThreeDots className='post-option' />
+          <BsThreeDots className='post-option' onClick={()=>toggleOptionModal(post)} />
         </div>
 
         {/* Post picture */}

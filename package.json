@@ -4,8 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    
+    "client": "npm start --prefix client",
+    "start": "npm start --prefix client"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^7.4.0"
+  }
 }

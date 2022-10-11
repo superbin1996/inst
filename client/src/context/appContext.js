@@ -1,7 +1,7 @@
 import React, { useContext, useReducer } from "react";
-import axios from 'axios'
+// import axios from 'axios'
 import reducer from './reducer'
-import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_OTHER_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_BEGIN, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL } from "./actions";
+import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_OTHER_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_BEGIN, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, HIDE_OPTION_MODAL } from "./actions";
 
 const user = localStorage.getItem('user')
 
@@ -21,13 +21,15 @@ const initialState = {
   profileId: -1,
   // postModal
   postId: -1,
-  // showPostModal: false,
+  showPostModal: false,
   post: {},
   otherComments: [],
   // add post
   status: '',
   // upload modal
   showUpLoad: false,
+  // Option modal
+  showOptionModal: false,
 }
 
 const AppContext = React.createContext()
@@ -110,10 +112,13 @@ const AppProvider = ({ children }) => {
 
   const togglePostModal = (postId) => {
     console.log(`postId:`, postId);
+    if (postId === -1) {
+      dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post: {}, showPostModal: false } })
+      return
+    }
     const post = state.posts.find(post => parseInt(post.id) === parseInt(postId))
-    // console.log(`postId:`, postId);
     getOtherComments(postId)
-    dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post } })
+    dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post, showPostModal: true } })
   }
 
   const handleChange = ({ name, value }) => {
@@ -121,7 +126,7 @@ const AppProvider = ({ children }) => {
   }
 
   const toggleUploadModal = () => {
-    dispatch({type:TOGGLE_UPLOAD_MODAL})
+    dispatch({ type: TOGGLE_UPLOAD_MODAL })
   }
 
   // Change img url
@@ -155,6 +160,23 @@ const AppProvider = ({ children }) => {
     //   })
   }
 
+  const toggleOptionModal = (post) => {
+    if (state.showOptionModal){
+      if (!state.showPostModal){
+        dispatch({ type: TOGGLE_OPTION_MODAL, payload: { post:{} } })  
+      }
+      else {  
+        dispatch({ type: TOGGLE_OPTION_MODAL, payload: { post:state.post } })  
+      }
+      return
+    }
+    dispatch({ type: TOGGLE_OPTION_MODAL, payload: { post } })
+  }
+
+  const hideOptionModal = () => {
+    dispatch({ type: HIDE_OPTION_MODAL })
+  }
+
 
   return (
     <AppContext.Provider
@@ -171,6 +193,8 @@ const AppProvider = ({ children }) => {
         toggleUploadModal,
         changeImagePath,
         addPost,
+        toggleOptionModal,
+        hideOptionModal,
       }}
     >
       {children}

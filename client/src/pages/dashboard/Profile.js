@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { IoIosArrowUp } from 'react-icons/io'
 import { Header, Loading } from '../../components/index';
-import { useAppContext } from '../../context/AppContext';
+import { useAppContext } from '../../context/appContext';
 
 export default function Profile() {
   const {

@@ -1,4 +1,4 @@
-import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_OTHER_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_SUCCESS, GET_PROFILE_POSTS_BEGIN, TOGGLE_UPLOAD_MODAL } from "./actions"
+import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_OTHER_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_SUCCESS, GET_PROFILE_POSTS_BEGIN, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, HIDE_OPTION_MODAL } from "./actions"
 
 const reducer = (state, action) => {
   if (action.type === LOGIN_USER_BEGIN) {
@@ -58,15 +58,11 @@ const reducer = (state, action) => {
   }
 
   if (action.type === TOGGLE_POST_MODAL) {
-    const postId = action.payload.postId
-    const post = action.payload.post
-    // console.log(`postId:`, postId);
-    // const post = state.posts.find(post => parseInt(post.id) === parseInt(postId))
     return {
       ...state,
-      // showPostModal: true,
-      postId: postId,
-      post: post,
+      showPostModal: action.payload.showPostModal,
+      postId: action.payload.postId,
+      post: action.payload.post,
     }
 
   }
@@ -113,6 +109,20 @@ const reducer = (state, action) => {
     return {
       ...state,
       showUploadModal: !state.showUploadModal,
+    }
+  }
+
+  if(action.type === TOGGLE_OPTION_MODAL){
+    return {
+      ...state,
+      showOptionModal: !state.showOptionModal,
+      post: action.payload.post,
+    }
+  }
+  if(action.type === HIDE_OPTION_MODAL){
+    return {
+      ...state,
+      showOptionModal: false,
     }
   }
 }

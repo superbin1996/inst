@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BsBookmark, BsThreeDots } from 'react-icons/bs';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { FaRegComment } from 'react-icons/fa';
 import { FiSend } from 'react-icons/fi';
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
-import { useAppContext } from '../context/AppContext';
+import { useAppContext } from '../context/appContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CLEAR_STATES } from '../context/actions';
 import Loading from './Loading';
+import OptionModal from './OptionModal';
 
 
 const PostModal = () => {
@@ -18,9 +18,8 @@ const PostModal = () => {
     user,
     otherComments,
     togglePostModal,
-    postId,
-    clearStates,
-    getOtherComments,
+    toggleOptionModal,
+    // clearStates,
   } = useAppContext()
 
   const navigate = useNavigate()
@@ -82,8 +81,6 @@ const PostModal = () => {
           <h2>No jobs to display...</h2>
         </div>
       </div>
-
-
     )
   }
 
@@ -119,7 +116,7 @@ const PostModal = () => {
                 </span>
               </div>
 
-              <BsThreeDots className='post-option' style={{ marginRight: '8px' }} />
+              <BsThreeDots className='post-option' style={{ marginRight: '8px' }} onClick={()=>toggleOptionModal(post)} />
             </div>
 
             {/* Caption and comment */}

@@ -1,4 +1,4 @@
-import { useAppContext } from "../context/AppContext"
+import { useAppContext } from "../context/appContext"
 
 const Alert = () => {
   const {alertType, alertText} = useAppContext()

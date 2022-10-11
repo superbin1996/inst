@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { Loading, Post, UploadModal } from "../../components/index"
-import { useAppContext } from "../../context/AppContext"
+import { useAppContext } from "../../context/appContext"
 // import Wrapper from "../../assets/wrappers/Home"
 import { Outlet } from "react-router-dom"
 import { useParams } from "react-router-dom"
@@ -23,15 +23,20 @@ const Home = () => {
 
   useEffect(() => {
     if(user){
-      // clearStates()
+      clearStates()
       getPosts()
-      console.log(params);
       // document.body.style.overflowY = 'auto'
     }
     else {
       login()
     }
   }, [user])
+
+  useEffect(() => {
+    console.log(params);
+    clearStates()
+    // document.body.style.overflowY = 'auto'
+  }, [params])
 
   if (isLoading) {
     return (
