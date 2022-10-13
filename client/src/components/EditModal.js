@@ -1,28 +1,29 @@
 import React, {useState, useEffect} from 'react'
 import {HiOutlineEmojiHappy} from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../context/appContext';
 
-const EditPost = (props) => {
+const EditModal = () => {
   const {
-    toggleEditPost,
+    toggleEditModal,
     editPost,
     user,
     changeImagePath,
     post,
     caption,
     setCaption,
-  } = props
+    showPostModal,
+  } = useAppContext()
+
+  const navigate = useNavigate()
 
   
   // Count text length in textarea
   const [eCaptionLength, setECaptionLength] = useState(0)
 
   // caption content
-  const [eCaption, setECaption] = useState('')
-  
-  useEffect(()=>{
-    setECaption(caption)
-    // console.log(`eCaption:`, caption)
-  }, [])
+  const [eCaption, setECaption] = useState(post.status)
+
 
   function inputECaption(e) {
     setECaption(e.target.value)
@@ -35,19 +36,42 @@ const EditPost = (props) => {
     // formData.append('image', uploadImage)
     formData.append('user', user.id)
 
-    editPost(post.id, formData)
+    // editPost(post.id, formData)
+    console.log(post.id, formData);
     setCaption(eCaption)
-    toggleEditPost()
+    toggleEditModal()
   }
 
+  const hideEditModal = () => {
+    toggleEditModal()
+  }
+  
+  useEffect(()=>{
+    setECaption(caption)
+    // console.log(`eCaption:`, caption)
+  }, []) 
+  
+  if (!post) {
+    return (
+      <div className="modal" onClick={hideEditModal}>
+        <div className="close" onClick={hideEditModal}>
+          &times;
+        </div>
+        {/* Modal content */}
+        <div className='modal-content-full-1' style={{justifyContent: 'center', alignItems: 'center'}} onClick={e => e.stopPropagation()}>
+          <h2>No jobs to display...</h2>
+        </div>
+      </div>
+    )
+  }
+  
   return  (
     <div>
-
       {/* The Modal */}
-      <div className="modal" onClick={toggleEditPost}>
+      <div className="modal" style={{zIndex:'51'}} onClick={hideEditModal}>
 
         <div className="close" 
-          onClick={toggleEditPost}
+          onClick={hideEditModal}
         >&times;</div>
 
         {/* Modal content */}
@@ -55,7 +79,7 @@ const EditPost = (props) => {
 
           {/* Preview header */}
           <div className='modal-intro-preview' style={{height:'37px'}}>
-            <div className='modal-intro-preview-item-3' onClick={toggleEditPost} style={{color:'gray'}}>
+            <div className='modal-intro-preview-item-3' onClick={toggleEditModal} style={{color:'gray',paddingLeft:'0.5rem'}}>
               Cancel
             </div> 
             <div className='modal-intro-preview-item-2'>Edit Info</div>
@@ -76,7 +100,7 @@ const EditPost = (props) => {
               {/* Caption input */}
               <div className='modal-upload-caption'>
                 <div className='post-info'>
-                  <img className='icon-user-1 icon' src={user.avatar} alt="haku" />
+                  <img className='icon-user-1 icon' src={`/${user.avatar}`} alt={user.avatar} />
                   <p>{user.username}</p>
                 </div>
                 <textarea name="" id="" cols="30" rows="13" placeholder='Write a caption...' autoFocus value={eCaption} onChange={inputECaption} />
@@ -97,4 +121,4 @@ const EditPost = (props) => {
   );
 }
 
-export default EditPost
+export default EditModal

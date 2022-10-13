@@ -1,3 +1,4 @@
+import EditModal from "./EditModal";
 import Header from "./Header";
 import Home from "./Home";
 import Loading from "./Loading";
@@ -7,4 +8,5 @@ import PostModal from "./PostModal";
 import Profile from "./Profile";
 import UploadModal from "./UploadModal";
 
-export { Header, Post, Loading, PostModal, UploadModal, OptionModal, Home, Profile } 
+export { 
+  Header, Post, Loading, PostModal, UploadModal, OptionModal, Home, Profile, EditModal } 

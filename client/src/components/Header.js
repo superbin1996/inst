@@ -9,6 +9,7 @@ import { useAppContext } from '../context/appContext';
 export default function Header() {
 
   const {
+    user,
     toggleUploadModal,
   } = useAppContext()
   const navigate = useNavigate()
@@ -44,7 +45,7 @@ export default function Header() {
         <AiOutlineHeart className='icon' />
         <div className='dropdown-cover'>
           <span className='dropdown'>
-            <img className='icon-user' src='/ahri.jpg' alt="Ahri" />
+            <img className='icon-user' src={user.avatar} alt="Ahri" />
             <div id='myDropDown' className='dropdown-content'>
               <div>
                 Profile

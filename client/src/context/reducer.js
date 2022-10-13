@@ -1,4 +1,4 @@
-import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_OTHER_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_SUCCESS, GET_PROFILE_POSTS_BEGIN, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, HIDE_OPTION_MODAL } from "./actions"
+import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_SUCCESS, GET_PROFILE_POSTS_BEGIN, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, HIDE_OPTION_MODAL, TOGGLE_EDIT_MODAL} from "./actions"
 
 const reducer = (state, action) => {
   if (action.type === LOGIN_USER_BEGIN) {
@@ -57,21 +57,10 @@ const reducer = (state, action) => {
     }
   }
 
-  if (action.type === TOGGLE_POST_MODAL) {
+  if (action.type === GET_POST_COMMENTS_SUCCESS) {
     return {
       ...state,
-      showPostModal: action.payload.showPostModal,
-      postId: action.payload.postId,
-      post: action.payload.post,
-    }
-
-  }
-
-  if (action.type === GET_OTHER_COMMENTS_SUCCESS) {
-    return {
-      ...state,
-      isLoading: false,
-      otherComments: action.payload.data,
+      postComments: action.payload.data,
     }
   }
 
@@ -89,12 +78,12 @@ const reducer = (state, action) => {
       // profile posts
       profilePosts: [],
       // profile
-      profileId: -1,
+      profileId: '',
       // postModal
-      postId: -1,
+      postId: '',
       showPostModal: false,
       post: {},
-      otherComments: [],
+      postComments: [],
       // add post
       status: '',
       // upload modal
@@ -115,31 +104,41 @@ const reducer = (state, action) => {
     }
   }
 
-  if(action.type === TOGGLE_UPLOAD_MODAL){
+  if (action.type === TOGGLE_UPLOAD_MODAL) {
     return {
       ...state,
       showUploadModal: !state.showUploadModal,
     }
   }
 
-  if(action.type === TOGGLE_OPTION_MODAL){
+  if (action.type === TOGGLE_POST_MODAL) {
+    return {
+      ...state,
+      showPostModal: action.payload.showPostModal,
+      postId: action.payload.postId,
+      post: action.payload.post,
+    }
+  }
+
+  if (action.type === TOGGLE_OPTION_MODAL) {
     return {
       ...state,
       showOptionModal: !state.showOptionModal,
       post: action.payload.post,
     }
   }
-  if(action.type === HIDE_OPTION_MODAL){
+  if (action.type === HIDE_OPTION_MODAL) {
     return {
       ...state,
       showOptionModal: false,
     }
   }
 
-  if(action.type === TOGGLE_EDIT_MODAL){
+  if (action.type === TOGGLE_EDIT_MODAL) {
     return {
       ...state,
-      
+      showEditModal: !state.showEditModal,
+      // post: action.payload.post,
     }
   }
 }

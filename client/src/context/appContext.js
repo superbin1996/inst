@@ -1,9 +1,10 @@
 import React, { useContext, useReducer } from "react";
 // import axios from 'axios'
 import reducer from './reducer'
-import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_OTHER_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_BEGIN, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, HIDE_OPTION_MODAL } from "./actions";
+import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_BEGIN, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, TOGGLE_EDIT_MODAL, HIDE_OPTION_MODAL } from "./actions";
 
 const user = localStorage.getItem('user')
+console.log(user);
 
 const initialState = {
   isLoading: false,
@@ -18,18 +19,20 @@ const initialState = {
   // profile posts
   profilePosts: [],
   // profile
-  profileId: -1,
+  profileId: '',
   // postModal
-  postId: -1,
+  postId: '',
   showPostModal: false,
   post: {},
-  otherComments: [],
+  postComments: [],
   // add post
   status: '',
   // upload modal
   showUpLoad: false,
   // Option modal
   showOptionModal: false,
+  // Edit post
+  showEditModal: false,
 }
 
 const AppContext = React.createContext()
@@ -99,26 +102,20 @@ const AppProvider = ({ children }) => {
     // getProfilePosts(profileId)
   }
 
-  const getOtherComments = async (postId) => {
-    const url = `/data/otherCommentList.json`
+  const getPostComments = async (postId) => {
+    const url = `/data/postComments.json`
     try {
       const response = await fetch(url)
       const data = await response.json()
-      dispatch({ type: GET_OTHER_COMMENTS_SUCCESS, payload: { data } })
+      console.log(data);
+      dispatch({ type: GET_POST_COMMENTS_SUCCESS, payload: { data } })
     } catch (error) {
       console.log(error.response);
     }
   }
 
-  const togglePostModal = (postId) => {
-    console.log(`postId:`, postId)
-    const post = state.posts.find(post => parseInt(post.id) === parseInt(postId))
-    // getOtherComments is used in useEffect in home component
-    if (postId > 0){
-      getOtherComments(postId)
-    }
-    dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post, showPostModal: true } })
-  }
+
+
 
   const handleChange = ({ name, value }) => {
     dispatch({ type: HANDLE_CHANGE, payload: { name, value } })
@@ -141,35 +138,69 @@ const AppProvider = ({ children }) => {
 
   // Add new post. 
   const addPost = async (formData) => {
-    // FetchingFunction.Post(token, formData)
-    //   .then(data => {
-    //   })
-    //   .then(() => {
-    //     // setItemOffset(0)
-    //     setBackendOffset(1)
-    //     setTogglePosts(true)
+  }
 
-    //     if (showProfile) {
-
-    //       getProfilePosts()
-    //     }
-    //     else {
-    //       getAllPosts()
-    //     }
-    //   })
+  const togglePostModal = (postId) => {
+    // console.log(`postId:`, postId)
+    const post = state.posts.find(post => String(post.id) === postId)
+    dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post, showPostModal: true } })
   }
 
   const toggleOptionModal = (post) => {
-    if (state.showOptionModal){
-      if (!state.showPostModal){
-        dispatch({ type: TOGGLE_OPTION_MODAL, payload: { post:{} } })  
-      }
-      else {  
-        dispatch({ type: TOGGLE_OPTION_MODAL, payload: { post:state.post } })  
-      }
+    // turn on option modal from post
+    if (!state.showPostModal) {
+      dispatch({ type: TOGGLE_OPTION_MODAL, payload: { post } })
       return
     }
-    dispatch({ type: TOGGLE_OPTION_MODAL, payload: { post } })
+
+    // turn on option modal when postEdit true
+    // turn off option modal when postEdit true
+    // turn off option modal when toggleEditModal
+    dispatch({ type: TOGGLE_OPTION_MODAL, payload: { post: state.post } })
+  }
+
+  const toggleEditModal = () => {
+    // when postModal is on
+    if (state.showPostModal) {
+      // when editModal is off
+      if (!state.showEditModal) {
+        // optionModal is on
+        // when editModal is off
+        // turn on editModal
+        // turn off optionModal
+        toggleOptionModal(state.post)
+        dispatch({ type: TOGGLE_EDIT_MODAL, payload: { post: state.post } })
+        return
+      }
+      // when editModal is already on
+      else {
+        // turn off editModal
+        dispatch({ type: TOGGLE_EDIT_MODAL, payload: { post: state.post } })
+        return
+      }
+    }
+    // when postModal is off
+    else {
+      // when editModal is already on
+      if (state.showEditModal) {
+        // turn off editModal
+        dispatch({ type: TOGGLE_EDIT_MODAL, payload: { post: {} } })
+      }
+      // when editModal is off
+      else {
+        // turn on editModal
+        dispatch({ type: TOGGLE_EDIT_MODAL, payload: { post: state.post } })
+        
+        // optionModal is already on
+        // turn off optionModal
+        toggleOptionModal(state.post)
+      }
+    }
+  }
+
+  // Edit post
+  function editPost(postId, formData) {
+    // FetchingFunction.EditPost(postId, formData, token)
   }
 
 
@@ -184,11 +215,14 @@ const AppProvider = ({ children }) => {
         login,
         handleChange,
         getProfilePosts,
-        getOtherComments,
+        getPostComments,
         toggleUploadModal,
         changeImagePath,
         addPost,
         toggleOptionModal,
+        toggleEditModal,
+        editPost,
+
       }}
     >
       {children}

@@ -7,6 +7,7 @@ const OptionModal = () => {
     toggleOptionModal,
     post,
     user,
+    toggleEditModal,
   } = useAppContext()
 
   useEffect(() => {
@@ -14,7 +15,7 @@ const OptionModal = () => {
 
   function selfPostOption(userId) {
     // user.id is string, so change it to integer
-    if (parseInt(userId) === parseInt(user.id)) {
+    if (String(userId) === String(user.id)) {
       return true
     }
     else {
@@ -32,7 +33,7 @@ const OptionModal = () => {
               Delete
             </div>
 
-            <div className="option-content-item" style={{ color: 'red' }}>
+            <div className="option-content-item" style={{ color: 'red' }} onClick={toggleEditModal} >
               Edit
             </div>
 

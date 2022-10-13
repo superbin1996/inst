@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BsBookmark, BsThreeDots } from 'react-icons/bs';
-import { AiOutlineHeart } from 'react-icons/ai';
+import { AiOutlineHeart, AiOutlineShrink } from 'react-icons/ai';
 import { FaRegComment } from 'react-icons/fa';
 import { FiSend } from 'react-icons/fi';
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
@@ -14,33 +14,21 @@ const PostModal = () => {
     isLoading,
     post,
     user,
-    otherComments,
+    postComments,
     togglePostModal,
     toggleOptionModal,
-    // clearStates,
+    getPostComments,
   } = useAppContext()
 
   const navigate = useNavigate()
   const params = useParams()
-  // const {postId} = useParams()
 
-  const [userComments, setUserComments] = useState([])
   const [comment, setComment] = useState('')
 
-  const HidePostModal = () => {
-    togglePostModal(-1)
+  const hidePostModal = () => {
     navigate(-1)
-    // clearStates()
     document.body.style.overflowY = 'auto'
     // window.history.replaceState(null, "Instagram", "/")
-  }
-
-  const getUserComments = async () => {
-    const url = `/data/userComments.json`
-    const response = await fetch(url)
-    const data = await response.json()
-    // console.log(`usersComments:`, data);
-    setUserComments(data)
   }
 
   const handleCommentInput = (e) => {
@@ -58,7 +46,7 @@ const PostModal = () => {
   }
 
   useEffect(() => {
-    getUserComments()
+    getPostComments(post.id)
     document.body.style.overflowY = 'hidden'
     console.log(params);
     togglePostModal(params.postId)
@@ -70,12 +58,12 @@ const PostModal = () => {
 
   if (!post) {
     return (
-      <div className="modal" onClick={HidePostModal}>
-        <div className="close" onClick={HidePostModal}>
+      <div className="modal" onClick={hidePostModal}>
+        <div className="close" onClick={hidePostModal}>
           &times;
         </div>
         {/* Modal content */}
-        <div className='modal-content-full-1' onClick={e => e.stopPropagation()}>
+        <div className='modal-content-full-1' style={{justifyContent: 'center', alignItems: 'center'}} onClick={e => e.stopPropagation()}>
           <h2>No jobs to display...</h2>
         </div>
       </div>
@@ -84,8 +72,8 @@ const PostModal = () => {
 
   return (
     // The Modal
-    <div className="modal" onClick={HidePostModal}>
-      <div className="close" onClick={HidePostModal}
+    <div className="modal" onClick={hidePostModal}>
+      <div className="close" onClick={hidePostModal}
       >&times;</div>
       {/* Modal content */}
       <div className='modal-content-full-1' onClick={e => e.stopPropagation()}>
@@ -134,11 +122,11 @@ const PostModal = () => {
               }
 
               {/* user comments */}
-              {userComments.map(comment => {
+              {postComments.filter(comment => String(comment.user__id) === String(user.id)).map(comment => {
                 return (
                   <div className='post-info-1' key={comment.id}>
                     <div>
-                      <img className='icon-user-1 icon' src={user.avatar} alt={user.avatar} />
+                      <img className='icon-user-1 icon' src={`/${user.avatar}`} alt={user.avatar} />
                     </div>
 
                     <div className='username-and-caption'>
@@ -149,7 +137,7 @@ const PostModal = () => {
               })}
 
               {/* Other comments */}
-              {otherComments.filter(comment => comment.user__id !== parseInt(user.id)).map(comment => {
+              {postComments.filter(comment => String(comment.user__id) !== String(user.id)).map(comment => {
                 return (
                   <div className='post-info-1' key={comment.id}>
                     <div>

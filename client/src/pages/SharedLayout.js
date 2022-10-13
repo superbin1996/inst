@@ -1,4 +1,4 @@
-import { Header, OptionModal, UploadModal, Home } from '../components/index'
+import { Header, OptionModal, UploadModal, Home, EditModal } from '../components/index'
 import { useEffect } from "react"
 import { useAppContext } from "../context/appContext"
 import Wrapper from '../assets/wrappers/SharedLayout'
@@ -7,7 +7,9 @@ const SharedLayout = () => {
   const {
     showUploadModal,
     showOptionModal,
+    showEditModal,
   } = useAppContext()
+  
   useEffect(()=>{
     document.body.style.overflowY = 'auto'
   }, [])
@@ -17,6 +19,7 @@ const SharedLayout = () => {
         <Header></Header>
         {showOptionModal && <OptionModal/>} 
         {showUploadModal && <UploadModal/> }
+        {showEditModal && <EditModal/> }
         <div className="dashboard-page">
           <Home />
         </div>
@@ -24,4 +27,5 @@ const SharedLayout = () => {
     </Wrapper>
   )
 }
+
 export default SharedLayout
