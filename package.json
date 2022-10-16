@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "client": "npm start --prefix client",
-    "start": "npm start --prefix client"
+    "server": "cd server && python3 manage.py runserver",
+    "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
   },
   "author": "",
   "license": "ISC",

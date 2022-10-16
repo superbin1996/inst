@@ -1,16 +1,17 @@
-import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_SUCCESS, GET_PROFILE_POSTS_BEGIN, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, HIDE_OPTION_MODAL, TOGGLE_EDIT_MODAL} from "./actions"
+import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_SUCCESS, GET_PROFILE_POSTS_BEGIN, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, HIDE_OPTION_MODAL, TOGGLE_EDIT_MODAL, REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, GET_USER_SUCCESS, SHOW_DROPDOWN} from "./actions"
 
 const reducer = (state, action) => {
   if (action.type === LOGIN_USER_BEGIN) {
     return {
       ...state,
-      isLoading: true
+      isLoading: true,
     }
   }
   if (action.type === LOGIN_USER_SUCCESS) {
     return {
       ...state,
       isLoading: false,
+      token: action.payload.token,
       user: action.payload.user,
     }
   }
@@ -18,6 +19,46 @@ const reducer = (state, action) => {
     return {
       ...state,
       isLoading: false,
+      showAlert: true,
+      alertType: 'danger',
+      alertText: action.payload.msg,
+    }
+  }
+
+  if(action.type===GET_USER_SUCCESS){
+    return {
+      ...state,
+      isLoading:false,
+      user: action.payload.user
+    }
+  }
+
+  if (action.type === REGISTER_USER_BEGIN) {
+    return {
+      ...state,
+      isLoading: true,
+    }
+  }
+  if (action.type === REGISTER_USER_SUCCESS) {
+    return {
+      ...state,
+      isLoading: false,
+      user: action.payload.user,
+      token: action.payload.token,
+      userLocation: action.payload.location,
+      jobLocation: action.payload.location,
+      showAlert: true,
+      alertType: 'success',
+      alertText: 'User Created! Redirecting...',
+    }
+  }
+  if (action.type === REGISTER_USER_ERROR) {
+    return {
+      ...state,
+      isLoading: false,
+      showAlert: true,
+      alertType: 'danger',
+      alertText: action.payload.msg,
     }
   }
 
@@ -139,6 +180,13 @@ const reducer = (state, action) => {
       ...state,
       showEditModal: !state.showEditModal,
       // post: action.payload.post,
+    }
+  }
+
+  if(action.type===SHOW_DROPDOWN){
+    return {
+      ...state,
+      showDropdown: !state.showDropdown,
     }
   }
 }

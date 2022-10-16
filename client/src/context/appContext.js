@@ -1,10 +1,11 @@
 import React, { useContext, useReducer } from "react";
 // import axios from 'axios'
 import reducer from './reducer'
-import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_BEGIN, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, TOGGLE_EDIT_MODAL, HIDE_OPTION_MODAL } from "./actions";
+import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, TOGGLE_EDIT_MODAL, REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, GET_USER_SUCCESS, SHOW_DROPDOWN } from "./actions";
+import axios from 'axios'
 
 const user = localStorage.getItem('user')
-console.log(user);
+const token = localStorage.getItem('token')
 
 const initialState = {
   isLoading: false,
@@ -14,6 +15,9 @@ const initialState = {
   alertType: '',
   // user
   user: user ? JSON.parse(user) : null,
+  token: token,
+  // header dropdown
+  showDropdown: false,
   // posts
   posts: [],
   // profile posts
@@ -39,29 +43,90 @@ const AppContext = React.createContext()
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  // const authFetch = axios.create({
-  //   baseURL: '/api/v1',
-  // })
+  const customAxios = axios.create({
+    baseURL: 'http://localhost:8000/api/v1',
+  })
 
-  const addUserToLocalStorage = (user) => {
-    localStorage.setItem('user', JSON.stringify(user))
+  const authFetch = axios.create({
+    baseURL: 'http://localhost:8000/api/v1',
+  })
+
+  authFetch.interceptors.request.use(
+    (config) => {
+      config.headers.common['Authorization'] = `Token ${state.token}`
+      return config
+    },
+    (error) => {
+      return Promise.reject(error)
+    }
+  )
+
+  const setShowDropdown = () => {
+    dispatch({ type: SHOW_DROPDOWN })
   }
 
-  const login = async () => {
+  const addUserToLocalStorage = ({ user, token }) => {
+    localStorage.setItem('user', JSON.stringify(user))
+    localStorage.setItem('token', token)
+  }
+
+  const getUser = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/user/dummy`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Token ${state.token}`
+        }
+      })
+      const data = await response.json()
+
+      localStorage.setItem('user', JSON.stringify(data.user))
+
+      // dispatch({ type: GET_USER_SUCCESS, payload: { user } })
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const login = async (currentUser) => {
     dispatch({ type: LOGIN_USER_BEGIN })
     try {
-      const url = `/data/user.json`
-      const response = await fetch(url)
-      const user = await response.json()
+      const { data: { token } } = await customAxios.post(`/auth`, currentUser)
+      const { data: user } = await customAxios.get(`/user/file_name`, {
+        headers: {
+          Authorization: `Token ${token}`
+        }
+      })
+      console.log(token, user);
       dispatch({
         type: LOGIN_USER_SUCCESS,
         payload: {
+          token,
           user,
         }
       })
-      addUserToLocalStorage(user)
+      addUserToLocalStorage({ user, token })
     } catch (error) {
-      dispatch({ type: LOGIN_USER_ERROR, payload: { 'msg': error.response } })
+      // dispatch({ type: LOGIN_USER_ERROR, payload: { 'msg': error.response } })
+      console.log(error);
+    }
+  }
+
+  const register = async (currentUser) => {
+    dispatch({ type: REGISTER_USER_BEGIN })
+    try {
+      const response = await axios.post(`/api/v1/users`, currentUser)
+      const data = response.data
+      console.log(data.msg);
+      dispatch({ type: REGISTER_USER_SUCCESS })
+      setTimeout(() => {
+        login(currentUser)
+      }, 500)
+    } catch (error) {
+      // dispatch({type:REGISTER_USER_ERROR, payload: { 'msg': error.response } })
+      console.log(error);
     }
   }
 
@@ -76,7 +141,6 @@ const AppProvider = ({ children }) => {
     try {
       const response = await fetch(url)
       const posts = await response.json()
-      console.log(posts);
       dispatch({ type: GET_POSTS_SUCCESS, payload: { posts } })
     } catch (error) {
       console.log(error.response);
@@ -90,7 +154,6 @@ const AppProvider = ({ children }) => {
       console.log(`profile ${profileId}`)
       const response = await fetch(url)
       const data = await response.json()
-      console.log(data);
       dispatch({ type: GET_PROFILE_POSTS_SUCCESS, payload: { data } })
     } catch (error) {
       console.log(error.response);
@@ -113,8 +176,6 @@ const AppProvider = ({ children }) => {
       console.log(error.response);
     }
   }
-
-
 
 
   const handleChange = ({ name, value }) => {
@@ -190,7 +251,7 @@ const AppProvider = ({ children }) => {
       else {
         // turn on editModal
         dispatch({ type: TOGGLE_EDIT_MODAL, payload: { post: state.post } })
-        
+
         // optionModal is already on
         // turn off optionModal
         toggleOptionModal(state.post)
@@ -213,6 +274,7 @@ const AppProvider = ({ children }) => {
         showProfile,
         togglePostModal,
         login,
+        register,
         handleChange,
         getProfilePosts,
         getPostComments,
@@ -222,7 +284,8 @@ const AppProvider = ({ children }) => {
         toggleOptionModal,
         toggleEditModal,
         editPost,
-
+        getUser,
+        setShowDropdown,
       }}
     >
       {children}

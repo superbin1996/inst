@@ -16,9 +16,17 @@ const Home = () => {
     getPosts,
     posts,
     clearStates,
+    showDropdown,
+    setShowDropdown,
   } = useAppContext()
 
   const params = useParams()
+
+  const hideHeaderDropdown = ()=>{
+    if(!showDropdown){
+      setShowDropdown()
+    }
+  }
 
   useEffect(() => {
     if(user){
@@ -54,7 +62,7 @@ const Home = () => {
   
 
   return (
-    <div className={'main'}>
+    <div className={'main'} onClick={hideHeaderDropdown}>
       <Outlet></Outlet>
       {/* LeftSide */}
       <div className='bar-left'></div>
