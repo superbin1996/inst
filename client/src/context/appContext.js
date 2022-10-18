@@ -1,7 +1,7 @@
 import React, { useContext, useReducer } from "react";
 // import axios from 'axios'
 import reducer from './reducer'
-import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, TOGGLE_EDIT_MODAL, REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, GET_USER_SUCCESS, SHOW_DROPDOWN } from "./actions";
+import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_BEGIN, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, TOGGLE_EDIT_MODAL, REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, GET_USER_SUCCESS, SHOW_DROPDOWN, LOGOUT_USER, GET_FOLLOW_CONDITION_SUCCESS, CHANGE_FOLLOW_CONDITION_SUCCESS } from "./actions";
 import axios from 'axios'
 
 const user = localStorage.getItem('user')
@@ -20,10 +20,19 @@ const initialState = {
   showDropdown: false,
   // posts
   posts: [],
+  totalPosts: 0,
+  numOfPages: 1,
+  page: 1,
   // profile posts
+  // profileId: '',
+  profileUser: {},
   profilePosts: [],
-  // profile
-  profileId: '',
+  totalProfilePosts: 0,
+  numOfProfilePages: 1,
+  profilePage: 1,
+  isFollow: false,
+  followers: 0,
+  following: 0,
   // postModal
   postId: '',
   showPostModal: false,
@@ -70,24 +79,9 @@ const AppProvider = ({ children }) => {
     localStorage.setItem('token', token)
   }
 
-  const getUser = async () => {
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/user/dummy`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Token ${state.token}`
-        }
-      })
-      const data = await response.json()
-
-      localStorage.setItem('user', JSON.stringify(data.user))
-
-      // dispatch({ type: GET_USER_SUCCESS, payload: { user } })
-
-    } catch (error) {
-      console.log(error);
-    }
+  const removeUserFromLocalStorage = () => {
+    localStorage.removeItem('user')
+    localStorage.removeItem('token')
   }
 
   const login = async (currentUser) => {
@@ -130,40 +124,59 @@ const AppProvider = ({ children }) => {
     }
   }
 
+  const logout = () => {
+    dispatch({ type: LOGOUT_USER })
+    removeUserFromLocalStorage()
+  }
+
   // currently be used in Home.js
   const clearStates = () => {
     dispatch({ type: CLEAR_STATES })
   }
 
   const getPosts = async () => {
+    const {
+      page
+    } = state
+    // const url = `/data/posts.json`
+    const url = `/posts/${page}`
     dispatch({ type: GET_POSTS_BEGIN })
-    const url = `/data/posts.json`
     try {
-      const response = await fetch(url)
-      const posts = await response.json()
-      dispatch({ type: GET_POSTS_SUCCESS, payload: { posts } })
+      const { data } = await authFetch(url)
+      const { posts, totalPosts, numOfPages } = data
+      dispatch({ type: GET_POSTS_SUCCESS, payload: { posts, totalPosts, numOfPages } })
     } catch (error) {
       console.log(error.response);
     }
   }
 
-  const getProfilePosts = async (profileId) => {
+  const getProfilePosts = async (profileName) => {
     // dispatch({ type: GET_PROFILE_POSTS_BEGIN })
-    const url = `/data/profilePosts.json`
+    // const url = `/data/profilePosts.json`
+    const { profilePage } = state
+    const url = `profile_posts/${profileName}/${profilePage}`
     try {
-      console.log(`profile ${profileId}`)
-      const response = await fetch(url)
-      const data = await response.json()
-      dispatch({ type: GET_PROFILE_POSTS_SUCCESS, payload: { data } })
+      const { data } = await authFetch(url)
+      const { profilePosts, totalProfilePosts, numOfProfilePages,
+        isFollow,
+        followers,
+        following,
+        profileUser,
+      } = data
+      dispatch({
+        type: GET_PROFILE_POSTS_SUCCESS, payload: {
+          profilePosts, totalProfilePosts, numOfProfilePages, isFollow, followers,
+          following, profileUser,
+        }
+      })
     } catch (error) {
       console.log(error.response);
     }
   }
 
-  const showProfile = (profileId) => {
-    dispatch({ type: SHOW_PROFILE, payload: { profileId } })
-    // getProfilePosts(profileId)
-  }
+  // const showProfile = (profileId) => {
+  //   dispatch({ type: SHOW_PROFILE, payload: { profileId } })
+  // }
 
   const getPostComments = async (postId) => {
     const url = `/data/postComments.json`
@@ -174,6 +187,27 @@ const AppProvider = ({ children }) => {
       dispatch({ type: GET_POST_COMMENTS_SUCCESS, payload: { data } })
     } catch (error) {
       console.log(error.response);
+    }
+  }
+
+  const getFollowCondition = async (post) => {
+    const url = `/follow/${post.user__id}`
+    try {
+      const { data: { isFollow } } = await authFetch(url)
+      dispatch({ type: GET_FOLLOW_CONDITION_SUCCESS, payload: { isFollow } })
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const toggleFollowCondition = async() => {
+    const { post } = state
+    const url = `/follow/${post.user__id}`
+    try {
+      const {data:{isFollow}} = await authFetch.patch(url)
+      dispatch({type:CHANGE_FOLLOW_CONDITION_SUCCESS,payload:{isFollow}})
+    } catch (error) {
+      
     }
   }
 
@@ -205,6 +239,7 @@ const AppProvider = ({ children }) => {
     // console.log(`postId:`, postId)
     const post = state.posts.find(post => String(post.id) === postId)
     dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post, showPostModal: true } })
+    getFollowCondition(post)
   }
 
   const toggleOptionModal = (post) => {
@@ -271,7 +306,7 @@ const AppProvider = ({ children }) => {
         ...state,
         clearStates,
         getPosts,
-        showProfile,
+        // showProfile,
         togglePostModal,
         login,
         register,
@@ -284,8 +319,9 @@ const AppProvider = ({ children }) => {
         toggleOptionModal,
         toggleEditModal,
         editPost,
-        getUser,
         setShowDropdown,
+        logout,
+        toggleFollowCondition,
       }}
     >
       {children}

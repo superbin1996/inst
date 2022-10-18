@@ -1,50 +1,16 @@
-import { useEffect } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { IoIosArrowUp } from 'react-icons/io'
-import { Header, Loading, ProfileNoPost } from './index';
 import { useAppContext } from '../context/appContext';
-import { useParams } from 'react-router-dom';
+import { Header } from './index';
 
-export default function Profile() {
+const ProfileNoPost = () => {
   const {
-    isLoading,
-    profilePosts,
-    totalProfilePosts,
-    getProfilePosts,
-    changeImagePath,
-    isFollow,
-    followers,
     following,
+    followers,
     profileUser,
-    user,
-    toggleFollowCondition,
+    totalProfilePosts,
   } = useAppContext()
-  const params = useParams()
-
-  const checkUser = () => {
-    if (String(profileUser.profileId) === String(user.id)) {
-      return true
-    }
-    else { return false }
-  }
-
-  useEffect(() => {
-    document.body.style.overflowY = 'hidden'
-    getProfilePosts(params.profileName)
-  }, [params])
-
-  if (isLoading) {
-    return (
-      <Loading center />
-    )
-  }
-
-  if (profilePosts.length === 0) {
-    return (
-      <ProfileNoPost />
-    )
-  }
-
+  
   return (
     <div className='profile-modal'>
       <Header />
@@ -66,15 +32,13 @@ export default function Profile() {
             <div className='profile-username'>{profileUser.username}</div>
             <div className='profile-message'>Message</div>
 
-            {checkUser() || 
-            <div className='profile-follow' onClick={toggleFollowCondition}>
-              {isFollow?'Following':'Follow'}
+            <div className='profile-follow'>
+              Following
             </div>
-            }
 
             <IoIosArrowUp className="profile-suggestion" />
             <BsThreeDots className="profile-option" />
-            <div className='profile-posts'>{totalProfilePosts} Posts</div>
+            <div className='profile-posts'>{totalProfilePosts} posts</div>
             <div className='profile-followers'>{followers} followers</div>
             <div className='profile-following'>{following} following</div>
             <div className='profile-info'>
@@ -94,18 +58,10 @@ export default function Profile() {
                 <img className='story-icon icon' src={process.env.PUBLIC_URL + '/haku.jpg'} alt="haku" />
               </div>
 
-              <div className={'profile-images'}>
+              <div className={'profile-images'} style={{ display: 'grid', gridTemplateColumns: '1fr' }}>
 
-                {profilePosts.map(post => {
-                  return (
-                    <div key={post.id} className='profile-images-item'>
-                      <img src={changeImagePath(post.image)} alt={post.image} />
-                    </div>
-                  )
-                })}
+                <h2>There is no post yet</h2>
               </div>
-
-
             </article>
 
             {/* RightSide */}
@@ -120,5 +76,5 @@ export default function Profile() {
       </div>
     </div>
   )
-
 }
+export default ProfileNoPost

@@ -12,31 +12,27 @@ const Home = () => {
   const {
     isLoading,
     user,
-    login,
     getPosts,
     posts,
+    page,
     clearStates,
     showDropdown,
     setShowDropdown,
+    changeImagePath,
   } = useAppContext()
 
   const params = useParams()
 
   const hideHeaderDropdown = ()=>{
-    if(!showDropdown){
+    if(showDropdown){
       setShowDropdown()
     }
   }
 
   useEffect(() => {
-    if(user){
-      clearStates()
-      getPosts()
-    }
-    else {
-      login()
-    }
-  }, [user])
+    clearStates()
+    getPosts()
+  }, [page])
 
   useEffect(() => {
     // only clear states when navigate back to home
@@ -87,11 +83,11 @@ const Home = () => {
       <div className={'bar-right'}>
         <div className='post-info-1' style={{ paddingTop: '50px' }}>
           <div className='bar-right-avatar'>
-            <img src={'./ahri.jpg'} alt={'Ahri'} />
+            <img src={changeImagePath(user.avatar)} alt={user.avatar} />
           </div>
 
           <div className='username-and-caption'>
-            {'superbin1996'}
+            {user.username}
           </div>
         </div>
       </div>

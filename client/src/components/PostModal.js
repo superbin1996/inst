@@ -18,6 +18,9 @@ const PostModal = () => {
     togglePostModal,
     toggleOptionModal,
     getPostComments,
+    changeImagePath,
+    isFollow,
+    toggleFollowCondition,
   } = useAppContext()
 
   const navigate = useNavigate()
@@ -43,6 +46,13 @@ const PostModal = () => {
     }
     // addComment()
     console.log(comment);
+  }
+
+  const checkUser = () => {
+    if (String(user.id) === String(post.user__id)) {
+      return true
+    }
+    else { return false }
   }
 
   useEffect(() => {
@@ -84,7 +94,7 @@ const PostModal = () => {
           {/* Image */}
           <div className='modal-image'>
             <div className='modal-file-1'>
-              <img src={post.image} alt={post.image} />
+              <img src={changeImagePath(post.image)} alt={post.image} />
             </div>
           </div>
 
@@ -93,13 +103,13 @@ const PostModal = () => {
 
             {/* Post owner info */}
             <div className='post-info-1'>
-              <img className='icon-user-1 icon' src={post.user__avatar} alt={post.user__avatar} />
+              <img className='icon-user-1 icon' src={changeImagePath(post.user__avatar)} alt={post.user__avatar} />
 
               {/* Follow Btn */}
               <div className='username-and-caption'>
-                {post.user__username} <span style={{ cursor: 'pointer' }}>
-                  ・ Following
-                </span>
+                {post.user__username} {checkUser() || <span style={{ cursor: 'pointer' }} onClick={toggleFollowCondition}>
+                  ・ {isFollow?'Following':'Follow'}
+                </span>}
               </div>
 
               <BsThreeDots className='post-option' style={{ marginRight: '8px' }} onClick={()=>toggleOptionModal(post)} />
@@ -111,7 +121,7 @@ const PostModal = () => {
               {post.status &&
                 <div className='post-info-1'>
                   <div>
-                    <img className='icon-user-1 icon' src={post.user__avatar} alt={post.user__avatar} />
+                    <img className='icon-user-1 icon' src={changeImagePath(post.user__avatar)} alt={post.user__avatar} />
                   </div>
 
                   <div className='username-and-caption'>
@@ -126,7 +136,7 @@ const PostModal = () => {
                 return (
                   <div className='post-info-1' key={comment.id}>
                     <div>
-                      <img className='icon-user-1 icon' src={`/${user.avatar}`} alt={user.avatar} />
+                      <img className='icon-user-1 icon' src={changeImagePath(user.avatar)} alt={user.avatar} />
                     </div>
 
                     <div className='username-and-caption'>

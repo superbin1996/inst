@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { FaSearch, FaRegCompass } from 'react-icons/fa';
 import { MdHomeFilled } from 'react-icons/md';
 import { FiSend } from 'react-icons/fi';
@@ -15,11 +14,12 @@ export default function Header() {
     changeImagePath,
     showDropdown,
     setShowDropdown,
+    logout,
   } = useAppContext()
   const navigate = useNavigate()
 
-  const hideHeaderDropdown = ()=>{
-    if(!showDropdown){
+  const hideHeaderDropdown = () => {
+    if (showDropdown) {
       setShowDropdown()
     }
   }
@@ -53,21 +53,19 @@ export default function Header() {
 
         <FaRegCompass className='icon' />
         <AiOutlineHeart className='icon' />
-        <div className='dropdown-cover'>
-          <span className='dropdown' onClick={(e)=>e.stopPropagation()}>
-            <img className='icon-user' src={changeImagePath(user.avatar)} alt="Ahri" onClick={setShowDropdown} />
-            <div id='myDropDown' className={showDropdown ? 'dropdown-content' : 'dropdown-content show-dropdown'}>
-              <div>
-                Profile
-              </div>
-              <div>
-                Following posts
-              </div>
-              <div>
-                Logout
-              </div>
+        <div className='dropdown' onClick={(e) => e.stopPropagation()}>
+          <img className='icon-user' src={changeImagePath(user.avatar)} alt="Ahri" onClick={setShowDropdown} />
+          <div id='myDropDown' className={showDropdown ? 'dropdown-content show-dropdown' : 'dropdown-content'}>
+            <div>
+              Profile
             </div>
-          </span>
+            <div>
+              Following posts
+            </div>
+            <div onClick={logout}>
+              Logout
+            </div>
+          </div>
         </div>
 
       </div>

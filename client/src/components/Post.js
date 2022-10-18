@@ -12,8 +12,9 @@ import { useAppContext } from '../context/appContext';
 const Post = ({ post }) => {
   const navigate = useNavigate()
   const {
-    showProfile,
+    // showProfile,
     toggleOptionModal,
+    changeImagePath,
   } = useAppContext()
 
   const [userComments, setUserComments] = useState([])
@@ -21,7 +22,7 @@ const Post = ({ post }) => {
   const navigateProfile = (username, userId) => {
     // showProfile(userId)
     // getProfilePosts(userId)
-    showProfile(userId)
+    // showProfile(userId)
     navigate(`/${username}`)
   }
 
@@ -51,7 +52,7 @@ const Post = ({ post }) => {
         <div className='post-info-cover'>
           {/* Post owner */}
           <div className='post-info'>
-            <img className='icon-user-1 icon' src={post.user__avatar} alt="haku" onClick={() => navigateProfile(post.user__username, post.user__id)} />
+            <img className='icon-user-1 icon' src={changeImagePath(post.user__avatar)} alt="haku" onClick={() => navigateProfile(post.user__username, post.user__id)} />
             <div style={{ fontWeight: '500' }} onClick={() => navigateProfile(post.user__username, post.user__id)}>
               {post.user__username}
             </div>
@@ -61,7 +62,7 @@ const Post = ({ post }) => {
 
         {/* Post picture */}
         <div className='post-picture'>
-          <img src={post.image} alt={post.image} />
+          <img src={changeImagePath(post.image)} alt={post.image} />
           <div className='post-picture-number'>
             <VscDebugStackframeDot style={{ transform: 'scale(1.5)' }} />
           </div>

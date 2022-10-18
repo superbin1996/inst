@@ -4,7 +4,6 @@ import { ProtectedRoute, Register, SharedLayout } from './pages/index';
 import { Error } from './pages/index'
 
 function App() {
-
   return (
     <BrowserRouter>
       <Routes>

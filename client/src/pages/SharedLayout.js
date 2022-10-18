@@ -8,12 +8,9 @@ const SharedLayout = () => {
     showUploadModal,
     showOptionModal,
     showEditModal,
-    getUser,
-  
   } = useAppContext()
   
   useEffect(()=>{
-    // getUser()
     document.body.style.overflowY = 'auto'
   }, [])
   return (

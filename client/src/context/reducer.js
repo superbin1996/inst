@@ -1,4 +1,4 @@
-import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_SUCCESS, GET_PROFILE_POSTS_BEGIN, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, HIDE_OPTION_MODAL, TOGGLE_EDIT_MODAL, REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, GET_USER_SUCCESS, SHOW_DROPDOWN} from "./actions"
+import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_SUCCESS, GET_PROFILE_POSTS_BEGIN, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, HIDE_OPTION_MODAL, TOGGLE_EDIT_MODAL, REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, GET_USER_SUCCESS, SHOW_DROPDOWN, LOGOUT_USER, GET_FOLLOW_CONDITION_SUCCESS, CHANGE_FOLLOW_CONDITION_SUCCESS } from "./actions"
 
 const reducer = (state, action) => {
   if (action.type === LOGIN_USER_BEGIN) {
@@ -25,10 +25,20 @@ const reducer = (state, action) => {
     }
   }
 
-  if(action.type===GET_USER_SUCCESS){
+  if (action.type === LOGOUT_USER) {
     return {
       ...state,
-      isLoading:false,
+      user: null,
+      token: null,
+      posts: [],
+      showDropdown: false,
+    }
+  }
+
+  if (action.type === GET_USER_SUCCESS) {
+    return {
+      ...state,
+      isLoading: false,
       user: action.payload.user
     }
   }
@@ -73,16 +83,18 @@ const reducer = (state, action) => {
       ...state,
       isLoading: false,
       posts: action.payload.posts,
+      totalPosts: action.payload.totalPosts,
+      numOfPages: action.payload.numOfPages,
     }
   }
 
-  if (action.type === SHOW_PROFILE) {
-    // console.log(action.payload.profileId);
-    return {
-      ...state,
-      profileId: action.payload.profileId,
-    }
-  }
+  // if (action.type === SHOW_PROFILE) {
+  //   // console.log(action.payload.profileId);
+  //   return {
+  //     ...state,
+  //     profileId: action.payload.profileId,
+  //   }
+  // }
 
   if (action.type === GET_PROFILE_POSTS_BEGIN) {
     return {
@@ -94,7 +106,13 @@ const reducer = (state, action) => {
     return {
       ...state,
       isLoading: false,
-      profilePosts: action.payload.data,
+      profilePosts: action.payload.profilePosts,
+      totalProfilePosts: action.payload.totalProfilePosts,
+      numOfProfilePages: action.payload.numOfProfilePages,
+      isFollow: action.payload.isFollow,
+      following: action.payload.following,
+      followers: action.payload.followers,
+      profileUser: action.payload.profileUser,
     }
   }
 
@@ -117,9 +135,15 @@ const reducer = (state, action) => {
       // posts
       // posts: [],
       // profile posts
-      profilePosts: [],
-      // profile
       profileId: '',
+      profileUser: {},
+      profilePosts: [],
+      totalProfilePosts: 0,
+      numOfProfilePages: 1,
+      profilePage: 1,
+      isFollow: false,
+      followers: 0,
+      following: 0,
       // postModal
       postId: '',
       showPostModal: false,
@@ -131,6 +155,8 @@ const reducer = (state, action) => {
       showUpLoad: false,
       // Option modal
       showOptionModal: false,
+      // Edit post
+      showEditModal: false,
     }
     return {
       ...state,
@@ -183,10 +209,23 @@ const reducer = (state, action) => {
     }
   }
 
-  if(action.type===SHOW_DROPDOWN){
+  if (action.type === SHOW_DROPDOWN) {
     return {
       ...state,
       showDropdown: !state.showDropdown,
+    }
+  }
+
+  if(action.type === GET_FOLLOW_CONDITION_SUCCESS){
+    return {
+      ...state,
+      isFollow: action.payload.isFollow,
+    }
+  }
+  if(action.type === CHANGE_FOLLOW_CONDITION_SUCCESS){
+    return {
+      ...state,
+      isFollow: action.payload.isFollow,
     }
   }
 }

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from instagram.models import User
+from instagram.models import User, Follow, Like
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -23,6 +23,8 @@ class UserSerializer(serializers.ModelSerializer):
   def create(self, validated_data):
     user = User.objects.create_user(**validated_data)
     # Token.objects.create(user=user)
+    # Follow.objects.create(user=user)
+    # Like.objects.create(user=user)
     return user
 
 

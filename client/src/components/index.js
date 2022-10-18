@@ -8,6 +8,7 @@ import PostModal from "./PostModal";
 import Profile from "./Profile";
 import UploadModal from "./UploadModal";
 import Alert from "./Alert"
+import ProfileNoPost from "./ProfileNoPost";
 
 export { 
-  Header, Post, Loading, PostModal, UploadModal, OptionModal, Home, Profile, EditModal, Alert } 
+  Header, Post, Loading, PostModal, UploadModal, OptionModal, Home, Profile, EditModal, Alert, ProfileNoPost } 

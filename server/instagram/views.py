@@ -1,7 +1,8 @@
+import math
 from icecream import ic
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import viewsets
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
@@ -31,14 +32,16 @@ def posts(request, page):
             'id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
 
         posts_length = len(all_posts)
+        num_of_pages = math.ceil(posts_length/10)
         pagination = Paginator(all_posts, 20)
         posts = pagination.page(page).object_list
         # ic(posts)
 
         return Response({
             'posts': posts,
-            'posts_length': posts_length
-        }, status=status.HTTP_200_OK)
+            'totalPosts': posts_length,
+            "numOfPages": num_of_pages,
+        }, status=200)
         
     if request.method == 'POST':
         data = request.data
@@ -47,26 +50,55 @@ def posts(request, page):
         image = data.get('image')
         user = User.objects.get(id=int(user_id))
         Post.objects.create(user=user, status=status, image=image)
-        return Response({'msg':'create post success'}, status=status.HTTP_200_OK)
+        return Response({'msg':'create post success'}, status=200)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
-def user_posts(request, user_id, page):
+def profile_posts(request, profile_name, page):
     try:
-        all_posts = Post.objects.filter(user=user_id).values(
+        an_user = User.objects.get(username=profile_name)
+    except User.DoesNotExist:
+        return Response(status=404)
+
+    try:
+        all_posts = Post.objects.filter(user=an_user).values(
             'id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
     except Post.DoesNotExist:
         return Response({"detail": "User don't have any post yet."}, status=404)
 
+    follow_obj, created = Follow.objects.get_or_create(user=an_user)
+    follow = follow_obj.following
+    # follow = Follow.objects.get(user=an_user).following
+    if an_user != request.user:
+        users_following_obj, created = Follow.objects.get_or_create(user=request.user)
+        is_follow = users_following_obj.following.contains(an_user)
+    else:
+        is_follow = False
+    
+    profile_user = {
+            'profileId': an_user.id,
+            'username': an_user.username,
+            'avatar': str(an_user.avatar),
+        }
+
+    followers = an_user.following.count()
+    following = follow.count()
+
     posts_length = len(all_posts)
+    num_of_pages = math.ceil(posts_length/10)
     pagination = Paginator(all_posts, 20)
     posts = pagination.page(page).object_list
     # ic(post_data)
 
     return Response({
-        'posts': posts,
-        'posts_length': posts_length
-    }, status=status.HTTP_200_OK)
+        'profilePosts': posts,
+        'totalProfilePosts': posts_length,
+        "numOfProfilePages": num_of_pages,
+        'isFollow':is_follow,
+        'followers':followers,
+        'following':following,
+        'profileUser':profile_user,
+    }, status=200)
 
 
 @api_view(['GET'])
@@ -84,13 +116,15 @@ def following_posts(request, page):
             'id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
 
         posts_length = len(following_posts)
+        num_of_pages = math.ceil(posts_length/10)
         pagination = Paginator(following_posts, 20)
         posts = pagination.page(page).object_list
 
         return Response({
             'posts': posts,
-            'posts_length': posts_length
-        }, status=status.HTTP_200_OK)
+            'posts_length': posts_length,
+            "num_of_pages": num_of_pages,
+        }, status=200)
 
 
 @api_view(['GET', 'PUT'])
@@ -106,7 +140,7 @@ def user(request, filename):
             'avatar': str(current_user.avatar),
         }
 
-        return Response(user, status=status.HTTP_200_OK)
+        return Response(user, status=200)
 
     """Update Avatar"""
     if request.method == 'PUT':
@@ -118,10 +152,9 @@ def user(request, filename):
             a.avatar = data
             a.save()
 
-            return Response({'detail': 'Avatar has updated'}, status=status.HTTP_200_OK)
+            return Response({'detail': 'Avatar has updated'}, status=200)
 
-
-@api_view(['GET', 'PUT'])
+@api_view(['GET', 'PATCH'])
 @authentication_classes([TokenAuthentication])
 def follow(request, user_id):
     try:
@@ -129,32 +162,25 @@ def follow(request, user_id):
     except User.DoesNotExist:
         return Response(status=404)
 
-    follow = Follow.objects.get(user=user_id).following
-    users_following = Follow.objects.get(user=request.user).following
+    if an_user != request.user:
+        users_following_obj, created = Follow.objects.get_or_create(user=request.user)
+        is_follow = users_following_obj.following.contains(an_user)
+    else:
+        is_follow = False
 
     if request.method == "GET":
-        is_follow = users_following.contains(an_user)
-        followers = an_user.following.count()
-        following = follow.count()
-        # users_following = follow.values('username', 'id')
         return Response({
-            "is_follow": is_follow,
-            'followers': followers,
-            'following': following
-            # 'followingUsers': list(users_following)
-        }, status=status.HTTP_200_OK)
+            "isFollow": is_follow,
+        }, status=200)
 
-    if request.method == "PUT":
-
-        if users_following.contains(user) == False:
-            # User field of Follow model class was created in serializers.py
+    if request.method == "PATCH":
+        users_following = Follow.objects.get(user=request.user).following
+        if not is_follow:
             users_following.add(user_id)
-
-            return Response({"follow": True}, status=201)
+            return Response({"isFollow": True}, status=201)
         else:
             users_following.remove(user_id)
-
-            return Response({"follow": False}, status=status.HTTP_200_OK)
+            return Response({"isFollow": False}, status=201)
 
 
 @api_view(['POST', 'PUT', 'GET'])
@@ -172,7 +198,7 @@ def comment(request, post_id):
         comment_data = list(comments)
         # ic(comment_data)
 
-        return Response(comments, status=status.HTTP_200_OK)
+        return Response(comments, status=200)
 
     # Post comment
     if request.method == "POST":
@@ -223,7 +249,7 @@ def post_user_comment(request, post_id):
         'id', 'content', "user__username")
 
     # ic(post_user_comment)
-    return Response(post_user_comment, status=status.HTTP_200_OK)
+    return Response(post_user_comment, status=200)
 
 
 @api_view(['GET', 'PUT'])
