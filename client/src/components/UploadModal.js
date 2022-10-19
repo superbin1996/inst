@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {AiOutlinePicture} from 'react-icons/ai'
-import {BiArrowBack} from 'react-icons/bi'
-import {HiOutlineEmojiHappy} from 'react-icons/hi';
+import React, { useState } from 'react';
+import { AiOutlinePicture } from 'react-icons/ai'
+import { BiArrowBack } from 'react-icons/bi'
+import { HiOutlineEmojiHappy } from 'react-icons/hi';
 import Wrapper from '../assets/wrappers/UploadModal';
 import { useAppContext } from '../context/appContext';
 
@@ -9,8 +9,9 @@ export default function UploadModal() {
   const {
     user,
     toggleUploadModal,
-    addPost,
     changeImagePath,
+    authFetch,
+    getPosts,
   } = useAppContext()
 
   // After choosing picture
@@ -21,23 +22,23 @@ export default function UploadModal() {
   const [previewImage, setPreviewImage] = useState(null)
   // Image scale
   const [imgScale, setImgScale] = useState(1)
-  // preview image and add caption
-  const [addCaption, setAddCaption] = useState(false)
+  // preview image and add status
+  const [addStatus, setAddStatus] = useState(false)
   // Count text length in textarea
-  const [captionLength, setCaptionLength] = useState(0)
-  // caption content
-  const [caption, setCaption] = useState('')
+  const [statusLength, setStatusLength] = useState(0)
+  // status content
+  const [status, setStatus] = useState('')
 
   function onChangePicture(e) {
     e.preventDefault()
 
     if (e.target.files[0]) {
-      setPreview(true)      
+      setPreview(true)
       setUploadImage(e.target.files[0])
 
       const reader = new FileReader()
       reader.readAsDataURL(e.target.files[0])
-      reader.addEventListener('load', ()=>{
+      reader.addEventListener('load', () => {
         setPreviewImage(reader.result)
       })
     }
@@ -45,116 +46,132 @@ export default function UploadModal() {
 
   function skipChoosingPicture() {
     // setPreviewImage(process.env.PUBLIC_URL + './default.jpg')
-    
+
     // If using Route, delete first '.' in url
     setPreviewImage('/default.jpg')
-    setPreview(true)      
+    setPreview(true)
   }
 
   function uploadBack() {
-    if (addCaption) {
-      setAddCaption(false)
+    if (addStatus) {
+      setAddStatus(false)
     }
     else {
       setPreview(false)
-      setCaption('')
+      setStatus('')
     }
   }
 
   function uploadNext() {
-    if (addCaption) {
+    if (addStatus) {
       uploadPost()
     }
     else {
-      setAddCaption(true)
+      setAddStatus(true)
     }
   }
 
   const changeImageSize = ({ target: img }) => {
     const { offsetHeight, offsetWidth } = img;
-    console.log(offsetWidth, offsetHeight);
+    // console.log(offsetWidth, offsetHeight);
     if (offsetHeight < 500) {
-      setImgScale(500/offsetHeight)
+      setImgScale(500 / offsetHeight)
 
     }
   }
 
-  function uploadPost() {
-    const formData = new FormData()
-    formData.append('status', caption)
-    if (uploadImage) {
-      formData.append('image', uploadImage)
+  const addPost = async (newPost) => {
+    const url = `/posts/0`
+    try {
+      const { data } = await authFetch.post(url, newPost)
+      if (data.status === false) {
+        console.log(data)
+      }
+    } catch (error) {
+      console.log(error)
     }
-    formData.append('user', user.id)
+    getPosts()
+  }
 
-    addPost(formData)
-    toggleUploadModal()
+  const uploadPost = async () => {
+    const formData = new FormData()
+    try {
+      formData.append('status', status)
+      if (uploadImage) {
+        formData.append('image', uploadImage)
+      }
+    }
+    finally {
+      addPost(formData)
+      toggleUploadModal()
+    }
+    
   }
 
   function inputCaption(e) {
-    setCaption(e.target.value)
-    setCaptionLength(e.target.value.length)
+    setStatus(e.target.value)
+    setStatusLength(e.target.value.length)
   }
 
-  return  (
+  return (
     // <Wrapper>
-      <div>
-        {/* The Modal */}
-        <div className="modal" onClick={toggleUploadModal}>
+    <div>
+      {/* The Modal */}
+      <div className="modal" onClick={toggleUploadModal}>
 
-          <div className="close" 
-            onClick={toggleUploadModal}
-          >&times;</div>
+        <div className="close"
+          onClick={toggleUploadModal}
+        >&times;</div>
 
-          {/* Modal content */}
-          <div className={addCaption?'modal-content-full':'modal-content'} onClick={e=>e.stopPropagation()}>
+        {/* Modal content */}
+        <div className={addStatus ? 'modal-content-full' : 'modal-content'} onClick={e => e.stopPropagation()}>
 
-            {/* Preview header */}
-            { preview ? 
+          {/* Preview header */}
+          {preview ?
             // preview header after choosing picture
             <div className='modal-intro-preview'>
               <BiArrowBack className='modal-intro-preview-item-1' onClick={uploadBack} />
               <div className='modal-intro-preview-item-2'>Crop</div>
-              <div className='modal-intro-preview-item-3' onClick={uploadNext}>{addCaption?'Share':'Next'}</div>
+              <div className='modal-intro-preview-item-3' onClick={uploadNext}>{addStatus ? 'Share' : 'Next'}</div>
             </div>
             :
             // preview header before choosing picture
             <div className="modal-intro">Create new status here</div>
-            }
-            
-            {/* Image and Caption */}
-            <div className='modal-upload-column'>
-              { preview ?
+          }
+
+          {/* Image and Caption */}
+          <div className='modal-upload-column'>
+            {preview ?
               // After choosing picture
               <div className='modal-preview'>
 
                 <div className='modal-preview-image'>
                   <div className='modal-file'>
-                    <img src={previewImage} alt={previewImage} onLoad={changeImageSize} style={{transform:`scale(${imgScale})`}} />
+                    <img src={previewImage} alt={previewImage} onLoad={changeImageSize} style={{ transform: `scale(${imgScale})` }} />
                   </div>
                 </div>
 
                 {/* Caption input */}
-                {addCaption &&
-                <div className='modal-upload-caption'>
-                  <div className='post-info' style={{marginLeft:'-5px'}}>
-                    <img className='icon-user-1 icon' src={user.avatar} alt={user.avatar} />
-                    <p>{user.username}</p>
+                {addStatus &&
+                  <div className='modal-upload-status'>
+                    <div className='post-info' style={{ marginLeft: '-5px' }}>
+                      <img className='icon-user-1 icon' src={changeImagePath(user.avatar)} alt={user.avatar} />
+                      <p>{user.username}</p>
+                    </div>
+                    <textarea name="" id="" cols="30" rows="13" placeholder='Write a status...' autoFocus value={status} onChange={inputCaption} />
+                    <div className='modal-upload-emoji-cover'>
+                      <HiOutlineEmojiHappy className='modal-upload-emoji' />
+                      <div className='textarea-length'>{statusLength}/2,200</div>
+                    </div>
                   </div>
-                  <textarea name="" id="" cols="30" rows="13" placeholder='Write a caption...' autoFocus value={caption} onChange={inputCaption} />
-                  <div className='modal-upload-emoji-cover'>
-                    <HiOutlineEmojiHappy className='modal-upload-emoji'/>
-                    <div className='textarea-length'>{captionLength}/2,200</div>
-                  </div>
-                </div>
                 }
-                
+
               </div>
               :
               // Choosing image file
               <div className='modal-file'>
                 <div><AiOutlinePicture className="AiOutlinePicture" /></div>
-                <h3>Drag piuctures here</h3>
+                <h3>Drag picture here</h3>
                 <form>
                   <input type="file" className='modal-upload-input' onChange={onChangePicture} />
                 </form>
@@ -162,13 +179,13 @@ export default function UploadModal() {
                   <button className='btn-skip' onClick={skipChoosingPicture}>Skip</button>
                 </div>
               </div>
-              }
-            </div>
-
+            }
           </div>
-        </div>
 
+        </div>
       </div>
+
+    </div>
     // </Wrapper>
   );
 }

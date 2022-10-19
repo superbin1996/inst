@@ -9,7 +9,18 @@ const ProfileNoPost = () => {
     followers,
     profileUser,
     totalProfilePosts,
+    changeImagePath,
+    user,
+    toggleFollowCondition,
+    isFollow,
   } = useAppContext()
+
+  const checkUser = () => {
+    if (String(profileUser.profileId) === String(user.id)) {
+      return true
+    }
+    else { return false }
+  }
   
   return (
     <div className='profile-modal'>
@@ -22,19 +33,20 @@ const ProfileNoPost = () => {
           <header className='profile-header'>
 
             <label className='profile-avatar' htmlFor='avatar'>
-              <img src={'ahri.jpg'} alt={'Ahri'} />
-
+              <img src={changeImagePath(profileUser.avatar)} alt={profileUser.avatar} />
+              {checkUser() && 
               <input type="file" id='avatar' />
-
-
+              }
             </label>
 
             <div className='profile-username'>{profileUser.username}</div>
             <div className='profile-message'>Message</div>
 
-            <div className='profile-follow'>
-              Following
+            {checkUser() || 
+            <div className='profile-follow' onClick={()=>toggleFollowCondition(profileUser.id)}>
+              {isFollow?'Following':'Follow'}
             </div>
+            }
 
             <IoIosArrowUp className="profile-suggestion" />
             <BsThreeDots className="profile-option" />

@@ -24,8 +24,9 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     authentication_classes = (TokenAuthentication,)
 
-@authentication_classes([TokenAuthentication])
+# Remember @api_view is placed above @authentication_classes
 @api_view(['GET', 'POST'])
+@authentication_classes([TokenAuthentication])
 def posts(request, page):
     if request.method == 'GET':
         all_posts = Post.objects.all().values(
@@ -44,13 +45,17 @@ def posts(request, page):
         }, status=200)
         
     if request.method == 'POST':
+        # ic(request.user.username)
         data = request.data
         status = data.get('status')
-        user_id = data.get('user')
+        # user_id = data.get('user')
         image = data.get('image')
-        user = User.objects.get(id=int(user_id))
-        Post.objects.create(user=user, status=status, image=image)
-        return Response({'msg':'create post success'}, status=200)
+        user = request.user
+        if not image:
+            Post.objects.create(user=user, status=status)
+        else:
+            Post.objects.create(user=user, status=status, image=image)
+        return Response({'status': True, 'detail':'create post success'}, status=200)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -58,28 +63,34 @@ def profile_posts(request, profile_name, page):
     try:
         an_user = User.objects.get(username=profile_name)
     except User.DoesNotExist:
-        return Response(status=404)
+        return Response({'status': True, 'detail': 'User not found'}, status=404)
 
     try:
         all_posts = Post.objects.filter(user=an_user).values(
             'id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
     except Post.DoesNotExist:
-        return Response({"detail": "User don't have any post yet."}, status=404)
+        return Response({'status': False, "detail": "User don't have any post yet."}, status=404)
 
-    follow_obj, created = Follow.objects.get_or_create(user=an_user)
-    follow = follow_obj.following
-    # follow = Follow.objects.get(user=an_user).following
+    try:
+        follow_obj, created = Follow.objects.prefetch_related('following').get_or_create(user=an_user)
+        follow = follow_obj.following
+    except Follow.DoesNotExist:
+        return Response({'status': False, "detail": "Follow object does not exist."}, status=404)
+
     if an_user != request.user:
-        users_following_obj, created = Follow.objects.get_or_create(user=request.user)
-        is_follow = users_following_obj.following.contains(an_user)
+        try:
+            users_following_obj, created = Follow.objects.prefetch_related('following').get_or_create(user=request.user)
+            is_follow = users_following_obj.following.contains(an_user)
+        except Follow.DoesNotExist:
+            return Response({'status': False, "detail": "Follow object does not exist."}, status=404)
     else:
         is_follow = False
     
     profile_user = {
-            'profileId': an_user.id,
-            'username': an_user.username,
-            'avatar': str(an_user.avatar),
-        }
+        'id': an_user.id,
+        'username': an_user.username,
+        'avatar': str(an_user.avatar),
+    }
 
     followers = an_user.following.count()
     following = follow.count()
@@ -127,7 +138,7 @@ def following_posts(request, page):
         }, status=200)
 
 
-@api_view(['GET', 'PUT'])
+@api_view(['GET', 'PATCH'])
 @parser_classes([FileUploadParser])
 @authentication_classes([TokenAuthentication])
 def user(request, filename):
@@ -143,7 +154,7 @@ def user(request, filename):
         return Response(user, status=200)
 
     """Update Avatar"""
-    if request.method == 'PUT':
+    if request.method == 'PATCH':
         if request.data['file']:
             # if data-name is 'file', it will get the file with filename in fnc arguments
             data = request.data['file']
@@ -152,7 +163,7 @@ def user(request, filename):
             a.avatar = data
             a.save()
 
-            return Response({'detail': 'Avatar has updated'}, status=200)
+            return Response({'status': True, 'detail': 'Avatar has updated'}, status=200)
 
 @api_view(['GET', 'PATCH'])
 @authentication_classes([TokenAuthentication])
@@ -160,7 +171,7 @@ def follow(request, user_id):
     try:
         an_user = User.objects.get(id=user_id)
     except User.DoesNotExist:
-        return Response(status=404)
+        return Response({'status': False, 'detail': 'User does not exist'}, status=404)
 
     if an_user != request.user:
         users_following_obj, created = Follow.objects.get_or_create(user=request.user)
@@ -183,11 +194,11 @@ def follow(request, user_id):
             return Response({"isFollow": False}, status=201)
 
 
-@api_view(['POST', 'PUT', 'GET'])
+@api_view(['POST', 'PATCH', 'GET'])
 @authentication_classes([TokenAuthentication])
 def comment(request, post_id):
     try:
-        post = Post.objects.get(id=post_id)
+        post = Post.objects.prefetch_related('comments').get(id=post_id)
     except Post.DoesNotExist:
         return Response({"detail": "Post not found."}, status=404)
 
@@ -195,8 +206,6 @@ def comment(request, post_id):
     if request.method == "GET":
         comments = post.comments.all().values(
             'id', 'post', 'content', 'user__username', 'user__id', 'user__avatar', 'timestamp')
-        comment_data = list(comments)
-        # ic(comment_data)
 
         return Response(comments, status=200)
 
@@ -204,18 +213,18 @@ def comment(request, post_id):
     if request.method == "POST":
 
         data = request.data
-        content = data["content"]
+        content = data["comment"]
 
-        # Check if forgot input
+        # Check if blank
         if content.strip():
             # Add comment to database
             Comment.objects.create(
                 content=content, user=request.user, post=post)
-            return Response({"message": "Your comment has been added"}, status=201)
+            return Response({'status': True, "message": "Your comment has been added"}, status=201)
         else:
-            return Response({"detail": "Cannot leave comment blank"}, status=400)
+            return Response({'status': False, "detail": "Cannot leave comment blank"}, status=400)
 
-    if request.method == "PUT":
+    if request.method == "PATCH":
         data = request.data
         commentId = data["id"]
 
@@ -223,16 +232,16 @@ def comment(request, post_id):
             comment = Comment.objects.prefetch_related('content').get(
                 id=commentId)
         except Comment.DoesNotExist:
-            return Response({"detail": "Comment not found."}, status=404)
+            return Response({'status': False, "detail": "Comment not found."}, status=404)
 
-        content = data["content"]
+        content = data["comment"]
 
         # Check if contents is blank
         if content.strip():
             comment.content = content
             comment.save()
         else:
-            return Response({"detail": "Cannot leave comment blank"}, status=400)
+            return Response({'status': False, "detail": "Cannot leave comment blank"}, status=400)
 
 
 @api_view(['GET'])
@@ -243,7 +252,7 @@ def post_user_comment(request, post_id):
         'id', 'content', "user__username").filter(
             post=post_id, user=request.user).all()
     except User.DoesNotExist:
-        return Response({"detail": "Comment not found."}, status=404)
+        return Response({'status': False, "detail": "Comment not found."}, status=404)
 
     post_user_comment = comments.values(
         'id', 'content', "user__username")
@@ -252,13 +261,13 @@ def post_user_comment(request, post_id):
     return Response(post_user_comment, status=200)
 
 
-@api_view(['GET', 'PUT'])
+@api_view(['GET', 'PATCH'])
 @authentication_classes([TokenAuthentication])
 def like(request, post_id):
     try:
         post = Post.objects.prefetch_related('like').get(id=post_id)
     except Post.DoesNotExist:
-        return Response({"detail": "Post not found."}, status=404)
+        return Response({'status': False, "detail": "Post not found."}, status=404)
 
     if request.method == "GET":
         post_obj, created = Post.objects.get(
@@ -266,7 +275,7 @@ def like(request, post_id):
         # ic(post.like)
         return Response({"like": post_obj.like}, status=201)
 
-    if request.method == "PUT":
+    if request.method == "PATCH":
         data = request.data
         like = Like.objects.prefetch_related('is_like').get(post=post_id, user=request.user)
         like.is_like = data["isLike"]
@@ -282,6 +291,6 @@ def like_sum(request, post_id):
         like_sum = Like.objects.filter(post=post_id, like=True).count()
 
     except Like.DoesNotExist:
-        return Response({"detail": "Post not found."}, status=404)
+        return Response({'status': False, "detail": "Post not found."}, status=404)
 
     return Response(like_sum, status=201)

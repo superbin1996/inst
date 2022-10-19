@@ -63,7 +63,7 @@ const Register = () => {
           <div className='login-item'>
             <img className='login-logo'
               src="instagram.png"
-              alt="Instargram Logo"
+              alt="Instagram Logo"
             />
             <div>
               <input type="text" name='username' placeholder='Username' value={values.username} onChange={handleChange} />

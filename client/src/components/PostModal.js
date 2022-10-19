@@ -21,6 +21,7 @@ const PostModal = () => {
     changeImagePath,
     isFollow,
     toggleFollowCondition,
+    authFetch,
   } = useAppContext()
 
   const navigate = useNavigate()
@@ -34,18 +35,25 @@ const PostModal = () => {
     // window.history.replaceState(null, "Instagram", "/")
   }
 
-  const handleCommentInput = (e) => {
+
+  const handleCommentChange =(e)=>{
     setComment(e.target.value)
   }
 
-  const handleCommentSubmit = (e) => {
-    e.preventDefault()
-    if (!comment) {
-      console.log(`please input`);
-      return
+  const submitComment = async () => {
+    const url = `/comment/${post.id}`
+    try {
+      const { data } = await authFetch.post(url, {comment})
+      if (data.status === false) {
+        console.log(data)
+      }
+    } catch (error) {
+      console.log(error)
     }
-    // addComment()
-    console.log(comment);
+    finally{
+      getPostComments(params.postId)
+      setComment('')
+    }
   }
 
   const checkUser = () => {
@@ -56,8 +64,8 @@ const PostModal = () => {
   }
 
   useEffect(() => {
-    getPostComments(post.id)
     document.body.style.overflowY = 'hidden'
+    getPostComments(params.postId)
     console.log(params);
     togglePostModal(params.postId)
   }, [params])
@@ -90,7 +98,6 @@ const PostModal = () => {
 
         {/* Image and Caption */}
         <div className='modal-preview-1'>
-
           {/* Image */}
           <div className='modal-image'>
             <div className='modal-file-1'>
@@ -107,7 +114,7 @@ const PostModal = () => {
 
               {/* Follow Btn */}
               <div className='username-and-caption'>
-                {post.user__username} {checkUser() || <span style={{ cursor: 'pointer' }} onClick={toggleFollowCondition}>
+                {post.user__username} {checkUser() || <span style={{ cursor: 'pointer' }} onClick={()=>toggleFollowCondition(post.user__id)}>
                   ・ {isFollow?'Following':'Follow'}
                 </span>}
               </div>
@@ -194,10 +201,10 @@ const PostModal = () => {
                 <input type="text" value={comment} onChange={e=>setComment(e.target.value)} /> */}
               <div className='post-comment-icon'>
                 <HiOutlineEmojiHappy className='HiOutlineEmojiHappy' />
-                <input placeholder='Add comment...' name='comment' value={comment} onChange={handleCommentInput} />
+                <input placeholder='Add comment...' name='comment' value={comment} onChange={handleCommentChange} />
               </div>
 
-              <div className='post-comment-post'>
+              <div className='post-comment-post' onClick={submitComment}>
                 Post
               </div>
             </div>

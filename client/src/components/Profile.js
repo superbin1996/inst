@@ -56,18 +56,17 @@ export default function Profile() {
           <header className='profile-header'>
 
             <label className='profile-avatar' htmlFor='avatar'>
-              <img src={'ahri.jpg'} alt={'Ahri'} />
-
+              <img src={changeImagePath(profileUser.avatar)} alt={profileUser.avatar} />
+              {checkUser() && 
               <input type="file" id='avatar' />
-
-
+              }
             </label>
 
             <div className='profile-username'>{profileUser.username}</div>
             <div className='profile-message'>Message</div>
 
             {checkUser() || 
-            <div className='profile-follow' onClick={toggleFollowCondition}>
+            <div className='profile-follow' onClick={()=>toggleFollowCondition(profileUser.id)}>
               {isFollow?'Following':'Follow'}
             </div>
             }

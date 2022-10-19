@@ -93,7 +93,7 @@ const AppProvider = ({ children }) => {
           Authorization: `Token ${token}`
         }
       })
-      console.log(token, user);
+      // console.log(token, user);
       dispatch({
         type: LOGIN_USER_SUCCESS,
         payload: {
@@ -103,7 +103,7 @@ const AppProvider = ({ children }) => {
       })
       addUserToLocalStorage({ user, token })
     } catch (error) {
-      // dispatch({ type: LOGIN_USER_ERROR, payload: { 'msg': error.response } })
+      // dispatch({ type: LOGIN_USER_ERROR, payload: { 'msg': error } })
       console.log(error);
     }
   }
@@ -119,7 +119,7 @@ const AppProvider = ({ children }) => {
         login(currentUser)
       }, 500)
     } catch (error) {
-      // dispatch({type:REGISTER_USER_ERROR, payload: { 'msg': error.response } })
+      // dispatch({type:REGISTER_USER_ERROR, payload: { 'msg': error } })
       console.log(error);
     }
   }
@@ -146,7 +146,7 @@ const AppProvider = ({ children }) => {
       const { posts, totalPosts, numOfPages } = data
       dispatch({ type: GET_POSTS_SUCCESS, payload: { posts, totalPosts, numOfPages } })
     } catch (error) {
-      console.log(error.response);
+      console.log(error);
     }
   }
 
@@ -170,7 +170,7 @@ const AppProvider = ({ children }) => {
         }
       })
     } catch (error) {
-      console.log(error.response);
+      console.log(error);
     }
   }
 
@@ -179,19 +179,18 @@ const AppProvider = ({ children }) => {
   // }
 
   const getPostComments = async (postId) => {
-    const url = `/data/postComments.json`
+    // const url = `/data/postComments.json`
+    const url = `/comment/${postId}`
     try {
-      const response = await fetch(url)
-      const data = await response.json()
-      console.log(data);
+      const { data } = await authFetch(url)
       dispatch({ type: GET_POST_COMMENTS_SUCCESS, payload: { data } })
     } catch (error) {
-      console.log(error.response);
+      console.log(error)
     }
   }
 
-  const getFollowCondition = async (post) => {
-    const url = `/follow/${post.user__id}`
+  const getFollowCondition = async (userId) => {
+    const url = `/follow/${userId}`
     try {
       const { data: { isFollow } } = await authFetch(url)
       dispatch({ type: GET_FOLLOW_CONDITION_SUCCESS, payload: { isFollow } })
@@ -200,17 +199,15 @@ const AppProvider = ({ children }) => {
     }
   }
 
-  const toggleFollowCondition = async() => {
-    const { post } = state
-    const url = `/follow/${post.user__id}`
+  const toggleFollowCondition = async (userId) => {
+    const url = `/follow/${userId}`
     try {
-      const {data:{isFollow}} = await authFetch.patch(url)
-      dispatch({type:CHANGE_FOLLOW_CONDITION_SUCCESS,payload:{isFollow}})
+      const { data: { isFollow } } = await authFetch.patch(url)
+      dispatch({ type: CHANGE_FOLLOW_CONDITION_SUCCESS, payload: { isFollow } })
     } catch (error) {
-      
+
     }
   }
-
 
   const handleChange = ({ name, value }) => {
     dispatch({ type: HANDLE_CHANGE, payload: { name, value } })
@@ -231,15 +228,11 @@ const AppProvider = ({ children }) => {
     }
   }
 
-  // Add new post. 
-  const addPost = async (formData) => {
-  }
-
   const togglePostModal = (postId) => {
     // console.log(`postId:`, postId)
     const post = state.posts.find(post => String(post.id) === postId)
     dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post, showPostModal: true } })
-    getFollowCondition(post)
+    getFollowCondition(post.user__id)
   }
 
   const toggleOptionModal = (post) => {
@@ -315,13 +308,13 @@ const AppProvider = ({ children }) => {
         getPostComments,
         toggleUploadModal,
         changeImagePath,
-        addPost,
         toggleOptionModal,
         toggleEditModal,
         editPost,
         setShowDropdown,
         logout,
         toggleFollowCondition,
+        authFetch,
       }}
     >
       {children}

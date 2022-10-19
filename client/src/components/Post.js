@@ -15,11 +15,33 @@ const Post = ({ post }) => {
     // showProfile,
     toggleOptionModal,
     changeImagePath,
+    authFetch,
   } = useAppContext()
 
   const [userComments, setUserComments] = useState([])
+  const [comment, setComment] = useState('')
 
-  const navigateProfile = (username, userId) => {
+  const handleChange =(e)=>{
+    setComment(e.target.value)
+  }
+
+  const submitComment = async () => {
+    const url = `/comment/${post.id}`
+    try {
+      const { data } = await authFetch.post(url, {comment})
+      if (data.status === false) {
+        console.log(data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    finally{
+      getUserComments(post.id)
+      setComment('')
+    }
+  }
+
+  const navigateProfile = (username) => {
     // showProfile(userId)
     // getProfilePosts(userId)
     // showProfile(userId)
@@ -33,9 +55,9 @@ const Post = ({ post }) => {
   }
 
   const getUserComments = async (postId) => {
-    const url = `/data/userComments.json`
-    const response = await fetch(url)
-    const data = await response.json()
+    // const url = `/data/userComments.json`
+    const url = `/post_user_comment/${postId}`
+    const {data} = await authFetch(url)
     // console.log(`usersComments:`, data)
     setUserComments(data)
   }
@@ -52,8 +74,8 @@ const Post = ({ post }) => {
         <div className='post-info-cover'>
           {/* Post owner */}
           <div className='post-info'>
-            <img className='icon-user-1 icon' src={changeImagePath(post.user__avatar)} alt="haku" onClick={() => navigateProfile(post.user__username, post.user__id)} />
-            <div style={{ fontWeight: '500' }} onClick={() => navigateProfile(post.user__username, post.user__id)}>
+            <img className='icon-user-1 icon' src={changeImagePath(post.user__avatar)} alt="haku" onClick={() => navigateProfile(post.user__username)} />
+            <div style={{ fontWeight: '500' }} onClick={() => navigateProfile(post.user__username)}>
               {post.user__username}
             </div>
           </div>
@@ -113,10 +135,10 @@ const Post = ({ post }) => {
 
           <div className='post-comment-icon'>
             <HiOutlineEmojiHappy className='HiOutlineEmojiHappy' />
-            <input placeholder='Add comment...' />
+            <input placeholder='Add comment...' value={comment} onChange={handleChange} />
           </div>
 
-          <div className='post-comment-post'>
+          <div className='post-comment-post' onClick={submitComment}>
             Post
           </div>
 
