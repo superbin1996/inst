@@ -3,7 +3,7 @@ import { MdHomeFilled } from 'react-icons/md';
 import { FiSend } from 'react-icons/fi';
 import { BsPlusSquare } from 'react-icons/bs';
 import { AiOutlineHeart } from 'react-icons/ai';
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppContext } from '../context/appContext';
 
 export default function Header() {
@@ -17,11 +17,26 @@ export default function Header() {
     logout,
   } = useAppContext()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const hideHeaderDropdown = () => {
     if (showDropdown) {
       setShowDropdown()
     }
+  }
+
+  const refresh = () => { 
+    if (location.pathname === '/') {
+      window.scrollTo({top: 0, behavior: 'smooth'})
+    }
+    navigate('/')
+  }
+
+  const navigateProfile = () => {
+    // showProfile(userId)
+    // getProfilePosts(userId)
+    // showProfile(userId)
+    navigate(`/${user.username}`)
   }
 
   return (
@@ -32,7 +47,7 @@ export default function Header() {
         <img className='logo'
           src="https://i0.wp.com/www.dafontfree.io/wp-content/uploads/2020/12/instagram-new.png?fit=1100%2C750&ssl=1"
           alt="Instargram Logo"
-          onClick={() => { navigate('/') }}
+          onClick={refresh}
         />
 
         <div className='search'>
@@ -43,7 +58,7 @@ export default function Header() {
 
       {/* Right */}
       <div className='header-right'>
-        <MdHomeFilled className='icon' />
+        <MdHomeFilled className='icon' onClick={refresh} />
         <FiSend className='icon' />
 
         <BsPlusSquare
@@ -56,7 +71,7 @@ export default function Header() {
         <div className='dropdown' onClick={(e) => e.stopPropagation()}>
           <img className='icon-user' src={changeImagePath(user.avatar)} alt="Ahri" onClick={setShowDropdown} />
           <div id='myDropDown' className={showDropdown ? 'dropdown-content show-dropdown' : 'dropdown-content'}>
-            <div>
+            <div onClick={navigateProfile}>
               Profile
             </div>
             <div>

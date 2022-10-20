@@ -139,7 +139,7 @@ const AppProvider = ({ children }) => {
       page
     } = state
     // const url = `/data/posts.json`
-    const url = `/posts/${page}`
+    const url = `/posts/${page}/0`
     dispatch({ type: GET_POSTS_BEGIN })
     try {
       const { data } = await authFetch(url)
@@ -287,6 +287,31 @@ const AppProvider = ({ children }) => {
     }
   }
 
+  const addPost = async (newPost) => {
+    const url = `/posts/0/0`
+    try {
+      const { data } = await authFetch.post(url, newPost)
+      if (data.status === false) {
+        console.log(data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    getPosts()
+  }
+
+  const deletePost = async (postId) => {
+    const url = `/posts/0/${postId}`
+    try {
+      const { data } = await authFetch.delete(url)
+      console.log(data.detail)
+    } catch (error) {
+      console.log(error)
+    }
+    clearStates()
+    getPosts()
+  }
+
   // Edit post
   function editPost(postId, formData) {
     // FetchingFunction.EditPost(postId, formData, token)
@@ -315,6 +340,8 @@ const AppProvider = ({ children }) => {
         logout,
         toggleFollowCondition,
         authFetch,
+        addPost,
+        deletePost,
       }}
     >
       {children}

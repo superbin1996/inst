@@ -12,6 +12,7 @@ export default function UploadModal() {
     changeImagePath,
     authFetch,
     getPosts,
+    addPost,
   } = useAppContext()
 
   // After choosing picture
@@ -78,19 +79,6 @@ export default function UploadModal() {
       setImgScale(500 / offsetHeight)
 
     }
-  }
-
-  const addPost = async (newPost) => {
-    const url = `/posts/0`
-    try {
-      const { data } = await authFetch.post(url, newPost)
-      if (data.status === false) {
-        console.log(data)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-    getPosts()
   }
 
   const uploadPost = async () => {

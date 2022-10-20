@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import { BsThreeDots } from 'react-icons/bs';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { FaRegComment } from 'react-icons/fa';
@@ -8,6 +8,7 @@ import { VscDebugStackframeDot } from 'react-icons/vsc';
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/appContext';
+import moment from 'moment'
 
 const Post = ({ post }) => {
   const navigate = useNavigate()
@@ -20,22 +21,47 @@ const Post = ({ post }) => {
 
   const [userComments, setUserComments] = useState([])
   const [comment, setComment] = useState('')
+  const [isLike, setIsLike] = useState(false)
+  const [likeSum, setLikeSum] = useState(0)
 
-  const handleChange =(e)=>{
+  const getLikeCondition = async () => {
+    const url = `/like/${post.id}`
+    try {
+      const { data } = await authFetch(url)
+      const { isLike, likeSum } = data
+      setIsLike(isLike)
+      setLikeSum(likeSum)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const toggleIsLike = async () => {
+    const url = `/like/${post.id}`
+    try {
+      const { data } = await authFetch.patch(url, {'isLike':!isLike})
+      setLikeSum(data.likeSum)
+      setIsLike(data.isLike)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleChange = (e) => {
     setComment(e.target.value)
   }
 
   const submitComment = async () => {
     const url = `/comment/${post.id}`
     try {
-      const { data } = await authFetch.post(url, {comment})
+      const { data } = await authFetch.post(url, { comment })
       if (data.status === false) {
         console.log(data)
       }
     } catch (error) {
       console.log(error)
     }
-    finally{
+    finally {
       getUserComments(post.id)
       setComment('')
     }
@@ -57,15 +83,19 @@ const Post = ({ post }) => {
   const getUserComments = async (postId) => {
     // const url = `/data/userComments.json`
     const url = `/post_user_comment/${postId}`
-    const {data} = await authFetch(url)
+    const { data } = await authFetch(url)
     // console.log(`usersComments:`, data)
     setUserComments(data)
   }
 
+  let date = moment(post.timestamp)
+  date = date.startOf('day').fromNow()
+
   useEffect(() => {
     getUserComments(post.id)
     document.body.style.overflowY = 'auto'
-  }, [navigate])
+    getLikeCondition()
+  }, [navigate, isLike])
 
   return (
     <article className='post-cover'>
@@ -79,12 +109,12 @@ const Post = ({ post }) => {
               {post.user__username}
             </div>
           </div>
-          <BsThreeDots className='post-option' onClick={()=>toggleOptionModal(post)} />
+          <BsThreeDots className='post-option' onClick={() => toggleOptionModal(post)} />
         </div>
 
         {/* Post picture */}
         <div className='post-picture'>
-          <img src={changeImagePath(post.image)} alt={post.image} />
+          <img src={changeImagePath(post.image)} alt={post.image} onDoubleClick={toggleIsLike} />
           <div className='post-picture-number'>
             <VscDebugStackframeDot style={{ transform: 'scale(1.5)' }} />
           </div>
@@ -94,6 +124,8 @@ const Post = ({ post }) => {
         <div className='post-interact'>
           <div className='post-interact-icon-list'>
             <AiOutlineHeart className='post-interact-icon icon'
+              style={{ color: isLike ? 'red' : '' }}
+              onClick={toggleIsLike}
             />
             <FaRegComment className='post-interact-icon icon' onClick={showPostModal} />
             <FiSend className='post-interact-icon icon' />
@@ -126,7 +158,7 @@ const Post = ({ post }) => {
           </div>
 
           <div className='post-date'>
-            {post.timestamp}
+            {date}
           </div>
         </div>
 

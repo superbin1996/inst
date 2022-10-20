@@ -1,3 +1,4 @@
+from ast import Try
 import math
 from icecream import ic
 from rest_framework import status
@@ -25,9 +26,9 @@ class UserViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
 
 # Remember @api_view is placed above @authentication_classes
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'DELETE'])
 @authentication_classes([TokenAuthentication])
-def posts(request, page):
+def posts(request, page, post_id):
     if request.method == 'GET':
         all_posts = Post.objects.all().values(
             'id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
@@ -56,6 +57,16 @@ def posts(request, page):
         else:
             Post.objects.create(user=user, status=status, image=image)
         return Response({'status': True, 'detail':'create post success'}, status=200)
+
+    if request.method == 'DELETE':
+        try:
+            post = Post.objects.get(id=post_id).delete()
+        except Post.DoesNotExist:
+            return Response({'status': False, 'detail':'Post not found'}, status=404)
+        
+        return Response({'status': True, 'detail':'Post deleted'}, status=200)
+        
+
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -265,32 +276,33 @@ def post_user_comment(request, post_id):
 @authentication_classes([TokenAuthentication])
 def like(request, post_id):
     try:
-        post = Post.objects.prefetch_related('like').get(id=post_id)
+        post = Post.objects.get(id=post_id)
     except Post.DoesNotExist:
         return Response({'status': False, "detail": "Post not found."}, status=404)
 
+    post_obj, created = post.likes.get_or_create(user=request.user)
+
     if request.method == "GET":
-        post_obj, created = Post.objects.get(
-            id=post_id).like.get_or_create(user=request.user)
-        # ic(post.like)
-        return Response({"like": post_obj.like}, status=201)
+        try:
+            like_sum = Like.objects.filter(post=post_id, is_like=True).count()
+
+        except Post.DoesNotExist:
+            return Response({'status': False, "detail": "Post not found."}, status=404)
+        return Response({"isLike": post_obj.is_like, "likeSum": like_sum}, status=201)
 
     if request.method == "PATCH":
         data = request.data
-        like = Like.objects.prefetch_related('is_like').get(post=post_id, user=request.user)
-        like.is_like = data["isLike"]
+        try:
+            like = Like.objects.get(post=post_id, user=request.user)
+        except Like.DoesNotExist:
+            return Response({'status': False, "detail": "Like not found."}, status=404)
+        like.is_like = data['isLike']
         like.save()
 
-        return Response(status=204)
+        try:
+            like_sum = Like.objects.filter(post=post_id, is_like=True).count()
+        except Post.DoesNotExist:
+            return Response({'status': False, "detail": "Post not found."}, status=404)
 
+        return Response({'status': True, 'isLike': data["isLike"], 'likeSum': like_sum}, status=200)
 
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-def like_sum(request, post_id):
-    try:
-        like_sum = Like.objects.filter(post=post_id, like=True).count()
-
-    except Like.DoesNotExist:
-        return Response({'status': False, "detail": "Post not found."}, status=404)
-
-    return Response(like_sum, status=201)

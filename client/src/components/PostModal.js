@@ -26,8 +26,9 @@ const PostModal = () => {
 
   const navigate = useNavigate()
   const params = useParams()
-
   const [comment, setComment] = useState('')
+  const [isLike, setIsLike] = useState(false)
+  const [likeSum, setLikeSum] = useState(0)
 
   const hidePostModal = () => {
     navigate(-1)
@@ -35,6 +36,28 @@ const PostModal = () => {
     // window.history.replaceState(null, "Instagram", "/")
   }
 
+  const getLikeCondition = async () => {
+    const url = `/like/${params.postId}`
+    try {
+      const { data } = await authFetch(url)
+      const { isLike, likeSum } = data
+      setIsLike(isLike)
+      setLikeSum(likeSum)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const toggleIsLike = async () => {
+    const url = `/like/${post.id}`
+    try {
+      const { data } = await authFetch.patch(url, {'isLike':!isLike})
+      setLikeSum(data.likeSum)
+      setIsLike(data.isLike)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const handleCommentChange =(e)=>{
     setComment(e.target.value)
@@ -68,6 +91,7 @@ const PostModal = () => {
     getPostComments(params.postId)
     console.log(params);
     togglePostModal(params.postId)
+    getLikeCondition()
   }, [params])
 
   if (isLoading) {
@@ -101,7 +125,7 @@ const PostModal = () => {
           {/* Image */}
           <div className='modal-image'>
             <div className='modal-file-1'>
-              <img src={changeImagePath(post.image)} alt={post.image} />
+              <img src={changeImagePath(post.image)} alt={post.image} onDoubleClick={toggleIsLike} />
             </div>
           </div>
 
@@ -175,6 +199,8 @@ const PostModal = () => {
               <div className='post-interact' style={{ borderTop: '1px solid rgba(var(--b6a, 219, 219, 219), 1)' }}>
                 <div className='post-interact-icon-list'>
                   <AiOutlineHeart className='post-interact-icon icon'
+                    style={{color:isLike?'red':''}}
+                    onClick={toggleIsLike}
                   />
                   <FaRegComment className='post-interact-icon icon' />
                   <FiSend className='post-interact-icon icon' />

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../context/appContext'
 
 
@@ -8,10 +8,14 @@ const OptionModal = () => {
     post,
     user,
     toggleEditModal,
+    deletePost,
   } = useAppContext()
+  const navigate = useNavigate()
 
-  useEffect(() => {
-  }, [])
+  const postDelete = () => {
+    deletePost(post.id)
+    // window.location.reload()
+  }
 
   function selfPostOption(userId) {
     // user.id is string, so change it to integer
@@ -23,13 +27,18 @@ const OptionModal = () => {
     }
   }
 
+  function goToPost() {
+    navigate(`/p/${post.id}`)
+    toggleOptionModal(post)  
+  }
+
   return (
-    <div className="modal" onClick={()=>toggleOptionModal(post)} style={{zIndex:100}}>
+    <div className="modal" onClick={() => toggleOptionModal(post)} style={{ zIndex: 100 }}>
       <div className='option-content' onClick={e => e.stopPropagation()}>
         {selfPostOption(post.user__id) ?
           // Self post
           <div>
-            <div className="option-content-item" style={{ color: 'red' }}>
+            <div className="option-content-item" style={{ color: 'red' }} onClick={postDelete}>
               Delete
             </div>
 
@@ -54,12 +63,12 @@ const OptionModal = () => {
           </div>
         }
 
-        <div className="option-content-item">Go to post</div>
+        <div className="option-content-item" onClick={goToPost}>Go to post</div>
         <div className="option-content-item">Share to...</div>
         <div className="option-content-item">Copy Link</div>
         <div className="option-content-item">Embed</div>
 
-        <div className="option-content-item" style={{ border: 'none', color: 'red' }} onClick={()=>toggleOptionModal(post)}>
+        <div className="option-content-item" style={{ border: 'none', color: 'red' }} onClick={() => toggleOptionModal(post)}>
           Cancel
         </div>
 

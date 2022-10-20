@@ -52,6 +52,12 @@ const Register = () => {
     }
   }
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      onSubmit(event)
+    }
+  }
+
   return (
     <div className='login'>
       <div className='login-container'>
@@ -66,12 +72,12 @@ const Register = () => {
               alt="Instagram Logo"
             />
             <div>
-              <input type="text" name='username' placeholder='Username' value={values.username} onChange={handleChange} />
+              <input type="text" name='username' placeholder='Username' value={values.username} onChange={handleChange} onKeyDown={handleKeyDown} />
             </div>
 
             {showAlert && <Alert></Alert>}
             <div>
-              <input type="password" name='password' placeholder='Password' value={values.password} onChange={handleChange} />
+              <input type="password" name='password' placeholder='Password' value={values.password} onChange={handleChange} onKeyDown={handleKeyDown} />
             </div>
 
             {values.isMember ?

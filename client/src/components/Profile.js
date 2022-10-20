@@ -3,7 +3,7 @@ import { BsThreeDots } from 'react-icons/bs';
 import { IoIosArrowUp } from 'react-icons/io'
 import { Header, Loading, ProfileNoPost } from './index';
 import { useAppContext } from '../context/appContext';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function Profile() {
   const {
@@ -20,6 +20,7 @@ export default function Profile() {
     toggleFollowCondition,
   } = useAppContext()
   const params = useParams()
+  const navigate = useNavigate()
 
   const checkUser = () => {
     if (String(profileUser.profileId) === String(user.id)) {
@@ -98,7 +99,7 @@ export default function Profile() {
                 {profilePosts.map(post => {
                   return (
                     <div key={post.id} className='profile-images-item'>
-                      <img src={changeImagePath(post.image)} alt={post.image} />
+                      <img src={changeImagePath(post.image)} alt={post.image} onClick={()=>{navigate(`/p/${post.id}`)}} />
                     </div>
                   )
                 })}
