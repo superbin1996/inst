@@ -28,14 +28,20 @@ class UserViewSet(viewsets.ModelViewSet):
 # Remember @api_view is placed above @authentication_classes
 @api_view(['GET', 'POST', 'DELETE'])
 @authentication_classes([TokenAuthentication])
-def posts(request, page, post_id):
+def posts(request):
     if request.method == 'GET':
-        all_posts = Post.objects.all().values(
-            'id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
+        page = int(request.GET.get('page') or 1)
+        ic(page)
+
+        try:
+            all_posts = Post.objects.all().values(
+                'id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
+        except Post.DoesNotExist:
+            return Response({'status':False, 'detail':'Cannot get posts'}, status=404)
 
         posts_length = len(all_posts)
         num_of_pages = math.ceil(posts_length/10)
-        pagination = Paginator(all_posts, 20)
+        pagination = Paginator(all_posts, 10)
         posts = pagination.page(page).object_list
         # ic(posts)
 
@@ -59,8 +65,9 @@ def posts(request, page, post_id):
         return Response({'status': True, 'detail':'create post success'}, status=200)
 
     if request.method == 'DELETE':
+        post_id = int(request.GET.get('postId'))
         try:
-            post = Post.objects.get(id=post_id).delete()
+            Post.objects.get(id=post_id).delete()
         except Post.DoesNotExist:
             return Response({'status': False, 'detail':'Post not found'}, status=404)
         
@@ -70,7 +77,9 @@ def posts(request, page, post_id):
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
-def profile_posts(request, profile_name, page):
+def profile_posts(request):
+    page = int(request.GET.get('page') or 1)
+    profile_name =  request.GET.get('profileName')
     try:
         an_user = User.objects.get(username=profile_name)
     except User.DoesNotExist:
@@ -82,6 +91,7 @@ def profile_posts(request, profile_name, page):
     except Post.DoesNotExist:
         return Response({'status': False, "detail": "User don't have any post yet."}, status=404)
 
+    # get follow states
     try:
         follow_obj, created = Follow.objects.prefetch_related('following').get_or_create(user=an_user)
         follow = follow_obj.following

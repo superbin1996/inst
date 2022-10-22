@@ -133,7 +133,7 @@ export default function UploadModal() {
               // After choosing picture
               <div className='modal-preview'>
 
-                <div className='modal-preview-image'>
+                <div className='modal-preview-image' style={addStatus?{flex: '0 1 70%'}:{}}>
                   <div className='modal-file'>
                     <img src={previewImage} alt={previewImage} onLoad={changeImageSize} style={{ transform: `scale(${imgScale})` }} />
                   </div>
@@ -141,17 +141,17 @@ export default function UploadModal() {
 
                 {/* Caption input */}
                 {addStatus &&
-                  <div className='modal-upload-status'>
-                    <div className='post-info' style={{ marginLeft: '-5px' }}>
-                      <img className='icon-user-1 icon' src={changeImagePath(user.avatar)} alt={user.avatar} />
-                      <p>{user.username}</p>
-                    </div>
-                    <textarea name="" id="" cols="30" rows="13" placeholder='Write a status...' autoFocus value={status} onChange={inputCaption} />
-                    <div className='modal-upload-emoji-cover'>
-                      <HiOutlineEmojiHappy className='modal-upload-emoji' />
-                      <div className='textarea-length'>{statusLength}/2,200</div>
-                    </div>
+                <div className='modal-preview-status'>
+                  <div className='post-info' style={{ marginLeft: '-5px' }}>
+                    <img className='icon-user-1 icon' src={changeImagePath(user.avatar)} alt={user.avatar} />
+                    <p>{user.username}</p>
                   </div>
+                  <textarea name="" id="" cols="30" rows="13" placeholder='Write a status...' autoFocus value={status} onChange={inputCaption} />
+                  <div className='modal-upload-emoji-cover'>
+                    <HiOutlineEmojiHappy className='modal-upload-emoji' />
+                    <div className='textarea-length'>{statusLength}/2,200</div>
+                  </div>
+                </div>
                 }
 
               </div>

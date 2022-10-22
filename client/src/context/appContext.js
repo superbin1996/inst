@@ -1,7 +1,7 @@
 import React, { useContext, useReducer } from "react";
 // import axios from 'axios'
 import reducer from './reducer'
-import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_BEGIN, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, TOGGLE_EDIT_MODAL, REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, GET_USER_SUCCESS, SHOW_DROPDOWN, LOGOUT_USER, GET_FOLLOW_CONDITION_SUCCESS, CHANGE_FOLLOW_CONDITION_SUCCESS } from "./actions";
+import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_BEGIN, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, TOGGLE_EDIT_MODAL, REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, GET_USER_SUCCESS, SHOW_DROPDOWN, LOGOUT_USER, GET_FOLLOW_CONDITION_SUCCESS, CHANGE_FOLLOW_CONDITION_SUCCESS, LOAD_MORE_POSTS_SUCCESS, ADD_POST_SUCCESS } from "./actions";
 import axios from 'axios'
 
 const user = localStorage.getItem('user')
@@ -134,29 +134,60 @@ const AppProvider = ({ children }) => {
     dispatch({ type: CLEAR_STATES })
   }
 
-  const getPosts = async () => {
-    const {
-      page
-    } = state
+  const getPosts = async (reloadPage) => {
     // const url = `/data/posts.json`
-    const url = `/posts/${page}/0`
+    const url = `/posts`
     dispatch({ type: GET_POSTS_BEGIN })
     try {
-      const { data } = await authFetch(url)
+      const page = reloadPage || state.page
+      const { data } = await authFetch({
+        url,
+        params: { page: page },
+      })
       const { posts, totalPosts, numOfPages } = data
+      console.log(data)
       dispatch({ type: GET_POSTS_SUCCESS, payload: { posts, totalPosts, numOfPages } })
     } catch (error) {
       console.log(error);
     }
   }
 
+  // if use getPosts will change isLoading to false
+  const loadMorePosts = async () => {
+    // const url = `/data/posts.json`
+    const url = `/posts`
+    // if (page < nomOfPages) {
+      try {
+        const { data } = await authFetch({
+          url,
+          params: {
+            page: state.page + 1,
+          }
+        })
+        const { posts, totalPosts, numOfPages } = data
+        console.log(data)
+        dispatch({ type: LOAD_MORE_POSTS_SUCCESS, payload: data })
+      } catch (error) {
+        console.log(error)
+      }
+    // }
+
+
+  }
+
   const getProfilePosts = async (profileName) => {
     // dispatch({ type: GET_PROFILE_POSTS_BEGIN })
     // const url = `/data/profilePosts.json`
     const { profilePage } = state
-    const url = `profile_posts/${profileName}/${profilePage}`
+    const url = `/profile_posts`
     try {
-      const { data } = await authFetch(url)
+      const { data } = await authFetch({
+        url,
+        params: {
+          page: profilePage,
+          profileName,
+        }
+      })
       const { profilePosts, totalProfilePosts, numOfProfilePages,
         isFollow,
         followers,
@@ -288,20 +319,21 @@ const AppProvider = ({ children }) => {
   }
 
   const addPost = async (newPost) => {
-    const url = `/posts/0/0`
+    const url = `/posts`
     try {
       const { data } = await authFetch.post(url, newPost)
       if (data.status === false) {
         console.log(data)
       }
+      // dispatch({type:ADD_POST_SUCCESS})
     } catch (error) {
       console.log(error)
     }
-    getPosts()
+    getPosts(1)
   }
 
   const deletePost = async (postId) => {
-    const url = `/posts/0/${postId}`
+    const url = `/posts?postId=${postId}`
     try {
       const { data } = await authFetch.delete(url)
       console.log(data.detail)
@@ -324,7 +356,7 @@ const AppProvider = ({ children }) => {
         ...state,
         clearStates,
         getPosts,
-        // showProfile,
+        loadMorePosts,
         togglePostModal,
         login,
         register,

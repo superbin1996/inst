@@ -1222,6 +1222,7 @@ code {
   /* Flex row item */
   /* border: 1px solid seashell; */
   align-self: center;
+  padding-right: 12px;
   flex: 0 0 45px;
   color: rgb(32, 167, 255);
   cursor: pointer;
@@ -1257,9 +1258,15 @@ code {
   /* border: 1px solid greenyellow; */
   background-color: black;
   flex: 0 1 750px;
+  /* width: 750px; */
   align-self: center;
   height: 100%;
   overflow: hidden;
+}
+
+.modal-preview-status {
+  /* flex row item */
+  flex: 1 0 0px;
 }
 
 .modal-file {
@@ -1288,10 +1295,12 @@ code {
 }
 
 textarea {
+  /* border: 1px solid sandybrown; */
   outline: none;
   border: transparent;
   background: 0 0;
   padding-left: 10px;
+  width: 100%;
 }
 
 .modal-upload-emoji-cover {

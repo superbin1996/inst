@@ -9,17 +9,17 @@ const SharedLayout = () => {
     showOptionModal,
     showEditModal,
   } = useAppContext()
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     document.body.style.overflowY = 'auto'
   }, [])
   return (
     <Wrapper>
       <div className="dashboard">
         <Header></Header>
-        {showOptionModal && <OptionModal/>} 
-        {showUploadModal && <UploadModal/> }
-        {showEditModal && <EditModal/> }
+        {showOptionModal && <OptionModal />}
+        {showUploadModal && <UploadModal />}
+        {showEditModal && <EditModal />}
         <div className="dashboard-page">
           <Home />
         </div>

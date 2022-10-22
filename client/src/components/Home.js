@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import { Loading, Post } from "./index"
 import { useAppContext } from "../context/appContext"
 // import Wrapper from "../../assets/wrappers/Home"
@@ -15,13 +15,31 @@ const Home = () => {
     getPosts,
     posts,
     page,
+    numOfPages,
     clearStates,
     showDropdown,
     setShowDropdown,
     changeImagePath,
+    loadMorePosts,
   } = useAppContext()
 
   const params = useParams()
+  const observer = useRef()
+  const lastPostElementRef = useCallback(node => {
+    if (observer.current) {
+      observer.current.disconnect()
+    }
+
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && page < numOfPages) {
+        loadMorePosts()
+      }
+    })
+
+    if (node) {
+      observer.current.observe(node)
+    }
+  })
 
   const hideHeaderDropdown = ()=>{
     if(showDropdown){
@@ -31,8 +49,14 @@ const Home = () => {
 
   useEffect(() => {
     clearStates()
-    getPosts()
-  }, [page])
+    if (parseInt(page) === 1) {
+      window.scrollTo({top:0})
+      getPosts()
+    }
+    else {
+      loadMorePosts()
+    }
+  }, [])
 
   useEffect(() => {
     // only clear states when navigate back to home
@@ -71,10 +95,17 @@ const Home = () => {
         </div>
 
         <div className={'post'}>
-          {posts.map((post) => {
-            return (
-              <Post key={post.id} post={post} />
-            )
+          {posts.map((post, index) => {
+            if (posts.length === index + 1){
+              return (
+                <Post key={post.id} post={post} lastPostElementRef={lastPostElementRef} />  
+              )
+            }
+            else {
+              return (
+                <Post key={post.id} post={post}/>
+              )
+            }
           })}
         </div>
       </article>

@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/appContext';
 import moment from 'moment'
 
-const Post = ({ post }) => {
+const Post = ({ post, lastPostElementRef }) => {
   const navigate = useNavigate()
   const {
     // showProfile,
@@ -98,7 +98,7 @@ const Post = ({ post }) => {
   }, [navigate, isLike])
 
   return (
-    <article className='post-cover'>
+    <article className='post-cover' ref={lastPostElementRef}>
       <div>
         {/* Post info */}
         <div className='post-info-cover'>
