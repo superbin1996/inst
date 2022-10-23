@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AiOutlinePicture } from 'react-icons/ai'
 import { BiArrowBack } from 'react-icons/bi'
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
+import { useLocation } from 'react-router-dom';
 import Wrapper from '../assets/wrappers/UploadModal';
 import { useAppContext } from '../context/appContext';
 
@@ -13,7 +14,11 @@ export default function UploadModal() {
     authFetch,
     getPosts,
     addPost,
+    profileUser,
+    getProfilePosts,
   } = useAppContext()
+
+  const location = useLocation
 
   // After choosing picture
   const [preview, setPreview] = useState(false)
@@ -91,7 +96,6 @@ export default function UploadModal() {
     }
     finally {
       addPost(formData)
-      toggleUploadModal()
     }
     
   }

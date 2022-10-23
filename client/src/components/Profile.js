@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { IoIosArrowUp } from 'react-icons/io'
-import { Header, Loading, ProfileNoPost } from './index';
+import { Header, Loading, ProfileNoPost, UploadModal, OptionModal } from './index';
 import { useAppContext } from '../context/appContext';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom'; 
 
 export default function Profile() {
   const {
@@ -18,6 +18,8 @@ export default function Profile() {
     profileUser,
     user,
     toggleFollowCondition,
+    showUploadModal,
+    showOptionModal,
   } = useAppContext()
   const params = useParams()
   const navigate = useNavigate()
@@ -49,6 +51,8 @@ export default function Profile() {
   return (
     <div className='profile-modal'>
       <Header />
+      {showUploadModal && <UploadModal/>}
+      {/* {showOptionModal && <OptionModal/>} */}
       <div className={'profile-cover'}>
         <div className={'profile-bar-left'}></div>
 

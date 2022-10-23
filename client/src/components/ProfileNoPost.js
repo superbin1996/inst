@@ -1,7 +1,7 @@
 import { BsThreeDots } from 'react-icons/bs';
 import { IoIosArrowUp } from 'react-icons/io'
 import { useAppContext } from '../context/appContext';
-import { Header } from './index';
+import { Header, UploadModal } from './index';
 
 const ProfileNoPost = () => {
   const {
@@ -13,6 +13,7 @@ const ProfileNoPost = () => {
     user,
     toggleFollowCondition,
     isFollow,
+    showUploadModal,
   } = useAppContext()
 
   const checkUser = () => {
@@ -25,6 +26,7 @@ const ProfileNoPost = () => {
   return (
     <div className='profile-modal'>
       <Header />
+      {showUploadModal && <UploadModal/>}
       <div className={'profile-cover'}>
         <div className={'profile-bar-left'}></div>
 

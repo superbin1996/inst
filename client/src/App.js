@@ -7,11 +7,13 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={
-          <ProtectedRoute>
-            <SharedLayout/>
-          </ProtectedRoute>}
+        <Route path='/'
         >
+          <Route index element={
+            <ProtectedRoute>
+              <SharedLayout/>
+            </ProtectedRoute>} 
+          />
           <Route path='p/:postId' element={<PostModal/>}/>
           <Route path=':profileName' element={<Profile/>} />
         </Route>
@@ -19,7 +21,7 @@ function App() {
         <Route path='*' element={<Error />}></Route>
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
 
 export default App;

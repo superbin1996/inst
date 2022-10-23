@@ -6,7 +6,7 @@ import { FiSend } from 'react-icons/fi';
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
 import { useAppContext } from '../context/appContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import Loading from './Loading';
+import {Loading, OptionModal} from './index';
 
 const PostModal = () => {
 
@@ -22,6 +22,8 @@ const PostModal = () => {
     isFollow,
     toggleFollowCondition,
     authFetch,
+    showOptionModal,
+    profileUser,
   } = useAppContext()
 
   const navigate = useNavigate()
@@ -31,7 +33,13 @@ const PostModal = () => {
   const [likeSum, setLikeSum] = useState(0)
 
   const hidePostModal = () => {
-    navigate(-1)
+    togglePostModal('', true)
+    if (Object.keys(profileUser).length === 0) {
+      navigate('/')
+    }
+    else {
+      navigate(`/${profileUser.username}`)
+    }
     document.body.style.overflowY = 'auto'
     // window.history.replaceState(null, "Instagram", "/")
   }
@@ -88,9 +96,9 @@ const PostModal = () => {
 
   useEffect(() => {
     document.body.style.overflowY = 'hidden'
+    togglePostModal(params.postId)
     getPostComments(params.postId)
     console.log(params);
-    togglePostModal(params.postId)
     getLikeCondition()
   }, [params])
 
@@ -115,6 +123,9 @@ const PostModal = () => {
   return (
     // The Modal
     <div className="modal" onClick={hidePostModal}>
+      <div onClick={e => e.stopPropagation()}>
+        {showOptionModal && <OptionModal />}
+      </div>
       <div className="close" onClick={hidePostModal}
       >&times;</div>
       {/* Modal content */}
@@ -182,7 +193,7 @@ const PostModal = () => {
                 return (
                   <div className='post-info-1' key={comment.id}>
                     <div>
-                      <img className='icon-user-1 icon' src={comment.user__avatar} alt={comment.user__avatar} />
+                      <img className='icon-user-1 icon' src={changeImagePath(comment.user__avatar)} alt={comment.user__avatar} />
                     </div>
 
                     <div className='username-and-caption'>

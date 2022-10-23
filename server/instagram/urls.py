@@ -9,6 +9,7 @@ router.register(r'users', views.UserViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('posts', views.posts),
+    path('post/<int:post_id>', views.post),
     path('profile_posts', views.profile_posts),
     path('following_posts', views.following_posts),
     path('user/<str:filename>', views.user),

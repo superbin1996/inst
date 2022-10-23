@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../context/appContext'
 
 
+
 const OptionModal = () => {
   const {
     toggleOptionModal,
@@ -9,10 +10,20 @@ const OptionModal = () => {
     user,
     toggleEditModal,
     deletePost,
+    hideOptionModal,
+    profileUser,
+    togglePostModal,
   } = useAppContext()
   const navigate = useNavigate()
 
   const postDelete = () => {
+    togglePostModal('', true)
+    if (Object.keys(profileUser).length === 0) {
+      navigate('/')
+    }
+    else {
+      navigate(`/${profileUser.username}`)
+    }
     deletePost(post.id)
     // window.location.reload()
   }
@@ -33,7 +44,7 @@ const OptionModal = () => {
   }
 
   return (
-    <div className="modal" onClick={() => toggleOptionModal(post)} style={{ zIndex: 100 }}>
+    <div className="modal" onClick={hideOptionModal}>
       <div className='option-content' onClick={e => e.stopPropagation()}>
         {selfPostOption(post.user__id) ?
           // Self post
@@ -68,7 +79,7 @@ const OptionModal = () => {
         <div className="option-content-item">Copy Link</div>
         <div className="option-content-item">Embed</div>
 
-        <div className="option-content-item" style={{ border: 'none', color: 'red' }} onClick={() => toggleOptionModal(post)}>
+        <div className="option-content-item" style={{ border: 'none', color: 'red' }} onClick={hideOptionModal}>
           Cancel
         </div>
 

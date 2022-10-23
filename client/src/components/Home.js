@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react"
 import { Loading, Post } from "./index"
 import { useAppContext } from "../context/appContext"
 // import Wrapper from "../../assets/wrappers/Home"
-import { Outlet } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 import { useParams } from "react-router-dom"
 
 // import data from '../../assets/data/data.json'
@@ -23,6 +23,8 @@ const Home = () => {
     loadMorePosts,
   } = useAppContext()
 
+  const navigate = useNavigate()
+
   const params = useParams()
   const observer = useRef()
   const lastPostElementRef = useCallback(node => {
@@ -41,16 +43,20 @@ const Home = () => {
     }
   })
 
-  const hideHeaderDropdown = ()=>{
-    if(showDropdown){
+  const hideHeaderDropdown = () => {
+    if (showDropdown) {
       setShowDropdown()
     }
+  }
+
+  const navigateToProfile = () => {
+    navigate(`/${user.username}`)
   }
 
   useEffect(() => {
     clearStates()
     if (parseInt(page) === 1) {
-      window.scrollTo({top:0})
+      window.scrollTo({ top: 0 })
       getPosts()
     }
     else {
@@ -60,7 +66,7 @@ const Home = () => {
 
   useEffect(() => {
     // only clear states when navigate back to home
-    if (Object.keys(params).length === 0){
+    if (Object.keys(params).length === 0) {
       console.log(params, 'clear state run')
       clearStates()
     }
@@ -72,14 +78,14 @@ const Home = () => {
     )
   }
 
-  if(posts.length === 0){
+  if (posts.length === 0) {
     return (
       <div className="main">
         <h2>No posts to display...</h2>
       </div>
     )
   }
-  
+
 
   return (
     <div className={'main'} onClick={hideHeaderDropdown}>
@@ -96,14 +102,14 @@ const Home = () => {
 
         <div className={'post'}>
           {posts.map((post, index) => {
-            if (posts.length === index + 1){
+            if (posts.length === index + 1) {
               return (
-                <Post key={post.id} post={post} lastPostElementRef={lastPostElementRef} />  
+                <Post key={post.id} post={post} lastPostElementRef={lastPostElementRef} />
               )
             }
             else {
               return (
-                <Post key={post.id} post={post}/>
+                <Post key={post.id} post={post} />
               )
             }
           })}
@@ -114,10 +120,10 @@ const Home = () => {
       <div className={'bar-right'}>
         <div className='post-info-1' style={{ paddingTop: '50px' }}>
           <div className='bar-right-avatar'>
-            <img src={changeImagePath(user.avatar)} alt={user.avatar} />
+            <img src={changeImagePath(user.avatar)} alt={user.avatar} onClick={navigateToProfile} />
           </div>
 
-          <div className='username-and-caption'>
+          <div className='username-and-caption' onClick={navigateToProfile}>
             {user.username}
           </div>
         </div>

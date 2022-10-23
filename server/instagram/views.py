@@ -72,7 +72,17 @@ def posts(request):
             return Response({'status': False, 'detail':'Post not found'}, status=404)
         
         return Response({'status': True, 'detail':'Post deleted'}, status=200)
-        
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+def post(request, post_id):
+    try: 
+        # get cannot use values(), so need to use filter, it will return an array of object
+        post = Post.objects.filter(id=post_id).values('id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
+    except Post.DoesNotExist:
+        return Response({'status': False, 'detail':'Post does not exist'}, status=404)
+
+    return Response({'post': post[0]}, status=200)
 
 
 @api_view(['GET'])

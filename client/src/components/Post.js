@@ -8,6 +8,7 @@ import { VscDebugStackframeDot } from 'react-icons/vsc';
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/appContext';
+import {OptionModal} from './index';
 import moment from 'moment'
 
 const Post = ({ post, lastPostElementRef }) => {
