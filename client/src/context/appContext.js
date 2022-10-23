@@ -1,7 +1,7 @@
 import React, { useContext, useReducer } from "react";
 // import axios from 'axios'
 import reducer from './reducer'
-import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_BEGIN, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, TOGGLE_EDIT_MODAL, REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, GET_USER_SUCCESS, SHOW_DROPDOWN, LOGOUT_USER, GET_FOLLOW_CONDITION_SUCCESS, CHANGE_FOLLOW_CONDITION_SUCCESS, LOAD_MORE_POSTS_SUCCESS, ADD_POST_SUCCESS, HIDE_OPTION_MODAL } from "./actions";
+import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_BEGIN, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, TOGGLE_EDIT_MODAL, REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, GET_USER_SUCCESS, SHOW_DROPDOWN, LOGOUT_USER, GET_FOLLOW_CONDITION_SUCCESS, CHANGE_FOLLOW_CONDITION_SUCCESS, LOAD_MORE_POSTS_SUCCESS, ADD_POST_SUCCESS, HIDE_OPTION_MODAL, LOAD_MORE_PROFILE_POSTS_SUCCESS, GET_FOLLOWING_POSTS_BEGIN, REMEMBER_POSTS } from "./actions";
 import axios from 'axios'
 
 const user = localStorage.getItem('user')
@@ -18,6 +18,8 @@ const initialState = {
   token: token,
   // header dropdown
   showDropdown: false,
+  // posts type
+  allPost: true,
   // posts
   posts: [],
   totalPosts: 0,
@@ -145,7 +147,7 @@ const AppProvider = ({ children }) => {
         params: { page: page },
       })
       const { posts, totalPosts, numOfPages } = data
-      console.log(data)
+      console.log(data, page)
       dispatch({ type: GET_POSTS_SUCCESS, payload: { posts, totalPosts, numOfPages } })
     } catch (error) {
       console.log(error);
@@ -155,16 +157,18 @@ const AppProvider = ({ children }) => {
   // if use getPosts will change isLoading to false
   const loadMorePosts = async () => {
     // const url = `/data/posts.json`
-    const url = `/posts`
+    let url = `/posts`
     // if (page < nomOfPages) {
     try {
+      if (!state.allPost) {
+        url = `/following_posts`
+      }
       const { data } = await authFetch({
         url,
         params: {
           page: state.page + 1,
         }
       })
-      const { posts, totalPosts, numOfPages } = data
       console.log(data)
       dispatch({ type: LOAD_MORE_POSTS_SUCCESS, payload: data })
     } catch (error) {
@@ -172,30 +176,60 @@ const AppProvider = ({ children }) => {
     }
   }
 
-  const getProfilePosts = async (profileName) => {
+  const getProfilePosts = async (profileName, reloadPage) => {
     // dispatch({ type: GET_PROFILE_POSTS_BEGIN })
     // const url = `/data/profilePosts.json`
-    const url = `/profile_posts`
+    let url = `/profile_posts`
+    const page = reloadPage || state.profilePage
+    dispatch({ type: GET_PROFILE_POSTS_BEGIN })
     try {
       const { data } = await authFetch({
         url,
         params: {
-          page: state.profilePage,
-          profileName,
+          page,
+          profileName: profileName,
         }
       })
-      const { profilePosts, totalProfilePosts, numOfProfilePages,
-        isFollow,
-        followers,
-        following,
-        profileUser,
-      } = data
       dispatch({
-        type: GET_PROFILE_POSTS_SUCCESS, payload: {
-          profilePosts, totalProfilePosts, numOfProfilePages, isFollow, followers,
-          following, profileUser,
+        type: GET_PROFILE_POSTS_SUCCESS, payload: data
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // if use getPosts will change isLoading to false
+  const loadMoreProfilePosts = async () => {
+    let url = `/profile_posts`
+    try {
+      const { data } = await authFetch({
+        url,
+        params: {
+          page: state.profilePage + 1,
+          profileName: state.profileUser.username,
         }
       })
+      dispatch({
+        type: LOAD_MORE_PROFILE_POSTS_SUCCESS, payload: data
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getFollowingPosts = async (reloadPage) => {
+    // const url = `/data/posts.json`
+    const url = `/following_posts`
+    dispatch({ type: GET_FOLLOWING_POSTS_BEGIN })
+    try {
+      const page = reloadPage || state.page
+      const { data } = await authFetch({
+        url,
+        params: { page: page },
+      })
+      const { posts, totalPosts, numOfPages } = data
+      console.log(data)
+      dispatch({ type: GET_FOLLOW_CONDITION_SUCCESS, payload: { posts, totalPosts, numOfPages } })
     } catch (error) {
       console.log(error);
     }
@@ -208,8 +242,9 @@ const AppProvider = ({ children }) => {
       return dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post: {}, showPostModal: false } })
     }
 
-    if (state.posts.length === 0 && state.profilePosts.length === 0){
-      const {data: {post}} = await authFetch(`/post/${postId}`)
+    // if use url to get to postModal without open home or profile first
+    if (state.posts.length === 0 && state.profilePosts.length === 0) {
+      const { data: { post } } = await authFetch(`/post/${postId}`)
       console.log(post);
       dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post, showPostModal: true } })
       getFollowCondition(post.user__id)
@@ -362,7 +397,7 @@ const AppProvider = ({ children }) => {
     }
     getPosts(1)
     if (Object.keys(state.profileUser).length !== 0) {
-      getProfilePosts(state.profileUser.username)
+      getProfilePosts(state.profileUser.username, 1)
     }
     toggleUploadModal()
   }
@@ -378,7 +413,7 @@ const AppProvider = ({ children }) => {
     // clearStates()
     togglePostModal('', true)
     if (Object.keys(state.profileUser).length !== 0) {
-      return getProfilePosts(state.profileUser.username)
+      return getProfilePosts(state.profileUser.username, 1)
     }
     getPosts(1)
   }
@@ -414,6 +449,8 @@ const AppProvider = ({ children }) => {
         authFetch,
         addPost,
         deletePost,
+        loadMoreProfilePosts,
+        getFollowingPosts,
       }}
     >
       {children}

@@ -11,7 +11,7 @@ const SharedLayout = () => {
   } = useAppContext()
 
   useEffect(() => {
-    document.body.style.overflowY = 'auto'
+    // document.body.style.overflowY = 'auto'
   }, [])
   return (
     <Wrapper>

@@ -128,7 +128,7 @@ def profile_posts(request):
 
     posts_length = len(all_posts)
     num_of_pages = math.ceil(posts_length/10)
-    pagination = Paginator(all_posts, 20)
+    pagination = Paginator(all_posts, 10)
     posts = pagination.page(page).object_list
     # ic(post_data)
 
@@ -145,11 +145,15 @@ def profile_posts(request):
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
-def following_posts(request, page):
+def following_posts(request):
+    page = int(request.GET.get('page') or 1)
+
     follow_obj, is_created = Follow.objects.get_or_create(user=request.user)
+
     users_following = Follow.objects.get(user=request.user).following.all()
     if not users_following:
         return Response({
+            'status': False,
             "detail": "User haven't followed anybody yet",
         }, status=404)
     else:
@@ -159,13 +163,13 @@ def following_posts(request, page):
 
         posts_length = len(following_posts)
         num_of_pages = math.ceil(posts_length/10)
-        pagination = Paginator(following_posts, 20)
+        pagination = Paginator(following_posts, 10)
         posts = pagination.page(page).object_list
 
         return Response({
             'posts': posts,
-            'posts_length': posts_length,
-            "num_of_pages": num_of_pages,
+            'totalPosts': posts_length,
+            "numOfPages": num_of_pages,
         }, status=200)
 
 

@@ -21,6 +21,8 @@ const Home = () => {
     setShowDropdown,
     changeImagePath,
     loadMorePosts,
+    getFollowingPosts,
+    allPost,
   } = useAppContext()
 
   const navigate = useNavigate()
@@ -55,14 +57,15 @@ const Home = () => {
 
   useEffect(() => {
     clearStates()
-    if (parseInt(page) === 1) {
+    if (posts.length === 0) {
       window.scrollTo({ top: 0 })
-      getPosts()
-    }
-    else {
-      loadMorePosts()
-    }
-  }, [])
+      if (!allPost) {
+          return getFollowingPosts()  
+        }
+        getPosts()
+        console.log('getPost in useEffect');
+      }
+  }, [allPost])
 
   useEffect(() => {
     // only clear states when navigate back to home

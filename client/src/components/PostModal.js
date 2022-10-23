@@ -13,6 +13,7 @@ const PostModal = () => {
   const {
     isLoading,
     post,
+    posts,
     user,
     postComments,
     togglePostModal,
@@ -24,6 +25,7 @@ const PostModal = () => {
     authFetch,
     showOptionModal,
     profileUser,
+    rememberPosts,
   } = useAppContext()
 
   const navigate = useNavigate()
@@ -34,13 +36,17 @@ const PostModal = () => {
 
   const hidePostModal = () => {
     togglePostModal('', true)
-    if (Object.keys(profileUser).length === 0) {
-      navigate('/')
-    }
-    else {
-      navigate(`/${profileUser.username}`)
-    }
-    document.body.style.overflowY = 'auto'
+    // if (Object.keys(profileUser).length === 0) {
+    //   navigate('/')
+    // }
+    // else {
+    //   navigate(`/${profileUser.username}`)
+    // }
+
+    navigate(-1)
+    console.log('navigate back');
+    
+    // document.body.style.overflowY = 'auto'
     // window.history.replaceState(null, "Instagram", "/")
   }
 
@@ -95,7 +101,7 @@ const PostModal = () => {
   }
 
   useEffect(() => {
-    document.body.style.overflowY = 'hidden'
+    // document.body.style.overflowY = 'hidden'
     togglePostModal(params.postId)
     getPostComments(params.postId)
     console.log(params);

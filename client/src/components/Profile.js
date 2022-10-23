@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { IoIosArrowUp } from 'react-icons/io'
 import { Header, Loading, ProfileNoPost, UploadModal, OptionModal } from './index';
@@ -19,10 +19,32 @@ export default function Profile() {
     user,
     toggleFollowCondition,
     showUploadModal,
-    showOptionModal,
+    loadMoreProfilePosts,
+    numOfProfilePages,
+    profilePage,
   } = useAppContext()
+
   const params = useParams()
   const navigate = useNavigate()
+
+  const observer = useRef()
+  const lastPostElementRef = useCallback(node => {
+    if (observer.current) {
+      observer.current.disconnect()
+    }
+
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && profilePage < numOfProfilePages) {
+        loadMoreProfilePosts()
+        console.log('load more profile posts');
+      }
+    })
+
+    if (node) {
+      observer.current.observe(node)
+    }
+  })
+
 
   const checkUser = () => {
     if (String(profileUser.profileId) === String(user.id)) {
@@ -32,9 +54,12 @@ export default function Profile() {
   }
 
   useEffect(() => {
-    document.body.style.overflowY = 'hidden'
-    getProfilePosts(params.profileName)
-  }, [params])
+    if (profilePosts.length === 0) {
+      window.scrollTo({ top: 0 })
+      // document.body.style.overflowY = 'hidden'
+      getProfilePosts(params.profileName)
+    }
+  }, [])
 
   if (isLoading) {
     return (
@@ -100,7 +125,14 @@ export default function Profile() {
 
               <div className={'profile-images'}>
 
-                {profilePosts.map(post => {
+                {profilePosts.map((post, index) => {
+                  if (profilePosts.length === index + 1){
+                    return (
+                      <div key={post.id} className='profile-images-item'>
+                        <img src={changeImagePath(post.image)} alt={post.image} onClick={()=>{navigate(`/p/${post.id}`)}} ref={lastPostElementRef} />
+                      </div>  
+                    )
+                  }
                   return (
                     <div key={post.id} className='profile-images-item'>
                       <img src={changeImagePath(post.image)} alt={post.image} onClick={()=>{navigate(`/p/${post.id}`)}} />

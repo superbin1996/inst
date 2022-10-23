@@ -94,7 +94,7 @@ const Post = ({ post, lastPostElementRef }) => {
 
   useEffect(() => {
     getUserComments(post.id)
-    document.body.style.overflowY = 'auto'
+    // document.body.style.overflowY = 'auto'
     getLikeCondition()
   }, [navigate, isLike])
 

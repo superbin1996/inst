@@ -18,12 +18,13 @@ const OptionModal = () => {
 
   const postDelete = () => {
     togglePostModal('', true)
-    if (Object.keys(profileUser).length === 0) {
-      navigate('/')
-    }
-    else {
-      navigate(`/${profileUser.username}`)
-    }
+    // if (Object.keys(profileUser).length === 0) {
+    //   navigate('/')
+    // }
+    // else {
+    //   navigate(`/${profileUser.username}`)
+    // }
+    navigate(-1)
     deletePost(post.id)
     // window.location.reload()
   }
