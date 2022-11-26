@@ -9,11 +9,7 @@ function App() {
       <Routes>
         <Route path='/'
         >
-          <Route index element={
-            <ProtectedRoute>
-              <SharedLayout/>
-            </ProtectedRoute>} 
-          />
+          <Route index element={<ProtectedRoute><SharedLayout/></ProtectedRoute>}/>
           <Route path='p/:postId' element={<PostModal/>}/>
           <Route path=':profileName' element={<Profile/>} />
         </Route>

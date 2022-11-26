@@ -1341,7 +1341,7 @@ textarea {
 .modal-upload-input {
   /* border: 1px solid blue; */
   color: transparent;
-  width: 89px;
+  width: 100px;
   transform: scale(1.2);
 }
 
