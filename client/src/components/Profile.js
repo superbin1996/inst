@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { IoIosArrowUp } from 'react-icons/io'
-import { Header, Loading, ProfileNoPost, UploadModal, OptionModal } from './index';
+import { Header, Loading, ProfileNoPost, UploadModal } from './index';
 import { useAppContext } from '../context/appContext';
 import { useNavigate, useParams } from 'react-router-dom'; 
 import {ahri, haku} from "../assets/images/index"

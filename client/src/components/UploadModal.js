@@ -2,23 +2,20 @@ import React, { useState } from 'react';
 import { AiOutlinePicture } from 'react-icons/ai'
 import { BiArrowBack } from 'react-icons/bi'
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
-import { useLocation } from 'react-router-dom';
-import Wrapper from '../assets/wrappers/UploadModal';
+// import { useLocation } from 'react-router-dom';
+// import Wrapper from '../assets/wrappers/UploadModal';
 import { useAppContext } from '../context/appContext';
+import {defaultImg} from '../assets/images/index'
 
 export default function UploadModal() {
   const {
     user,
     toggleUploadModal,
     changeImagePath,
-    authFetch,
-    getPosts,
     addPost,
-    profileUser,
-    getProfilePosts,
   } = useAppContext()
 
-  const location = useLocation
+  // const location = useLocation
 
   // After choosing picture
   const [preview, setPreview] = useState(false)
@@ -54,7 +51,7 @@ export default function UploadModal() {
     // setPreviewImage(process.env.PUBLIC_URL + './default.jpg')
 
     // If using Route, delete first '.' in url
-    setPreviewImage('/default.jpg')
+    setPreviewImage(defaultImg)
     setPreview(true)
   }
 

@@ -3,6 +3,7 @@ import login1Img from "./login1.jpg"
 import haku from "./haku.jpg"
 import ahri from "./ahri.jpg"
 import instagramLogo from "./instagram.jpg"
+import defaultImg from "./default.jpg"
 
 export {
   loginImg,
@@ -10,4 +11,5 @@ export {
   haku,
   ahri,
   instagramLogo,
+  defaultImg,
 }

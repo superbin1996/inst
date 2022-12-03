@@ -3,3 +3,6 @@ __pycache__
 node_modules/
 .env
 db.sqlite3
+.vscode
+.DS_Store
+instagram_env/
