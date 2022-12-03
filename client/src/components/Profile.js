@@ -4,6 +4,7 @@ import { IoIosArrowUp } from 'react-icons/io'
 import { Header, Loading, ProfileNoPost, UploadModal, OptionModal } from './index';
 import { useAppContext } from '../context/appContext';
 import { useNavigate, useParams } from 'react-router-dom'; 
+import {ahri, haku} from "../assets/images/index"
 
 export default function Profile() {
   const {
@@ -119,8 +120,8 @@ export default function Profile() {
             {/* Center */}
             <article className={'gallery'}>
               <div className='story-cover'>
-                <img className='story-icon icon' src={process.env.PUBLIC_URL + '/ahri.jpg'} alt="ahri" />
-                <img className='story-icon icon' src={process.env.PUBLIC_URL + '/haku.jpg'} alt="haku" />
+                <img className='story-icon icon' src={ahri} alt="ahri" />
+                <img className='story-icon icon' src={haku} alt="haku" />
               </div>
 
               <div className={'profile-images'}>

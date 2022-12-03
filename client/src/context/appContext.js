@@ -147,7 +147,7 @@ const AppProvider = ({ children }) => {
         params: { page: page },
       })
       const { posts, totalPosts, numOfPages } = data
-      console.log(data, page)
+      // console.log(data, page)
       dispatch({ type: GET_POSTS_SUCCESS, payload: { posts, totalPosts, numOfPages } })
     } catch (error) {
       console.log(error);

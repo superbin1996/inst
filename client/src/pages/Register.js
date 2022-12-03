@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { Alert } from "../components/index"
 import { useAppContext } from "../context/appContext"
+import {loginImg, login1Img, instagramLogo} from "../assets/images/index"
 
 const initialState = {
   username: '',
@@ -62,13 +63,13 @@ const Register = () => {
     <div className='login'>
       <div className='login-container'>
         <div className="login-img">
-          <img src="login.png" alt="login" />
-          <img src="login1.png" alt="login1" />
+          <img src={loginImg} alt="login" />
+          <img src={login1Img} alt="login1" />
         </div>
         <div className="login-area">
           <div className='login-item'>
             <img className='login-logo'
-              src="instagram.png"
+              src={instagramLogo}
               alt="Instagram Logo"
             />
             <div>
