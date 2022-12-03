@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+import environ
+from decouple import config
+from dj_database_url import parse as dburl
 # 2 Following lines is required to getenv() 
 from dotenv import load_dotenv
 load_dotenv()
@@ -19,6 +22,9 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# For Render deployment
+env = environ.Env()
+env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -52,6 +58,7 @@ AUTH_USER_MODEL = "instagram.User"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
@@ -110,15 +117,12 @@ WSGI_APPLICATION = 'server.wsgi.application'
 #     }
 # }
 
+default_dburl = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'instagram',
-        'USER': os.getenv('PSQL_DB_ID'),
-        'PASSWORD': os.getenv('PSQL_DB_PASS'),
-        'HOST': 'localhost',
-        'PORT': '',
-    }
+    'default': 
+        config('DATABASE_URL', default=default_dburl, cast=dburl)
+    
 }
 
 
@@ -146,7 +150,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tokyo'
 
 USE_I18N = True
 
@@ -169,6 +173,7 @@ STATICFILES_DIRS = (
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Base url to serve media files
 MEDIA_URL = 'media/'
@@ -180,3 +185,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# SUPERUSER_NAME = env('SUPERUSER_NAME')
+# SUPERUSER_EMAIL = env('SUPERUSER_EMAIL')
+# SUPERUSER_PASSWORD = env('SUPERUSER_PASSWORD')
