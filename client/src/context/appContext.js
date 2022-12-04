@@ -107,6 +107,7 @@ const AppProvider = ({ children }) => {
     } catch (error) {
       // dispatch({ type: LOGIN_USER_ERROR, payload: { 'msg': error } })
       console.log(error);
+      alert("Cannot login")
     }
   }
 
@@ -123,6 +124,7 @@ const AppProvider = ({ children }) => {
     } catch (error) {
       // dispatch({type:REGISTER_USER_ERROR, payload: { 'msg': error } })
       console.log(error);
+      alert("Cannot register")
     }
   }
 
