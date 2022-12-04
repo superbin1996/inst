@@ -31,8 +31,9 @@ class UserViewSet(viewsets.ModelViewSet):
 def posts(request):
     if request.method == 'GET':
         page = int(request.GET.get('page') or 1)
+        # ic(request.host)
         ic(page)
-
+        ic(request.get_host())
         try:
             all_posts = Post.objects.all().values(
                 'id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
@@ -120,7 +121,7 @@ def profile_posts(request):
     profile_user = {
         'id': an_user.id,
         'username': an_user.username,
-        'avatar': str(an_user.avatar),
+        'avatar': an_user.avatar.url.replace('/media/', ''),
         'info': an_user.info
     }
 
@@ -184,7 +185,7 @@ def user(request, filename):
         user = {
             'id': current_user.id,
             'username': current_user.username,
-            'avatar': str(current_user.avatar),
+            'avatar': current_user.avatar.url.replace('/media/', ''),
             'info': current_user.info,
         }
 

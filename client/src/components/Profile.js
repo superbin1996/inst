@@ -23,6 +23,7 @@ export default function Profile() {
     loadMoreProfilePosts,
     numOfProfilePages,
     profilePage,
+    logout,
   } = useAppContext()
 
   const params = useParams()
@@ -48,7 +49,7 @@ export default function Profile() {
 
 
   const checkUser = () => {
-    if (String(profileUser.profileId) === String(user.id)) {
+    if (String(profileUser.id) === String(user.id)) {
       return true
     }
     else { return false }
@@ -107,9 +108,12 @@ export default function Profile() {
             <div className='profile-posts'>{totalProfilePosts} Posts</div>
             <div className='profile-followers'>{followers} followers</div>
             <div className='profile-following'>{following} following</div>
-            <div className='profile-info'>
-              {profileUser.info}
-            </div>
+            <textarea className='profile-info' 
+              disabled
+              style={{border:'1px solid red',height:'100px'}}
+              defaultValue={profileUser.info}
+            >
+            </textarea>
           </header>
 
 
