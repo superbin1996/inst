@@ -97,7 +97,7 @@ def profile_posts(request):
 
     try:
         all_posts = Post.objects.filter(user=an_user).values(
-            'id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
+            'id', 'status', 'user__username', 'user__info', 'user__id', 'user__avatar', 'image', 'timestamp')
     except Post.DoesNotExist:
         return Response({'status': False, "detail": "User don't have any post yet."}, status=404)
 
@@ -121,6 +121,7 @@ def profile_posts(request):
         'id': an_user.id,
         'username': an_user.username,
         'avatar': str(an_user.avatar),
+        'info': an_user.info
     }
 
     followers = an_user.following.count()
@@ -184,6 +185,7 @@ def user(request, filename):
             'id': current_user.id,
             'username': current_user.username,
             'avatar': str(current_user.avatar),
+            'info': current_user.info,
         }
 
         return Response(user, status=200)

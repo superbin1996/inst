@@ -13,7 +13,7 @@ const PostModal = () => {
   const {
     isLoading,
     post,
-    posts,
+    // posts,
     user,
     postComments,
     togglePostModal,
@@ -24,8 +24,8 @@ const PostModal = () => {
     toggleFollowCondition,
     authFetch,
     showOptionModal,
-    profileUser,
-    rememberPosts,
+    // profileUser,
+    // rememberPosts,
   } = useAppContext()
 
   const navigate = useNavigate()
@@ -151,11 +151,11 @@ const PostModal = () => {
 
             {/* Post owner info */}
             <div className='post-info-1'>
-              <img className='icon-user-1 icon' src={changeImagePath(post.user__avatar)} alt={post.user__avatar} />
+              <img className='icon-user-1 icon' style={{minWidth:'52px'}} src={changeImagePath(post.user__avatar)} alt={post.user__avatar} onClick={()=>navigate(`/${post.user__username}`)} />
 
               {/* Follow Btn */}
               <div className='username-and-caption'>
-                {post.user__username} {checkUser() || <span style={{ cursor: 'pointer' }} onClick={()=>toggleFollowCondition(post.user__id)}>
+                <span onClick={()=>navigate(`/${post.user__username}`)}>{post.user__username}</span> {checkUser() || <span style={{ cursor:'pointer'}} onClick={()=>toggleFollowCondition(post.user__id)}>
                   ・ {isFollow?'Following':'Follow'}
                 </span>}
               </div>
@@ -169,11 +169,11 @@ const PostModal = () => {
               {post.status &&
                 <div className='post-info-1'>
                   <div>
-                    <img className='icon-user-1 icon' src={changeImagePath(post.user__avatar)} alt={post.user__avatar} />
+                    <img className='icon-user-1 icon' src={changeImagePath(post.user__avatar)} alt={post.user__avatar} onClick={()=>navigate(`/${post.user__username}`)} />
                   </div>
 
                   <div className='username-and-caption'>
-                    {post.user__username} <span style={{ fontWeight: '400' }}>{post.status}</span>
+                    <span onClick={()=>navigate(`/${post.user__username}`)}>{post.user__username}</span> <span style={{ fontWeight: '400' }}>{post.status}</span>
                     {/* ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss */}
                   </div>
                 </div>
@@ -184,11 +184,11 @@ const PostModal = () => {
                 return (
                   <div className='post-info-1' key={comment.id}>
                     <div>
-                      <img className='icon-user-1 icon' src={changeImagePath(user.avatar)} alt={user.avatar} />
+                      <img className='icon-user-1 icon' src={changeImagePath(user.avatar)} alt={user.avatar} onClick={()=>navigate(`/${user.username}`)} />
                     </div>
 
                     <div className='username-and-caption'>
-                      {user.username} <span style={{ fontWeight: '400' }}>{comment.content}</span>
+                      <span  onClick={()=>navigate(`/${user.username}`)}>{user.username}</span> <span style={{ fontWeight: '400' }}>{comment.content}</span>
                     </div>
                   </div>
                 )
@@ -199,11 +199,11 @@ const PostModal = () => {
                 return (
                   <div className='post-info-1' key={comment.id}>
                     <div>
-                      <img className='icon-user-1 icon' src={changeImagePath(comment.user__avatar)} alt={comment.user__avatar} />
+                      <img className='icon-user-1 icon' src={changeImagePath(comment.user__avatar)} alt={comment.user__avatar} onClick={()=>navigate(`/${comment.user__username}`)} />
                     </div>
 
                     <div className='username-and-caption'>
-                      {comment.user__username} <span style={{ fontWeight: '400' }}>{comment.content}</span>
+                      <span onClick={()=>navigate(`/${comment.user__username}`)}>{comment.user__username}</span> <span style={{ fontWeight: '400' }}>{comment.content}</span>
                     </div>
                   </div>
                 )

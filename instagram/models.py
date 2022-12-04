@@ -14,6 +14,7 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 class User(AbstractUser):
   avatar = models.ImageField(default='img/default/ahri.jpg', upload_to='img/avatar/')
+  info = models.TextField(null=True)
 
 class Post(models.Model):
   status = models.CharField(max_length=800, null=True)

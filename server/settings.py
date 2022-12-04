@@ -16,8 +16,8 @@ import environ
 from decouple import config
 from dj_database_url import parse as dburl
 # 2 Following lines is required to getenv() 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,12 +33,13 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'RENDER' not in os.environ
+# DEBUG = 'RENDER' not in os.environ
+DEBUG = True
 
-ALLOWED_HOSTS = []
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:    
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+ALLOWED_HOSTS = ['*']
+# RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+# if RENDER_EXTERNAL_HOSTNAME:    
+#     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Application definition
 
@@ -82,6 +83,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3001',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
+    'https://instagram-3mke.onrender.com',
 ]
 
 ROOT_URLCONF = 'server.urls'
@@ -113,8 +115,7 @@ WSGI_APPLICATION = 'server.wsgi.application'
 default_dburl = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
 
 DATABASES = {
-    'default': 
-        config('DATABASE_URL', default=default_dburl, cast=dburl)
+    'default': config('DATABASE_URL', default=default_dburl, cast=dburl)
 }
 
 
@@ -155,7 +156,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'client/build/static/'),
+    str(BASE_DIR / 'client/build/static/'),
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')

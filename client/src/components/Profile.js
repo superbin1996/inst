@@ -108,7 +108,7 @@ export default function Profile() {
             <div className='profile-followers'>{followers} followers</div>
             <div className='profile-following'>{following} following</div>
             <div className='profile-info'>
-              I am {profileUser.username} and I am awesome
+              {profileUser.info}
             </div>
           </header>
 
