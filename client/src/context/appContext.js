@@ -63,13 +63,13 @@ const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   const customAxios = axios.create({
-    baseURL: `${host}api/v1`,
-    // baseURL: `http://127.0.0.1:8000/api/v1`,
+    // baseURL: `${host}api/v1`,
+    baseURL: `http://127.0.0.1:8000/api/v1`,
   })
 
   const authFetch = axios.create({
-    baseURL: `${host}api/v1`,
-    // baseURL: `http://127.0.0.1:8000/api/v1`,
+    // baseURL: `${host}api/v1`,
+    baseURL: `http://127.0.0.1:8000/api/v1`,
   })
 
   authFetch.interceptors.request.use(
@@ -325,8 +325,8 @@ const AppProvider = ({ children }) => {
 
   // Change img url
   function changeImagePath(image) {
-    // const baseUrl = `http://127.0.0.1:8000/media/`
-    const baseUrl = `${host}media/`
+    const baseUrl = `http://127.0.0.1:8000/media/`
+    // const baseUrl = `${host}media/`
     if ((image || '').includes(baseUrl)) {
       return image
     }
