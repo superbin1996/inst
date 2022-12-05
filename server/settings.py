@@ -33,13 +33,13 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = 'RENDER' not in os.environ
-DEBUG = True
+DEBUG = 'RENDER' not in os.environ
+# DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-# RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-# if RENDER_EXTERNAL_HOSTNAME:    
-#     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:    
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Application definition
 
@@ -153,20 +153,25 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
+# On production, search for media files
+# STATIC_URL is no need to be the same as the end of STATIC_ROOT. Same for MEDIA_URL
+# STATIC_URL and MEDIA_URL are paths which are showed on url
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
-STATICFILES_DIRS = (
-    str(BASE_DIR / 'client/build/static/'),
-)
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
+# Module use for searching
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Base url to serve media files
 MEDIA_URL = 'media/'
 
-# Path where media is stored
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+# On production, search for media files excluding STATIC_ROOT
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'client/build/static/'),
+    os.path.join(BASE_DIR, 'media/img/default/')
+)
+
+# Base url to serve media files
+# Place where files are uploaded to
+MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

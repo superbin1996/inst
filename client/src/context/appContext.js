@@ -6,6 +6,9 @@ import axios from 'axios'
 
 const user = localStorage.getItem('user')
 const token = localStorage.getItem('token')
+const host = window.location.href.includes("localhost") ? "http://127.0.0.1:8000/" : `${(new RegExp(`.*\\b${window.location.host}\\b`)).exec(window.location.href)}/`
+console.log(host);
+console.log(window.location.host);
 
 const initialState = {
   isLoading: false,
@@ -55,11 +58,13 @@ const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   const customAxios = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api/v1',
+    baseURL: `${host}api/v1`,
+    // baseURL: `http://127.0.0.1:8000/api/v1`,
   })
 
   const authFetch = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api/v1',
+    baseURL: `${host}api/v1`,
+    // baseURL: `http://127.0.0.1:8000/api/v1`,
   })
 
   authFetch.interceptors.request.use(
@@ -315,8 +320,8 @@ const AppProvider = ({ children }) => {
 
   // Change img url
   function changeImagePath(image) {
-    const baseUrl = 'http://127.0.0.1:8000/media/'
-    // const baseUrl = '/media/'
+    // const baseUrl = `http://127.0.0.1:8000/media/`
+    const baseUrl = `${host}media/`
     if ((image || '').includes(baseUrl)) {
       return image
     }
@@ -393,6 +398,7 @@ const AppProvider = ({ children }) => {
       const { data } = await authFetch.post(url, newPost)
       if (data.status === false) {
         console.log(data)
+        // logout()
       }
       // dispatch({type:ADD_POST_SUCCESS})
     } catch (error) {
@@ -412,6 +418,7 @@ const AppProvider = ({ children }) => {
       console.log(data.detail)
     } catch (error) {
       console.log(error)
+      // logout()
     }
     // clearStates()
     togglePostModal('', true)

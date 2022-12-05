@@ -33,7 +33,7 @@ def posts(request):
         page = int(request.GET.get('page') or 1)
         # ic(request.host)
         ic(page)
-        ic(request.get_host())
+        # ic(request.get_host())
         try:
             all_posts = Post.objects.all().values(
                 'id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
