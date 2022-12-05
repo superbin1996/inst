@@ -1631,7 +1631,7 @@ textarea {
 
 .login-img {
   /* Flex row item */
-  border: 1px solid red;
+  /* border: 1px solid red; */
   margin-right: 50px;
 }
 

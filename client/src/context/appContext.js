@@ -6,6 +6,8 @@ import axios from 'axios'
 
 const user = localStorage.getItem('user')
 const token = localStorage.getItem('token')
+const host = window.location.host
+console.log(host);
 
 const initialState = {
   isLoading: false,
@@ -55,11 +57,11 @@ const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   const customAxios = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api/v1',
+    baseURL: 'https://instagram-3mke.onrender.com/api/v1',
   })
 
   const authFetch = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api/v1',
+    baseURL: 'https://instagram-3mke.onrender.com/api/v1',
   })
 
   authFetch.interceptors.request.use(
