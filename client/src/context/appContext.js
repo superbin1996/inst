@@ -6,8 +6,8 @@ import axios from 'axios'
 
 const user = localStorage.getItem('user')
 const token = localStorage.getItem('token')
-const host = window.location.host
-console.log(host);
+const serverHost = (window.location.href.includes("localhost") || window.location.href.includes("127.0.0.1")) ? "http://127.0.0.1:8000/" : `${(new RegExp(`.*\\b${window.location.host}\\b`)).exec(window.location.href)}/`
+console.log(serverHost)
 
 const initialState = {
   isLoading: false,
@@ -57,11 +57,13 @@ const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   const customAxios = axios.create({
-    baseURL: 'https://instagram-3mke.onrender.com/api/v1',
+    // baseURL: 'https://instagram-3mke.onrender.com/api/v1',
+    baseURL: `${serverHost}api/v1`
   })
 
   const authFetch = axios.create({
-    baseURL: 'https://instagram-3mke.onrender.com/api/v1',
+    // baseURL: 'https://instagram-3mke.onrender.com/api/v1',
+    baseURL: `${serverHost}api/v1`
   })
 
   authFetch.interceptors.request.use(
@@ -90,6 +92,9 @@ const AppProvider = ({ children }) => {
 
   const login = async (currentUser) => {
     dispatch({ type: LOGIN_USER_BEGIN })
+    if (window.location.host.includes('127.0.0.1:8000')) {
+      alert('Please navigate to localhost:8000')
+    }
     try {
       const { data: { token } } = await customAxios.post(`/auth`, currentUser)
       const { data: user } = await customAxios.get(`/user/file_name`, {
@@ -317,8 +322,8 @@ const AppProvider = ({ children }) => {
 
   // Change img url
   function changeImagePath(image) {
-    const baseUrl = 'http://127.0.0.1:8000/media/'
-    // const baseUrl = '/media/'
+    // const baseUrl = 'http://127.0.0.1:8000/media/'
+    const baseUrl = `${serverHost}media/`
     if ((image || '').includes(baseUrl)) {
       return image
     }
