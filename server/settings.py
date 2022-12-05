@@ -33,8 +33,8 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'RENDER' not in os.environ
-# DEBUG = True
+# DEBUG = 'RENDER' not in os.environ
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 # RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
@@ -153,23 +153,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-# url show on browser
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
-# Tuple of folders for staticfiles searching excluding STATIC_ROOT
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'client/build/static/'),
-    # os.path.join(BASE_DIR, 'media/default/')
+    str(BASE_DIR / 'client/build/static/'),
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
-
-# Module use for files lookup
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Base url to serve media files
-# url show on browser
 MEDIA_URL = 'media/'
 
 # Path where media is stored
