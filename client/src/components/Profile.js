@@ -49,6 +49,9 @@ export default function Profile() {
 
 
   const checkUser = () => {
+    if (!user) {
+      navigate('/register')
+    }
     if (String(profileUser.id) === String(user.id)) {
       return true
     }

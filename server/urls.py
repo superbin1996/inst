@@ -27,6 +27,6 @@ urlpatterns = [
     path('api/v1/', include('instagram.urls')),
     path('api/v1/auth', views.obtain_auth_token),
     # Add following line for deployment only
-    re_path(r"^.*/?$", TemplateView.as_view(template_name='index.html')),
+    re_path(r'', TemplateView.as_view(template_name='index.html')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # Add static path so you can render image from server
