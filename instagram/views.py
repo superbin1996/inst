@@ -34,6 +34,7 @@ def posts(request):
         # ic(request.host)
         ic(page)
         # ic(request.get_host())
+        # ic(request.get_port())
         try:
             all_posts = Post.objects.all().values(
                 'id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
