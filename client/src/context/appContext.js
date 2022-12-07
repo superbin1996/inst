@@ -59,8 +59,15 @@ const initialState = {
 const AppContext = React.createContext()
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const host = process.env.RENDER_EXTERNAL_URL.replace(/[/]$/, "")
+  const windowLocation = window.location
+  const RENDER_EXTERNAL_URL = (process.env.RENDER_EXTERNAL_URL) && ""
+  const hostname = (windowLocation.hostname === "localhost" || windowLocation.hostname === "127.0.0.1") ? "http://localhost:8000" : RENDER_EXTERNAL_URL.replace(/[/]$/, "")
+  let host = hostname
+  // Check when upload to remote server. There is `RENDER_EXTERNAL_URL` or not. 
+  // If not, change to window.location.origin
+  // if (!RENDER_EXTERNAL_URL) host = windowLocation.origin
   console.log(host);
+
   const customAxios = axios.create({
     baseURL: `${host}/api/v1`,
   })
