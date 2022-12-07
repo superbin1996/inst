@@ -3,7 +3,6 @@
 // x = (new RegExp(`.*\\b${a}\\b`)).exec(txt)
 // console.log(`${x[0]}/`);
 
-
-txt = "abc"
-x = txt.includes("d") || txt.includes("c")
-console.log(x)
+txt = "/com"
+a = txt.replace(/[/]$/, "")
+console.log(`${a}b`)

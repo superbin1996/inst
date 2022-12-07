@@ -10,9 +10,8 @@ const token = localStorage.getItem('token')
 // For development, only work for server port 8000
 // If want to know detail which host and post is running, get from server
 // const host = (window.location.href.includes("localhost") || window.location.href.includes("127.0.0.1")) ? "http://127.0.0.1:8000/" : `${(new RegExp(`.*\\b${window.location.host}\\b`)).exec(window.location.href)}/`
-const windowLocation = window.location
-const host = (windowLocation.hostname === "localhost" || windowLocation.hostname === "127.0.0.1") ? "http://localhost:8000" : window.location.origin
-console.log(host);
+// const windowLocation = window.location
+// const host = (windowLocation.hostname === "localhost" || windowLocation.hostname === "127.0.0.1") ? "http://localhost:8000" : window.location.origin
 
 const initialState = {
   isLoading: false,
@@ -60,7 +59,8 @@ const initialState = {
 const AppContext = React.createContext()
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
-
+  const host = process.env.RENDER_EXTERNAL_URL.replace(/[/]$/, "")
+  console.log(host);
   const customAxios = axios.create({
     baseURL: `${host}/api/v1`,
   })

@@ -36,13 +36,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 DEBUG = 'RENDER' not in os.environ
 # DEBUG = True
 
-ALLOWED_HOSTS = []
-if DEBUG:
-    ALLOWED_HOSTS.extend(['localhost', '127.0.0.1'])
-else:
-    RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-    if RENDER_EXTERNAL_HOSTNAME:    
-        ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+ALLOWED_HOSTS = ["*"]
+# if DEBUG:
+#     ALLOWED_HOSTS.extend(['localhost', '127.0.0.1'])
+# else:
+#     RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+#     if RENDER_EXTERNAL_HOSTNAME:    
+#         ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
     
 # Application definition
 
@@ -80,18 +80,19 @@ REST_FRAMEWORK = {
     ]
 }
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://localhost:3001',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-]
-if not DEBUG:
-    CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https://\w+-?\w+\.onrender\.com$",
-]
-# CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+#     'http://127.0.0.1:3000',
+#     'http://localhost:3001',
+#     'http://localhost:8000',
+#     'http://127.0.0.1:8000',
+# ]
+# if not DEBUG:
+    # CORS_ALLOWED_ORIGINS.append(env("RENDER_EXTERNAL_URL"))
+    # CORS_ALLOWED_ORIGIN_REGEXES = [
+    # r"^https://\w+-?\w+\.onrender\.com$",
+# ]
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'server.urls'
 
