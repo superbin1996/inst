@@ -12,4 +12,4 @@ class Command(BaseCommand):
                 email = settings.SUPERUSER_EMAIL,
                 password = settings.SUPERUSER_PASSWORD
             )
-        print('Create superuser successfully')
+        print('Create superuser successfully 🎉')
