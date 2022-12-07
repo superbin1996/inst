@@ -70,7 +70,7 @@ const Home = () => {
 
   useEffect(() => {
     // only clear states when navigate back to home
-    console.log(params);
+    // console.log(params);
     if (Object.keys(params).length === 0) {
       console.log(params, 'clear state run')
       clearStates()

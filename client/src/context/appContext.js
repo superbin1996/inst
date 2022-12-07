@@ -3,15 +3,21 @@ import React, { useContext, useReducer } from "react";
 import reducer from './reducer'
 import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_BEGIN, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, TOGGLE_EDIT_MODAL, REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, GET_USER_SUCCESS, SHOW_DROPDOWN, LOGOUT_USER, GET_FOLLOW_CONDITION_SUCCESS, CHANGE_FOLLOW_CONDITION_SUCCESS, LOAD_MORE_POSTS_SUCCESS, ADD_POST_SUCCESS, HIDE_OPTION_MODAL, LOAD_MORE_PROFILE_POSTS_SUCCESS, GET_FOLLOWING_POSTS_BEGIN, REMEMBER_POSTS } from "./actions";
 import axios from 'axios'
+// import dotenv from 'dotenv';
+// dotenv.config();
 
 const user = localStorage.getItem('user')
 const token = localStorage.getItem('token')
 
+const RENDER_EXTERNAL_URL = process.env.REACT_APP_RENDER_EXTERNAL_URL && ""
+// || new Set("127.0.0.1", "localhost").has(window.location.hostname)
+const host = (process.env.NODE_ENV === "development") ? "http://127.0.0.1:8000" : RENDER_EXTERNAL_URL.replace(/[/]$/, "")
+// console.log(host);
+console.log(process.env.NODE_ENV);
 // For development, only work for server port 8000
 // If want to know detail which host and post is running, get from server
 // const host = (window.location.href.includes("localhost") || window.location.href.includes("127.0.0.1")) ? "http://127.0.0.1:8000/" : `${(new RegExp(`.*\\b${window.location.host}\\b`)).exec(window.location.href)}/`
-// const windowLocation = window.location
-// const host = (windowLocation.hostname === "localhost" || windowLocation.hostname === "127.0.0.1") ? "http://localhost:8000" : window.location.origin
+
 
 const initialState = {
   isLoading: false,
@@ -59,8 +65,11 @@ const initialState = {
 const AppContext = React.createContext()
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const host = process.env.RENDER_EXTERNAL_URL.replace(/[/]$/, "")
-  console.log(host);
+
+  // dotenv.config()
+  
+  // const hostname = (windowLocation.hostname === "localhost" || windowLocation.hostname === "127.0.0.1") ? "http://localhost:8000" : RENDER_EXTERNAL_URL.replace(/[/]$/, "")
+
   const customAxios = axios.create({
     baseURL: `${host}/api/v1`,
   })
@@ -263,7 +272,7 @@ const AppProvider = ({ children }) => {
     // if url is not in profile
     if (Object.keys(state.profileUser).length === 0) {
       const post = state.posts.find(post => String(post.id) === String(postId))
-      console.log(post);
+      // console.log(post);
       dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post, showPostModal: true } })
       getFollowCondition(post.user__id)
     }

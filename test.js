@@ -6,3 +6,7 @@
 txt = "/com"
 a = txt.replace(/[/]$/, "")
 console.log(`${a}b`)
+
+
+b = new Set(['a', 'b']).has('a')
+console.log(b);

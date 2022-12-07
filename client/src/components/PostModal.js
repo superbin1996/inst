@@ -107,7 +107,7 @@ const PostModal = () => {
     // document.body.style.overflowY = 'hidden'
     togglePostModal(params.postId)
     getPostComments(params.postId)
-    console.log(params);
+    // console.log(params);
     getLikeCondition()
   }, [params])
 

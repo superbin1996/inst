@@ -16,8 +16,8 @@ import environ
 from decouple import config
 from dj_database_url import parse as dburl
 # 2 Following lines is required to getenv() 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,8 +33,8 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'RENDER' not in os.environ
-# DEBUG = True
+# DEBUG = 'RENDER' not in os.environ
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 # if DEBUG:
@@ -185,3 +185,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SUPERUSER_NAME = env('SUPERUSER_NAME')
 SUPERUSER_EMAIL = env('SUPERUSER_EMAIL')
 SUPERUSER_PASSWORD = env('SUPERUSER_PASSWORD')
+RENDER_EXTERNAL_URL = env("RENDER_EXTERNAL_URL")
+
+f = open("./client/.env", "w")
+f.write(f"REACT_APP_RENDER_EXTERNAL_URL={RENDER_EXTERNAL_URL}")
+f.close()
