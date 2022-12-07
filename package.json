@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "setup-production": "npm run build-client && npm run build-server",
-    "build-client": "cd client && npm install &&  npm run build",
-    "build-server": "npm install && pip install -r requirements.txt",
+    "build-client": "cd client && npm run build",
+    "setup-client": "cd client && npm install &&  npm run build",
+    "setup-server": "npm install && pip install -r requirements.txt",
     "server": "python manage.py runserver",
     "client": "npm start --prefix client",
     "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""

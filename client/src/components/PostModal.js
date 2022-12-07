@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BsBookmark, BsThreeDots } from 'react-icons/bs';
-import { AiOutlineHeart, AiOutlineShrink } from 'react-icons/ai';
+import { AiOutlineHeart } from 'react-icons/ai';
 import { FaRegComment } from 'react-icons/fa';
 import { FiSend } from 'react-icons/fi';
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
@@ -92,7 +92,10 @@ const PostModal = () => {
       setComment('')
     }
   }
-
+  useEffect(()=>{
+    if (!user) navigate("/register")
+  }, [user])
+  
   const checkUser = () => {
     if (String(user.id) === String(post.user__id)) {
       return true

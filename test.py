@@ -1,7 +1,5 @@
-import os 
-root = "root/"
-a = "media/"
-b = "img/default/c.img"
+import re
 
-x = os.path.join(root, a, b)
+txt = 'https://instagram-3mke.onrender.com'
+x = re.search(r"^https://\w+-?\w+\.onrender\.com$", txt)
 print(x)

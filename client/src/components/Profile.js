@@ -46,15 +46,13 @@ export default function Profile() {
     }
   })
 
-
   const checkUser = () => {
-    if (!user) {
-      navigate('/')
-    }
+    // I will soon remove restriction for view image before login, so other can view images without login
+    // if (!user) return false;
     if (String(profileUser.id) === String(user.id)) {
       return true
     }
-    else { return false }
+    else return false;
   }
 
   useEffect(() => {

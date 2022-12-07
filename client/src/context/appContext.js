@@ -6,7 +6,12 @@ import axios from 'axios'
 
 const user = localStorage.getItem('user')
 const token = localStorage.getItem('token')
-const host = window.location.host
+
+// For development, only work for server port 8000
+// If want to know detail which host and post is running, get from server
+// const host = (window.location.href.includes("localhost") || window.location.href.includes("127.0.0.1")) ? "http://127.0.0.1:8000/" : `${(new RegExp(`.*\\b${window.location.host}\\b`)).exec(window.location.href)}/`
+const windowLocation = window.location
+const host = (windowLocation.hostname === "localhost" || windowLocation.hostname === "127.0.0.1") ? "http://localhost:8000" : window.location.origin
 console.log(host);
 
 const initialState = {
@@ -57,11 +62,11 @@ const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   const customAxios = axios.create({
-    baseURL: 'https://instagram-3mke.onrender.com/api/v1',
+    baseURL: `${host}/api/v1`,
   })
 
   const authFetch = axios.create({
-    baseURL: 'https://instagram-3mke.onrender.com/api/v1',
+    baseURL: `${host}/api/v1`,
   })
 
   authFetch.interceptors.request.use(
@@ -317,7 +322,7 @@ const AppProvider = ({ children }) => {
 
   // Change img url
   function changeImagePath(image) {
-    const baseUrl = 'https://instagram-3mke.onrender.com/media/'
+    const baseUrl = `${host}/media/`
     // const baseUrl = '/media/'
     if ((image || '').includes(baseUrl)) {
       return image
