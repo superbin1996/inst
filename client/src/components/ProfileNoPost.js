@@ -17,10 +17,10 @@ const ProfileNoPost = () => {
   } = useAppContext()
 
   const checkUser = () => {
-    if (String(profileUser.profileId) === String(user.id)) {
-      return true
+    if (user) {
+      if (String(profileUser.profileId) === String(user.id)) return true
+      else return false
     }
-    else { return false }
   }
   
   return (

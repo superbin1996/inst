@@ -1,9 +1,6 @@
-# import re
+try: 
+    a = 10
+except KeyError:
+    print("Error")
 
-txt = 'https://instagram-3mke.onrender.com/'
-# x = re.search(r"^https://\w+-?\w+\.onrender\.com$", txt)
-# print(x)
-
-x = txt.rstrip("/")
-print(x)
-
+print(a)

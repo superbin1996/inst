@@ -13,10 +13,12 @@ from rest_framework.authtoken.models import Token
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
+    # Must include password in order to login or register
     fields = ['id', 'username', 'password']
 
   extra_kwargs = {"password":{
     "write-only":True,
+    # Avoid blank password
     'required': True
   }}
 

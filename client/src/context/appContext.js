@@ -7,11 +7,17 @@ import axios from 'axios'
 const user = localStorage.getItem('user')
 const token = localStorage.getItem('token')
 
-// For development, only work for server port 8000
-// If want to know detail which host and post is running, get from server
-// const host = (window.location.href.includes("localhost") || window.location.href.includes("127.0.0.1")) ? "http://127.0.0.1:8000/" : `${(new RegExp(`.*\\b${window.location.host}\\b`)).exec(window.location.href)}/`
-// const windowLocation = window.location
-// const host = (windowLocation.hostname === "localhost" || windowLocation.hostname === "127.0.0.1") ? "http://localhost:8000" : window.location.origin
+// In settings.py there is function to check if RENDER_EXTERNAL_URL environment variable existed or not. If not, default value is 
+// http://127.0.0.1:8000. It will automatically change when work on Render because .env will be created by Render
+// React need add `REACT_APP_` prefix before environment variables
+// .replace(/[/]$/, "")
+const RENDER_EXTERNAL_URL = process.env.REACT_APP_RENDER_EXTERNAL_URL
+// || new Set("127.0.0.1", "localhost").has(window.location.hostname)
+const host = (process.env.NODE_ENV === "development") ? "http://127.0.0.1:8000" : RENDER_EXTERNAL_URL.replace(/[/]$/, "")
+console.log(host);
+// Check if `production` or `development`
+console.log(process.env.NODE_ENV);
+
 
 const initialState = {
   isLoading: false,
@@ -59,21 +65,13 @@ const initialState = {
 const AppContext = React.createContext()
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const windowLocation = window.location
-  const RENDER_EXTERNAL_URL = (process.env.RENDER_EXTERNAL_URL) && ""
-  const hostname = (windowLocation.hostname === "localhost" || windowLocation.hostname === "127.0.0.1") ? "http://localhost:8000" : RENDER_EXTERNAL_URL.replace(/[/]$/, "")
-  let host = hostname
-  // Check when upload to remote server. There is `RENDER_EXTERNAL_URL` or not. 
-  // If not, change to window.location.origin
-  // if (!RENDER_EXTERNAL_URL) host = windowLocation.origin
-  console.log(host);
 
   const customAxios = axios.create({
-    baseURL: `${host}/api/v1`,
+    baseURL: `${host}/api/v1/`,
   })
 
   const authFetch = axios.create({
-    baseURL: `${host}/api/v1`,
+    baseURL: `${host}/api/v1/`,
   })
 
   authFetch.interceptors.request.use(
@@ -103,8 +101,8 @@ const AppProvider = ({ children }) => {
   const login = async (currentUser) => {
     dispatch({ type: LOGIN_USER_BEGIN })
     try {
-      const { data: { token } } = await customAxios.post(`/auth`, currentUser)
-      const { data: user } = await customAxios.get(`/user/file_name`, {
+      const { data: { token } } = await customAxios.post(`auth/`, currentUser)
+      const { data: user } = await customAxios.get(`user/file_name/`, {
         headers: {
           Authorization: `Token ${token}`
         }
@@ -121,24 +119,24 @@ const AppProvider = ({ children }) => {
     } catch (error) {
       // dispatch({ type: LOGIN_USER_ERROR, payload: { 'msg': error } })
       console.log(error);
-      alert("Cannot login")
+      dispatch({ type: LOGIN_USER_ERROR, payload: {msg: error.message}})
     }
   }
 
   const register = async (currentUser) => {
     dispatch({ type: REGISTER_USER_BEGIN })
     try {
-      const response = await axios.post(`/api/v1/users`, currentUser)
+      const response = await customAxios.post(`users/`, currentUser)
       const data = response.data
       console.log(data.msg);
-      dispatch({ type: REGISTER_USER_SUCCESS })
+      dispatch({ type: REGISTER_USER_SUCCESS, payload: data})
       setTimeout(() => {
         login(currentUser)
       }, 500)
     } catch (error) {
       // dispatch({type:REGISTER_USER_ERROR, payload: { 'msg': error } })
       console.log(error);
-      alert("Cannot register")
+      dispatch({ type: REGISTER_USER_ERROR, payload: {msg: error.message}})
     }
   }
 
@@ -154,11 +152,11 @@ const AppProvider = ({ children }) => {
 
   const getPosts = async (reloadPage) => {
     // const url = `/data/posts.json`
-    const url = `/posts`
+    const url = `getPosts/`
     dispatch({ type: GET_POSTS_BEGIN })
     try {
       const page = reloadPage || state.page
-      const { data } = await authFetch({
+      const { data } = await customAxios({
         url,
         params: { page: page },
       })
@@ -173,13 +171,13 @@ const AppProvider = ({ children }) => {
   // if use getPosts will change isLoading to false
   const loadMorePosts = async () => {
     // const url = `/data/posts.json`
-    let url = `/posts`
+    let url = `getPosts/`
     // if (page < nomOfPages) {
     try {
       if (!state.allPost) {
-        url = `/following_posts`
+        url = `following_posts/`
       }
-      const { data } = await authFetch({
+      const { data } = await customAxios({
         url,
         params: {
           page: state.page + 1,
@@ -195,11 +193,11 @@ const AppProvider = ({ children }) => {
   const getProfilePosts = async (profileName, reloadPage) => {
     // dispatch({ type: GET_PROFILE_POSTS_BEGIN })
     // const url = `/data/profilePosts.json`
-    let url = `/profile_posts`
+    let url = `profile_posts/`
     const page = reloadPage || state.profilePage
     dispatch({ type: GET_PROFILE_POSTS_BEGIN })
     try {
-      const { data } = await authFetch({
+      const { data } = await customAxios({
         url,
         params: {
           page,
@@ -216,9 +214,9 @@ const AppProvider = ({ children }) => {
 
   // if use getPosts will change isLoading to false
   const loadMoreProfilePosts = async () => {
-    let url = `/profile_posts`
+    let url = `profile_posts/`
     try {
-      const { data } = await authFetch({
+      const { data } = await customAxios({
         url,
         params: {
           page: state.profilePage + 1,
@@ -235,7 +233,7 @@ const AppProvider = ({ children }) => {
 
   const getFollowingPosts = async (reloadPage) => {
     // const url = `/data/posts.json`
-    const url = `/following_posts`
+    const url = `following_posts/`
     dispatch({ type: GET_FOLLOWING_POSTS_BEGIN })
     try {
       const page = reloadPage || state.page
@@ -260,7 +258,7 @@ const AppProvider = ({ children }) => {
 
     // if use url to get to postModal without open home or profile first
     if (state.posts.length === 0 && state.profilePosts.length === 0) {
-      const { data: { post } } = await authFetch(`/post/${postId}`)
+      const { data: { post } } = await customAxios(`post/${postId}/`)
       console.log(post);
       dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post, showPostModal: true } })
       getFollowCondition(post.user__id)
@@ -270,14 +268,14 @@ const AppProvider = ({ children }) => {
     // if url is not in profile
     if (Object.keys(state.profileUser).length === 0) {
       const post = state.posts.find(post => String(post.id) === String(postId))
-      console.log(post);
+      // console.log(post);
       dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post, showPostModal: true } })
       getFollowCondition(post.user__id)
     }
     // if url is in profile
     else {
       const post = state.profilePosts.find(post => String(post.id) === String(postId))
-      console.log(post);
+      // console.log(post);
       dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post, showPostModal: true } })
       getFollowCondition(post.user__id)
     }
@@ -290,9 +288,9 @@ const AppProvider = ({ children }) => {
 
   const getPostComments = async (postId) => {
     // const url = `/data/postComments.json`
-    const url = `/comment/${postId}`
+    const url = `getPostComments/${postId}/`
     try {
-      const { data } = await authFetch(url)
+      const { data } = await customAxios(url)
       dispatch({ type: GET_POST_COMMENTS_SUCCESS, payload: { data } })
     } catch (error) {
       console.log(error)
@@ -300,7 +298,7 @@ const AppProvider = ({ children }) => {
   }
 
   const getFollowCondition = async (userId) => {
-    const url = `/follow/${userId}`
+    const url = `getFollow/${userId}/`
     try {
       const { data: { isFollow } } = await authFetch(url)
       dispatch({ type: GET_FOLLOW_CONDITION_SUCCESS, payload: { isFollow } })
@@ -310,7 +308,7 @@ const AppProvider = ({ children }) => {
   }
 
   const toggleFollowCondition = async (userId) => {
-    const url = `/follow/${userId}`
+    const url = `follow/${userId}/`
     try {
       const { data: { isFollow } } = await authFetch.patch(url)
       dispatch({ type: CHANGE_FOLLOW_CONDITION_SUCCESS, payload: { isFollow } })
@@ -402,7 +400,7 @@ const AppProvider = ({ children }) => {
   }
 
   const addPost = async (newPost) => {
-    const url = `/posts`
+    const url = `posts/`
     try {
       const { data } = await authFetch.post(url, newPost)
       if (data.status === false) {
@@ -420,7 +418,7 @@ const AppProvider = ({ children }) => {
   }
 
   const deletePost = async (postId) => {
-    const url = `/posts?postId=${postId}`
+    const url = `posts?postId=${postId}/`
     try {
       const { data } = await authFetch.delete(url)
       console.log(data.detail)
@@ -464,6 +462,7 @@ const AppProvider = ({ children }) => {
         logout,
         toggleFollowCondition,
         authFetch,
+        customAxios,
         addPost,
         deletePost,
         loadMoreProfilePosts,

@@ -8,7 +8,6 @@ import { VscDebugStackframeDot } from 'react-icons/vsc';
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/appContext';
-import {OptionModal} from './index';
 import moment from 'moment'
 
 const Post = ({ post, lastPostElementRef }) => {
@@ -18,6 +17,8 @@ const Post = ({ post, lastPostElementRef }) => {
     toggleOptionModal,
     changeImagePath,
     authFetch,
+    customAxios,
+    user,
   } = useAppContext()
 
   const [userComments, setUserComments] = useState([])
@@ -26,9 +27,9 @@ const Post = ({ post, lastPostElementRef }) => {
   const [likeSum, setLikeSum] = useState(0)
 
   const getLikeCondition = async () => {
-    const url = `/like/${post.id}`
+    const url = `getLike/${post.id}/`
     try {
-      const { data } = await authFetch(url)
+      const { data } = await customAxios(url)
       const { isLike, likeSum } = data
       setIsLike(isLike)
       setLikeSum(likeSum)
@@ -38,7 +39,7 @@ const Post = ({ post, lastPostElementRef }) => {
   }
 
   const toggleIsLike = async () => {
-    const url = `/like/${post.id}`
+    const url = `like/${post.id}/`
     try {
       const { data } = await authFetch.patch(url, {'isLike':!isLike})
       setLikeSum(data.likeSum)
@@ -53,7 +54,7 @@ const Post = ({ post, lastPostElementRef }) => {
   }
 
   const submitComment = async () => {
-    const url = `/comment/${post.id}`
+    const url = `comment/${post.id}/`
     try {
       const { data } = await authFetch.post(url, { comment })
       if (data.status === false) {
@@ -77,16 +78,18 @@ const Post = ({ post, lastPostElementRef }) => {
 
   const showPostModal = () => {
     // togglePostModal(post.id)
-    navigate(`/p/${post.id}`)
+    navigate(`p/${post.id}/`)
     // window.history.replaceState(null, "Instagram", `/p/${post.id}`)
   }
 
   const getUserComments = async (postId) => {
-    // const url = `/data/userComments.json`
-    const url = `/post_user_comment/${postId}`
-    const { data } = await authFetch(url)
-    // console.log(`usersComments:`, data)
-    setUserComments(data)
+    if (user) {
+      // const url = `/data/userComments.json`
+      const url = `post_user_comment/${postId}/`
+      const { data } = await authFetch(url)
+      // console.log(`usersComments:`, data)
+      setUserComments(data)
+    }
   }
 
   let date = moment(post.timestamp)
@@ -156,6 +159,10 @@ const Post = ({ post, lastPostElementRef }) => {
                 </div>
               )
             })}
+          </div>
+
+          <div className='post-interact-like-sum'>
+            {likeSum > 0 && `${likeSum} like${likeSum > 1 && 's'}`}
           </div>
 
           <div className='post-date'>

@@ -20,19 +20,17 @@ from django.conf.urls.static import static
 from rest_framework.authtoken import views
 from django.views.generic import TemplateView
 
-# Don't add suffix to url, it will require suffix in front-end url 
-# Except for admin/ and api/v1/
-# If don't add suffix to `admin`, in browser you need to add `/``
-
+# Add prefix to url will allow access browser url both having prefix or not
+# Not add prefix to url will only allow access browser url not having prefix
 urlpatterns = [
     # path(r'admin[/]?', admin.site.urls),
     path('admin/', admin.site.urls),
     path('api/v1/', include('instagram.urls')),
-    path('api/v1/auth', views.obtain_auth_token),
-    # Add following line for deployment only
+    path('api/v1/auth/', views.obtain_auth_token),
+    # # Add following line for deployment only
+    # re_path won't work for template, so don't use it for production
     path('', TemplateView.as_view(template_name='index.html')),
     path('register/', TemplateView.as_view(template_name='index.html')),
     path('<path:profileName>/', TemplateView.as_view(template_name='index.html')),
-    # re_path won't work for template, so don't use it for production
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # Add static path so you can render image from server

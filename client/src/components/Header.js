@@ -57,6 +57,10 @@ export default function Header() {
       </div>
 
       {/* Right */}
+
+      {/* Login or not login yet */}
+      {user ?
+      // Logged in
       <div className='header-right'>
         <MdHomeFilled className='icon' onClick={refresh} />
         <FiSend className='icon' />
@@ -84,6 +88,12 @@ export default function Header() {
         </div>
 
       </div>
+      :
+      // Have not Logged in
+      <div className='header-right'>
+        <button onClick={()=>navigate('/register')}>Login/Register</button>
+      </div>
+      }
 
     </div>
   );

@@ -6,7 +6,7 @@ UserAdmin.list_filter += ('avatar',)
 UserAdmin.fieldsets += (('avatar', {'fields': ('avatar','info',)}),)
 
 class UserAdmin(UserAdmin):
-    list_display = ("id", "username", "avatar", 'info')
+    list_display = ("id", "username", "avatar")
 
 
 class PostAdmin(admin.ModelAdmin):

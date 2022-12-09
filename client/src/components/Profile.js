@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { IoIosArrowUp } from 'react-icons/io'
 import { Header, Loading, ProfileNoPost, UploadModal } from './index';
@@ -29,7 +29,8 @@ export default function Profile() {
   const navigate = useNavigate()
 
   const observer = useRef()
-  const lastPostElementRef = useCallback(node => {
+  // update last item ref for infinite scroll
+  const lastPostElementRef = node => {
     if (observer.current) {
       observer.current.disconnect()
     }
@@ -44,15 +45,14 @@ export default function Profile() {
     if (node) {
       observer.current.observe(node)
     }
-  })
+  }
 
   const checkUser = () => {
     // I will soon remove restriction for view image before login, so other can view images without login
-    // if (!user) return false;
-    if (String(profileUser.id) === String(user.id)) {
-      return true
+    if (user) {
+      if (String(profileUser.id) === String(user.id)) return true
+      else return false
     }
-    else return false;
   }
 
   useEffect(() => {

@@ -16,14 +16,15 @@ import environ
 from decouple import config
 from dj_database_url import parse as dburl
 # 2 Following lines is required to getenv() 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # For Render deployment
 env = environ.Env()
+# environ.Env() will connect with .env in root folder
 env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
@@ -33,16 +34,15 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = 'RENDER' not in os.environ
-DEBUG = True
+DEBUG = 'RENDER' not in os.environ
+# DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
-# if DEBUG:
-#     ALLOWED_HOSTS.extend(['localhost', '127.0.0.1'])
-# else:
-#     RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-#     if RENDER_EXTERNAL_HOSTNAME:    
-#         ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+# ALLOWED_HOSTS = ["*"]
+# Must include localhost and 127.0.0.1 when using django-react
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
+# RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+# if RENDER_EXTERNAL_HOSTNAME:    
+#     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
     
 # Application definition
 
@@ -74,24 +74,33 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ]
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         # 'rest_framework.permissions.AllowAny',
+#         'rest_framework.permissions.IsAuthenticated',
+#     ]
+# }
 
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:3000',
-#     'http://127.0.0.1:3000',
-#     'http://localhost:3001',
-#     'http://localhost:8000',
-#     'http://127.0.0.1:8000',
-# ]
-# if not DEBUG:
-    # CORS_ALLOWED_ORIGINS.append(env("RENDER_EXTERNAL_URL"))
+
+# hostname
+# Dont't add default, it will use default. Change url in frontend
+RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL")
+
+# CORS_ALLOWED_ORIGINS = []
+# if DEBUG:
+#     CORS_ALLOWED_ORIGINS.extend([
+#         'http://localhost:3000',
+#         'http://127.0.0.1:3000',
+#         'http://localhost:3001',
+#         'http://localhost:8000',
+#         'http://127.0.0.1:8000',
+#         "https://instagram-3mke.onrender.com"
+#     ])
+# else:
+#     CORS_ALLOWED_ORIGINS.append(RENDER_EXTERNAL_URL)
     # CORS_ALLOWED_ORIGIN_REGEXES = [
-    # r"^https://\w+-?\w+\.onrender\.com$",
-# ]
+        # r"^https://\w+-?\w+\.onrender\.com$",
+    # ]
 CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'server.urls'
@@ -161,19 +170,23 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
+# URL show to browser
 STATIC_URL = 'static/'
 
+# Search static file on production in those folders
 STATICFILES_DIRS = (
-    str(BASE_DIR / 'client/build/static/'),
+    os.path.join(BASE_DIR, 'client/build/static/'),
 )
 
+# Static folder for production
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
+# Module used for searching static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Base url to serve media files
+# URL show on broser
 MEDIA_URL = 'media/'
 
-# Path where media is stored
+# Folder stores uploaded files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # Default primary key field type
@@ -181,8 +194,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+# Use in case there are following variables in .env file
 SUPERUSER_NAME = env('SUPERUSER_NAME')
 SUPERUSER_EMAIL = env('SUPERUSER_EMAIL')
 SUPERUSER_PASSWORD = env('SUPERUSER_PASSWORD')
-RENDER_EXTERNAL_URL = env("RENDER_EXTERNAL_URL")
+
+# To be sure in case don"t know variables were defined or not
+# SUPERUSER_NAME = os.environ.get('SUPERUSER_NAME', default="superbin1996")
+# SUPERUSER_EMAIL = os.environ.get('SUPERUSER_EMAIL', default="superbin1996@gmail.com")
+# SUPERUSER_PASSWORD = os.environ.get('SUPERUSER_PASSWORD', default="secret")
+
+f = open("./client/.env", "w")
+f.write(f"REACT_APP_RENDER_EXTERNAL_URL={RENDER_EXTERNAL_URL}")
+f.close()

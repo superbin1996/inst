@@ -72,11 +72,12 @@ const Register = () => {
               src={instagramLogo}
               alt="Instagram Logo"
             />
+            
+            {showAlert && <Alert></Alert>}
             <div>
               <input type="text" name='username' placeholder='Username' value={values.username} onChange={handleChange} onKeyDown={handleKeyDown} />
             </div>
 
-            {showAlert && <Alert></Alert>}
             <div>
               <input type="password" name='password' placeholder='Password' value={values.password} onChange={handleChange} onKeyDown={handleKeyDown} />
             </div>

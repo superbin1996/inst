@@ -7,6 +7,7 @@ import { HiOutlineEmojiHappy } from 'react-icons/hi';
 import { useAppContext } from '../context/appContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import {Loading, OptionModal} from './index';
+import moment from 'moment'
 
 const PostModal = () => {
 
@@ -20,9 +21,12 @@ const PostModal = () => {
     toggleOptionModal,
     getPostComments,
     changeImagePath,
+    // Follow
     isFollow,
     toggleFollowCondition,
     authFetch,
+    customAxios,
+    // Toggle modal
     showOptionModal,
     // profileUser,
     // rememberPosts,
@@ -34,26 +38,24 @@ const PostModal = () => {
   const [isLike, setIsLike] = useState(false)
   const [likeSum, setLikeSum] = useState(0)
 
+  let date = moment(post.timestamp)
+  date = date.startOf('day').fromNow()
+
   const hidePostModal = () => {
     togglePostModal('', true)
-    // if (Object.keys(profileUser).length === 0) {
-    //   navigate('/')
-    // }
-    // else {
-    //   navigate(`/${profileUser.username}`)
-    // }
 
     navigate(-1)
+    // window.history.back()
     console.log('navigate back');
     
-    // document.body.style.overflowY = 'auto'
+    document.body.style.overflowY = 'auto'
     // window.history.replaceState(null, "Instagram", "/")
   }
 
   const getLikeCondition = async () => {
-    const url = `/like/${params.postId}`
+    const url = `getLike/${params.postId}/`
     try {
-      const { data } = await authFetch(url)
+      const { data } = await customAxios(url)
       const { isLike, likeSum } = data
       setIsLike(isLike)
       setLikeSum(likeSum)
@@ -63,7 +65,7 @@ const PostModal = () => {
   }
 
   const toggleIsLike = async () => {
-    const url = `/like/${post.id}`
+    const url = `like/${post.id}/`
     try {
       const { data } = await authFetch.patch(url, {'isLike':!isLike})
       setLikeSum(data.likeSum)
@@ -78,7 +80,7 @@ const PostModal = () => {
   }
 
   const submitComment = async () => {
-    const url = `/comment/${post.id}`
+    const url = `comment/${post.id}/`
     try {
       const { data } = await authFetch.post(url, {comment})
       if (data.status === false) {
@@ -92,22 +94,20 @@ const PostModal = () => {
       setComment('')
     }
   }
-  useEffect(()=>{
-    if (!user) navigate("/register")
-  }, [user])
   
   const checkUser = () => {
-    if (String(user.id) === String(post.user__id)) {
-      return true
+    if (user) {
+      if (String(user.id) === String(post.user__id)) {
+        return true
+      }
+      else { return false }}
     }
-    else { return false }
-  }
 
   useEffect(() => {
     // document.body.style.overflowY = 'hidden'
     togglePostModal(params.postId)
     getPostComments(params.postId)
-    console.log(params);
+    // console.log(params);
     getLikeCondition()
   }, [params])
 
@@ -233,11 +233,11 @@ const PostModal = () => {
             <div className='post-interact-info'>
               {/* <img className='icon icon-user' src={process.env.PUBLIC_URL + '/ahri.jpg'} alt="ahri" /> */}
               <div className='post-interact-like-sum'>
-                liked by 1 person
+                {likeSum > 0 && `${likeSum} like${likeSum > 1 && 's'}`}
               </div>
 
               <div className='post-date'>
-                {post.timestamp}
+                {date}
               </div>
             </div>
 
