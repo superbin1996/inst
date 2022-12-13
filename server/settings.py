@@ -84,7 +84,7 @@ MIDDLEWARE = [
 
 # hostname
 # Dont't add default, it will use default. Change url in frontend
-RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL")
+# RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL")
 
 # CORS_ALLOWED_ORIGINS = []
 # if DEBUG:
@@ -198,6 +198,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SUPERUSER_NAME = env('SUPERUSER_NAME')
 SUPERUSER_EMAIL = env('SUPERUSER_EMAIL')
 SUPERUSER_PASSWORD = env('SUPERUSER_PASSWORD')
+RENDER_EXTERNAL_URL = env("RENDER_EXTERNAL_URL")
 
 # To be sure in case don"t know variables were defined or not
 # SUPERUSER_NAME = os.environ.get('SUPERUSER_NAME', default="superbin1996")
