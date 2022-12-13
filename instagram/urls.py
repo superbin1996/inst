@@ -15,7 +15,7 @@ urlpatterns = [
     path('post/<int:post_id>/', views.post),
     path('profile_posts/', views.profile_posts),
     path('following_posts/', views.following_posts),
-    path('user/<str:filename>/', views.user),
+    path('user/', views.user),
     path('getFollow/<int:user_id>/', views.getFollow),
     path('follow/<int:user_id>/', views.follow),
     path('getPostComments/<int:post_id>/', views.getPostComments),

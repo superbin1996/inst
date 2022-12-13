@@ -6,16 +6,18 @@ import { useAppContext } from '../context/appContext';
 const EditModal = () => {
   const {
     toggleEditModal,
-    // editPost,
+    editPost,
     user,
     changeImagePath,
     post,
-    caption,
-    setCaption,
+    // caption,
+    // setCaption,
     // showPostModal,
   } = useAppContext()
 
   const navigate = useNavigate()
+
+  // const [caption, setCaption] = useState(post.status)
 
   
   // Count text length in textarea
@@ -34,11 +36,11 @@ const EditModal = () => {
     const formData = new FormData()
     formData.append('status', eCaption)
     // formData.append('image', uploadImage)
-    formData.append('user', user.id)
+    formData.append('postId', post.id)
 
-    // editPost(post.id, formData)
-    console.log(post.id, formData);
-    setCaption(eCaption)
+    editPost(formData)
+    console.log(formData);
+    // setCaption(eCaption)
     toggleEditModal()
   }
 
@@ -46,10 +48,10 @@ const EditModal = () => {
     toggleEditModal()
   }
   
-  useEffect(()=>{
-    setECaption(caption)
-    // console.log(`eCaption:`, caption)
-  }, []) 
+  // useEffect(()=>{
+  //   setECaption(caption)
+  //   // console.log(`eCaption:`, caption)
+  // }, []) 
   
   if (!post) {
     return (

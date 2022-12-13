@@ -1,7 +1,7 @@
 import React, { useContext, useReducer } from "react";
 // import axios from 'axios'
 import reducer from './reducer'
-import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_BEGIN, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, TOGGLE_EDIT_MODAL, REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, GET_USER_SUCCESS, SHOW_DROPDOWN, LOGOUT_USER, GET_FOLLOW_CONDITION_SUCCESS, CHANGE_FOLLOW_CONDITION_SUCCESS, LOAD_MORE_POSTS_SUCCESS, ADD_POST_SUCCESS, HIDE_OPTION_MODAL, LOAD_MORE_PROFILE_POSTS_SUCCESS, GET_FOLLOWING_POSTS_BEGIN, REMEMBER_POSTS } from "./actions";
+import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_BEGIN, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, TOGGLE_EDIT_MODAL, REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, GET_USER_SUCCESS, SHOW_DROPDOWN, LOGOUT_USER, GET_FOLLOW_CONDITION_SUCCESS, CHANGE_FOLLOW_CONDITION_SUCCESS, LOAD_MORE_POSTS_SUCCESS, ADD_POST_SUCCESS, HIDE_OPTION_MODAL, LOAD_MORE_PROFILE_POSTS_SUCCESS, GET_FOLLOWING_POSTS_BEGIN, REMEMBER_POSTS, UPDATE_AVATAR_SUCCESS } from "./actions";
 import axios from 'axios'
 
 const user = localStorage.getItem('user')
@@ -102,7 +102,7 @@ const AppProvider = ({ children }) => {
     dispatch({ type: LOGIN_USER_BEGIN })
     try {
       const { data: { token } } = await customAxios.post(`auth/`, currentUser)
-      const { data: user } = await customAxios.get(`user/file_name/`, {
+      const { data: user } = await customAxios.get(`user/`, {
         headers: {
           Authorization: `Token ${token}`
         }
@@ -119,7 +119,7 @@ const AppProvider = ({ children }) => {
     } catch (error) {
       // dispatch({ type: LOGIN_USER_ERROR, payload: { 'msg': error } })
       console.log(error);
-      dispatch({ type: LOGIN_USER_ERROR, payload: {msg: error.message}})
+      dispatch({ type: LOGIN_USER_ERROR, payload: { msg: error.message } })
     }
   }
 
@@ -129,14 +129,14 @@ const AppProvider = ({ children }) => {
       const response = await customAxios.post(`users/`, currentUser)
       const data = response.data
       console.log(data.msg);
-      dispatch({ type: REGISTER_USER_SUCCESS, payload: data})
+      dispatch({ type: REGISTER_USER_SUCCESS, payload: data })
       setTimeout(() => {
         login(currentUser)
       }, 500)
     } catch (error) {
       // dispatch({type:REGISTER_USER_ERROR, payload: { 'msg': error } })
       console.log(error);
-      dispatch({ type: REGISTER_USER_ERROR, payload: {msg: error.message}})
+      dispatch({ type: REGISTER_USER_ERROR, payload: { msg: error.message } })
     }
   }
 
@@ -421,7 +421,7 @@ const AppProvider = ({ children }) => {
     const url = `posts?postId=${postId}/`
     try {
       const { data } = await authFetch.delete(url)
-      console.log(data.detail)
+      // console.log(data.detail)
     } catch (error) {
       console.log(error)
     }
@@ -434,10 +434,31 @@ const AppProvider = ({ children }) => {
   }
 
   // Edit post
-  function editPost(postId, formData) {
-    // FetchingFunction.EditPost(postId, formData, token)
+  const editPost = async (formData) => {
+    const url = `posts/`
+    try {
+      const { data } = await authFetch.patch(url, formData)
+      console.log(data);
+    }
+    catch (error) {
+      console.log(error)
+    }
   }
 
+  const updateAvatar = async (avatar) => {
+    const url = `user/`
+    try {
+      const { data } = await authFetch.patch(url, avatar)
+      console.log(data);
+
+      localStorage.setItem('user', JSON.stringify(data))
+      dispatch({ type: UPDATE_AVATAR_SUCCESS, payload: { user: data } })
+    }
+    catch (error) {
+      console.log(error)
+    }
+
+  }
 
   return (
     <AppContext.Provider
@@ -467,6 +488,7 @@ const AppProvider = ({ children }) => {
         deletePost,
         loadMoreProfilePosts,
         getFollowingPosts,
+        updateAvatar
       }}
     >
       {children}

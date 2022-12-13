@@ -59,7 +59,7 @@ def getPosts(request):
 
 
 
-@api_view(['POST', 'DELETE'])
+@api_view(['POST', 'DELETE', 'PATCH'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def posts(request):
@@ -69,12 +69,28 @@ def posts(request):
         post_status = data.get('status')
         # user_id = data.get('user')
         image = data.get('image')
+        ic(image)
         user = request.user
         if not image:
+            # Not image means using default image
             Post.objects.create(user=user, status=post_status)
         else:
             Post.objects.create(user=user, status=post_status, image=image)
         return Response({'status': True, 'detail':'create post success'}, status=status.HTTP_200_OK)
+
+    if request.method == 'PATCH':
+        data = request.data
+        post_id = int(data.get('postId'))
+        post_status = data.get('status')
+        try:
+            post = Post.objects.get(id=post_id)
+        except Post.DoesNotExist:
+            return Response({'status': False, 'detail':'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        post.status = post_status
+        post.save()
+
+        return Response(status=status.HTTP_200_OK)
 
     if request.method == 'DELETE':
         post_id = int(request.GET.get('postId'))
@@ -188,10 +204,9 @@ def following_posts(request):
 
 
 @api_view(['GET', 'PATCH'])
-@parser_classes([FileUploadParser])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
-def user(request, filename):
+def user(request):
     if request.method == 'GET':
         # request.user only work when have token Authorization
         current_user = request.user
@@ -206,15 +221,24 @@ def user(request, filename):
 
     """Update Avatar"""
     if request.method == 'PATCH':
-        if request.data['file']:
-            # if data-name is 'file', it will get the file with filename in arguments
-            data = request.data['file']
-            # ic(data)
-            a = User.objects.prefetch_related('avatar').get(id=request.user.id)
-            a.avatar = data
-            a.save()
+        data = request.data
+        image = data.get('avatar')
+        currentUser = User.objects.get(id=current_user.id)
+        ic(image)
+        if image:
+            currentUser.avatar = image
+            currentUser.save()
 
-            return Response({'status': True, 'detail': 'Avatar has updated'}, status=status.HTTP_200_OK)
+        newUser = User.objects.get(id=current_user.id)
+        user = {
+            'id': newUser.id,
+            'username': newUser.username,
+            'avatar': newUser.avatar.url.replace('/media/', ''),
+            # 'info': newUser.info,
+        }   
+
+        return Response(user, status=status.HTTP_200_OK)
+
 
 
 @api_view(['GET'])

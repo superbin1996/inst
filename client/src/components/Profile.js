@@ -3,8 +3,8 @@ import { BsThreeDots } from 'react-icons/bs';
 import { IoIosArrowUp } from 'react-icons/io'
 import { Header, Loading, ProfileNoPost, UploadModal } from './index';
 import { useAppContext } from '../context/appContext';
-import { useNavigate, useParams } from 'react-router-dom'; 
-import {ahri, haku} from "../assets/images/index"
+import { useNavigate, useParams } from 'react-router-dom';
+import { ahri, haku } from "../assets/images/index"
 
 export default function Profile() {
   const {
@@ -23,6 +23,7 @@ export default function Profile() {
     loadMoreProfilePosts,
     numOfProfilePages,
     profilePage,
+    updateAvatar,
   } = useAppContext()
 
   const params = useParams()
@@ -55,6 +56,17 @@ export default function Profile() {
     }
   }
 
+  const changeAvatar = (e) => {
+    e.preventDefault()
+
+    const formData = new FormData()
+    formData.append('avatar', e.target.files[0])
+    if (e.target.files[0]) {
+      formData.append('avatar', e.target.files[0])
+    }
+    updateAvatar(formData)
+  }
+
   useEffect(() => {
     if (profilePosts.length === 0) {
       window.scrollTo({ top: 0 })
@@ -78,7 +90,7 @@ export default function Profile() {
   return (
     <div className='profile-modal'>
       <Header />
-      {showUploadModal && <UploadModal/>}
+      {showUploadModal && <UploadModal />}
       {/* {showOptionModal && <OptionModal/>} */}
       <div className={'profile-cover'}>
         <div className={'profile-bar-left'}></div>
@@ -89,18 +101,18 @@ export default function Profile() {
 
             <label className='profile-avatar' htmlFor='avatar'>
               <img src={changeImagePath(profileUser.avatar)} alt={profileUser.avatar} />
-              {checkUser() && 
-              <input type="file" id='avatar' />
+              {checkUser() &&
+                <input type="file" id='avatar' onChange={changeAvatar} />
               }
             </label>
 
             <div className='profile-username'>{profileUser.username}</div>
             <div className='profile-message'>Message</div>
 
-            {checkUser() || 
-            <div className='profile-follow' onClick={()=>toggleFollowCondition(profileUser.id)}>
-              {isFollow?'Following':'Follow'}
-            </div>
+            {checkUser() ||
+              <div className='profile-follow' onClick={() => toggleFollowCondition(profileUser.id)}>
+                {isFollow ? 'Following' : 'Follow'}
+              </div>
             }
 
             <IoIosArrowUp className="profile-suggestion" />
@@ -108,9 +120,9 @@ export default function Profile() {
             <div className='profile-posts'>{totalProfilePosts} Posts</div>
             <div className='profile-followers'>{followers} followers</div>
             <div className='profile-following'>{following} following</div>
-            <textarea className='profile-info' 
+            <textarea className='profile-info'
               disabled
-              style={{height:'100px'}}
+              style={{ height: '100px' }}
               defaultValue={profileUser.info}
             >
             </textarea>
@@ -131,16 +143,16 @@ export default function Profile() {
               <div className={'profile-images'}>
 
                 {profilePosts.map((post, index) => {
-                  if (profilePosts.length === index + 1){
+                  if (profilePosts.length === index + 1) {
                     return (
                       <div key={post.id} className='profile-images-item'>
-                        <img src={changeImagePath(post.image)} alt={post.image} onClick={()=>{navigate(`/p/${post.id}`)}} ref={lastPostElementRef} />
-                      </div>  
+                        <img src={changeImagePath(post.image)} alt={post.image} onClick={() => { navigate(`/p/${post.id}`) }} ref={lastPostElementRef} />
+                      </div>
                     )
                   }
                   return (
                     <div key={post.id} className='profile-images-item'>
-                      <img src={changeImagePath(post.image)} alt={post.image} onClick={()=>{navigate(`/p/${post.id}`)}} />
+                      <img src={changeImagePath(post.image)} alt={post.image} onClick={() => { navigate(`/p/${post.id}`) }} />
                     </div>
                   )
                 })}
