@@ -1,7 +1,35 @@
 import React, { useContext, useReducer } from "react";
 // import axios from 'axios'
 import reducer from './reducer'
-import { CLEAR_STATES, GET_POSTS_BEGIN, GET_POSTS_SUCCESS, GET_POST_COMMENTS_SUCCESS, HANDLE_CHANGE, LOGIN_USER_BEGIN, LOGIN_USER_ERROR, LOGIN_USER_SUCCESS, SHOW_PROFILE, TOGGLE_POST_MODAL, GET_PROFILE_POSTS_BEGIN, GET_PROFILE_POSTS_SUCCESS, TOGGLE_UPLOAD_MODAL, TOGGLE_OPTION_MODAL, TOGGLE_EDIT_MODAL, REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, GET_USER_SUCCESS, SHOW_DROPDOWN, LOGOUT_USER, GET_FOLLOW_CONDITION_SUCCESS, CHANGE_FOLLOW_CONDITION_SUCCESS, LOAD_MORE_POSTS_SUCCESS, ADD_POST_SUCCESS, HIDE_OPTION_MODAL, LOAD_MORE_PROFILE_POSTS_SUCCESS, GET_FOLLOWING_POSTS_BEGIN, REMEMBER_POSTS, UPDATE_AVATAR_SUCCESS } from "./actions";
+import { 
+  CLEAR_STATES, 
+  GET_POSTS_BEGIN, 
+  GET_POSTS_SUCCESS, 
+  GET_POST_COMMENTS_SUCCESS, 
+  HANDLE_CHANGE, 
+  LOGIN_USER_BEGIN, 
+  LOGIN_USER_ERROR, 
+  LOGIN_USER_SUCCESS, 
+  TOGGLE_POST_MODAL, 
+  GET_PROFILE_POSTS_BEGIN, 
+  GET_PROFILE_POSTS_SUCCESS, 
+  TOGGLE_UPLOAD_MODAL, 
+  TOGGLE_OPTION_MODAL, 
+  TOGGLE_EDIT_MODAL, 
+  REGISTER_USER_BEGIN, 
+  REGISTER_USER_SUCCESS, 
+  REGISTER_USER_ERROR, 
+  SHOW_DROPDOWN, 
+  LOGOUT_USER, 
+  GET_FOLLOW_CONDITION_SUCCESS, 
+  CHANGE_FOLLOW_CONDITION_SUCCESS, 
+  LOAD_MORE_POSTS_SUCCESS, 
+  HIDE_OPTION_MODAL, 
+  LOAD_MORE_PROFILE_POSTS_SUCCESS, 
+  GET_FOLLOWING_POSTS_BEGIN, 
+  UPDATE_AVATAR_SUCCESS, 
+  EDIT_POST_SUCCESS
+} from "./actions";
 import axios from 'axios'
 
 const user = localStorage.getItem('user')
@@ -11,12 +39,16 @@ const token = localStorage.getItem('token')
 // http://127.0.0.1:8000. It will automatically change when work on Render because .env will be created by Render
 // React need add `REACT_APP_` prefix before environment variables
 // .replace(/[/]$/, "")
-const RENDER_EXTERNAL_URL = process.env.REACT_APP_RENDER_EXTERNAL_URL
+// const RENDER_EXTERNAL_URL = process.env.REACT_APP_RENDER_EXTERNAL_URL
 // || new Set("127.0.0.1", "localhost").has(window.location.hostname)
-const host = (process.env.NODE_ENV === "development") ? "http://127.0.0.1:8000" : RENDER_EXTERNAL_URL.replace(/[/]$/, "")
-console.log(host);
-// Check if `production` or `development`
+// const host = (process.env.NODE_ENV === "development") ? "http://127.0.0.1:8000" : RENDER_EXTERNAL_URL.replace(/[/]$/, "")
 console.log(process.env.NODE_ENV);
+
+// Test if really nead host or let host blank on production
+const host = (process.env.NODE_ENV === "development") ? "http://127.0.0.1:8000" : ""
+
+console.log("host:", host);
+// Check if `production` or `development`
 
 
 const initialState = {
@@ -438,7 +470,15 @@ const AppProvider = ({ children }) => {
     const url = `posts/`
     try {
       const { data } = await authFetch.patch(url, formData)
-      console.log(data);
+      // const postId = formData.get("postId")
+      const status = formData.get("status")
+      // state.posts.forEach((post, i)=>{
+      //   if (post.id == postId) {
+      //     state.posts[i].status = status
+      //   }
+      // })
+      dispatch({type:EDIT_POST_SUCCESS, payload: {status}})
+      
     }
     catch (error) {
       console.log(error)
@@ -478,17 +518,17 @@ const AppProvider = ({ children }) => {
         getProfilePosts,
         getPostComments,
         changeImagePath,
-        editPost,
         setShowDropdown,
         logout,
         toggleFollowCondition,
         authFetch,
         customAxios,
+        editPost,
         addPost,
         deletePost,
         loadMoreProfilePosts,
         getFollowingPosts,
-        updateAvatar
+        updateAvatar,
       }}
     >
       {children}

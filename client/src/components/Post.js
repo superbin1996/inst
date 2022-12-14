@@ -19,6 +19,7 @@ const Post = ({ post, lastPostElementRef }) => {
     authFetch,
     customAxios,
     user,
+    // post: postState,
   } = useAppContext()
 
   const [userComments, setUserComments] = useState([])
@@ -39,13 +40,15 @@ const Post = ({ post, lastPostElementRef }) => {
   }
 
   const toggleIsLike = async () => {
-    const url = `like/${post.id}/`
-    try {
-      const { data } = await authFetch.patch(url, {'isLike':!isLike})
-      setLikeSum(data.likeSum)
-      setIsLike(data.isLike)
-    } catch (error) {
-      console.log(error)
+    if (user) {
+      const url = `like/${post.id}/`
+      try {
+        const { data } = await authFetch.patch(url, {'isLike':!isLike})
+        setLikeSum(data.likeSum)
+        setIsLike(data.isLike)
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
@@ -99,7 +102,8 @@ const Post = ({ post, lastPostElementRef }) => {
     getUserComments(post.id)
     // document.body.style.overflowY = 'auto'
     getLikeCondition()
-  }, [navigate, isLike])
+    // dont't add isLike to dependencies
+  }, [navigate])
 
   return (
     <article className='post-cover' ref={lastPostElementRef}>
@@ -162,7 +166,7 @@ const Post = ({ post, lastPostElementRef }) => {
           </div>
 
           <div className='post-interact-like-sum'>
-            {likeSum > 0 && `${likeSum} like${likeSum > 1 && 's'}`}
+              {likeSum > 0 && (likeSum > 1 ? `${likeSum} likes` : `1 like`) }
           </div>
 
           <div className='post-date'>
