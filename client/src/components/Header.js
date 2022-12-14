@@ -81,7 +81,7 @@ export default function Header() {
             <div>
               Following posts
             </div>
-            <div onClick={logout}>
+            <div onClick={()=>{navigate('/register');logout()}}>
               Logout
             </div>
           </div>
