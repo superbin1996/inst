@@ -46,6 +46,7 @@ console.log(process.env.NODE_ENV);
 
 // Test if really nead host or let host blank on production
 const host = (process.env.NODE_ENV === "development") ? "http://127.0.0.1:8000" : ""
+const hostForImage = "https://instagram-3mke.onrender.com"
 
 console.log("host:", host);
 // Check if `production` or `development`
@@ -359,7 +360,7 @@ const AppProvider = ({ children }) => {
 
   // Change img url
   function changeImagePath(image) {
-    const baseUrl = `${host}/media/`
+    const baseUrl = `${hostForImage}/media/`
     // const baseUrl = '/media/'
     if ((image || '').includes(baseUrl)) {
       return image
