@@ -194,7 +194,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = 'instagram/media/'
 
 # Folder stores uploaded files
-MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
+# On Render production, media files can only be access via staticfiles/ folders
+MEDIA_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
