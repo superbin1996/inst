@@ -34,8 +34,8 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = 'RENDER' not in os.environ
-DEBUG = True
+DEBUG = 'RENDER' not in os.environ
+# DEBUG = True
 
 # ALLOWED_HOSTS = ["*"]
 # Must include localhost and 127.0.0.1 when using django-react
@@ -94,7 +94,7 @@ CORS_ALLOWED_ORIGINS =[
     'http://127.0.0.1:8000',
     # "https://instagram-3mke.onrender.com"
 ]
-# if not DEBUG:
+if not DEBUG:
 #     CORS_ALLOWED_ORIGINS.extend([
 #         'http://localhost:3000',
 #         'http://127.0.0.1:3000',
@@ -104,7 +104,7 @@ CORS_ALLOWED_ORIGINS =[
 #         "https://instagram-3mke.onrender.com"
 #     ])
 # else:
-CORS_ALLOWED_ORIGINS.append(RENDER_EXTERNAL_URL)
+    CORS_ALLOWED_ORIGINS.append(RENDER_EXTERNAL_URL)
     # CORS_ALLOWED_ORIGIN_REGEXES = [
         # r"^https://\w+-?\w+\.onrender\.com$",
     # ]
@@ -191,7 +191,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # URL show on broser
-MEDIA_URL = 'media/'
+MEDIA_URL = 'instagram/media/'
 
 # Folder stores uploaded files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')

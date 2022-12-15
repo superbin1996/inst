@@ -47,8 +47,6 @@ console.log(process.env.NODE_ENV);
 // Test if really nead host or let host blank on production
 const host = (process.env.NODE_ENV === "development") ? "http://127.0.0.1:8000" : ""
 
-const hostForImagePath = 'https://instagram-3mke.onrender.com'
-
 console.log("host:", host);
 // Check if `production` or `development`
 
@@ -361,7 +359,7 @@ const AppProvider = ({ children }) => {
 
   // Change img url
   function changeImagePath(image) {
-    const baseUrl = `${hostForImagePath}/media/`
+    const baseUrl = `${host}/instagram/media/`
     // const baseUrl = '/media/'
     if ((image || '').includes(baseUrl)) {
       return image
@@ -452,7 +450,8 @@ const AppProvider = ({ children }) => {
   }
 
   const deletePost = async (postId) => {
-    const url = `posts?postId=${postId}/`
+    // I use request.get in server, so don' add suffix at the end
+    const url = `posts?postId=${postId}`
     try {
       const { data } = await authFetch.delete(url)
       // console.log(data.detail)

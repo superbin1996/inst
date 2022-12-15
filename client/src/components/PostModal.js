@@ -231,7 +231,6 @@ const PostModal = () => {
 
             {/* Like sum */}
             <div className='post-interact-info'>
-              {/* <img className='icon icon-user' src={process.env.PUBLIC_URL + '/ahri.jpg'} alt="ahri" /> */}
               <div className='post-interact-like-sum'>
                 {likeSum > 0 && `${likeSum} like${likeSum > 1 && 's'}`}
               </div>

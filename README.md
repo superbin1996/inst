@@ -10,9 +10,4 @@ a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL wh
 ### Cannot register if admin is login
 
 
-<!-- Next, Allow getPost without login. Means that you need to remove authentication Token and change permission to Allow any.  
-Next. On Header component. Hide Upload icon and Avatar button if not login. Add register/login button.  
-Because there are some functions that require user. So maybe component should return JSX that doesn't trigger any functions like that.  
-If not, add condition to check null user before proceeding.  
-Or, add a dummy user object with id, location, username.... Remember to change check user condition on ProtectedRoute
- -->
+### Modify Image path need to change in settings.py, instagram/views.py, client/src/context/appContext.js, instagram/models.py, server/urls.py  

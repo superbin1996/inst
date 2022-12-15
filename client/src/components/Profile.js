@@ -100,7 +100,7 @@ export default function Profile() {
           <header className='profile-header'>
 
             <label className='profile-avatar' htmlFor='avatar'>
-              <img src={changeImagePath(profileUser.avatar)} alt={profileUser.avatar} />
+              <img src={changeImagePath(profileUser.avatar)} alt={"avatar"} />
               {checkUser() &&
                 <input type="file" id='avatar' onChange={changeAvatar} />
               }

@@ -48,7 +48,6 @@ export default function UploadModal() {
   }
 
   function skipChoosingPicture() {
-    // setPreviewImage(process.env.PUBLIC_URL + './default.jpg')
 
     // If using Route, delete first '.' in url
     setPreviewImage(defaultImg)

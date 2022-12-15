@@ -2,6 +2,7 @@ import { BsThreeDots } from 'react-icons/bs';
 import { IoIosArrowUp } from 'react-icons/io'
 import { useAppContext } from '../context/appContext';
 import { Header, UploadModal } from './index';
+import {ahri, haku} from "../assets/images/index"
 
 const ProfileNoPost = () => {
   const {
@@ -68,8 +69,8 @@ const ProfileNoPost = () => {
             {/* Center */}
             <article className={'gallery'}>
               <div className='story-cover'>
-                <img className='story-icon icon' src={process.env.PUBLIC_URL + '/ahri.jpg'} alt="ahri" />
-                <img className='story-icon icon' src={process.env.PUBLIC_URL + '/haku.jpg'} alt="haku" />
+                <img className='story-icon icon' src={ahri} alt="ahri" />
+                <img className='story-icon icon' src={haku} alt="haku" />
               </div>
 
               <div className={'profile-images'} style={{ display: 'grid', gridTemplateColumns: '1fr' }}>
