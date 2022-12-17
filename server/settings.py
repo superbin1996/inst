@@ -39,10 +39,11 @@ DEBUG = 'RENDER' not in os.environ
 
 # ALLOWED_HOSTS = ["*"]
 # Must include localhost and 127.0.0.1 when using django-react
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
+# RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+# if RENDER_EXTERNAL_HOSTNAME:
+#     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -64,7 +65,6 @@ AUTH_USER_MODEL = "instagram.User"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
@@ -72,6 +72,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 # REST_FRAMEWORK = {
@@ -177,7 +178,6 @@ STATICFILES_DIRS = (
 # Static folder for production
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 # Module used for searching static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # URL show on broser
 MEDIA_URL = 'instagram/media/'
@@ -186,6 +186,10 @@ MEDIA_URL = 'instagram/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
 # On Render production, media files can only be access via staticfiles/ folders
 MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
+
+# Package allow to store media file in local on deployment
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

@@ -36,7 +36,6 @@ urlpatterns = [
     # re_path(r'^media/(?P<path>.*$)', serve, {'document_root': settings.MEDIA_ROOT})
 ]
 
+# Add static path so you can render image from server
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
-# Add static path so you can render image from server
