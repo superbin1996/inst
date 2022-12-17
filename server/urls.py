@@ -33,8 +33,8 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html')),
     path('register/', TemplateView.as_view(template_name='index.html')),
     path('<path:profileName>/', TemplateView.as_view(template_name='index.html')),
-    path('instagram/media/<path:profileName>/', TemplateView.as_view(template_name='index.html')),
-    re_path(r'^media/(?P<path>.*$)', serve, {'document_root': settings.MEDIA_ROOT})
+    path('instagram/media/<path:iamgeName>/', TemplateView.as_view(template_name='index.html')),
+    # re_path(r'^media/(?P<path>.*$)', serve, {'document_root': settings.MEDIA_ROOT})
 ]
 
 # Add static path so you can render image from server

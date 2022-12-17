@@ -187,7 +187,8 @@ MEDIA_URL = 'instagram/media/'
 # Folder stores uploaded files
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
 # On Render production, media files can only be access via staticfiles/ folders
-MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'client/build/static/media/')
 
 # Package allow to store media file in local on deployment
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
