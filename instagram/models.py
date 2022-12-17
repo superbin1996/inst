@@ -13,13 +13,13 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 class User(AbstractUser):
-  avatar = models.ImageField(default='images/default/ahri.jpg', upload_to='images/avatar/')
+  avatar = models.ImageField(default='ahri.jpg', upload_to='')
   info = models.TextField(null=True, blank=True)
 
 class Post(models.Model):
   status = models.CharField(max_length=800, null=True)
   user = models.ForeignKey(User, on_delete = models.CASCADE, related_name = 'posts')
-  image = models.ImageField(default='images/default/default.jpg', upload_to='images/post/')
+  image = models.ImageField(default='default.jpg', upload_to='')
   timestamp = models.DateTimeField(auto_now_add=True)
 
   class Meta:

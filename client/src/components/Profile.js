@@ -50,7 +50,9 @@ export default function Profile() {
 
   const checkUser = () => {
     // I will soon remove restriction for view image before login, so other can view images without login
+    console.log('not user');
     if (user) {
+      console.log('user logged in');
       if (String(profileUser.id) === String(user.id)) return true
       else return false
     }
@@ -146,13 +148,13 @@ export default function Profile() {
                   if (profilePosts.length === index + 1) {
                     return (
                       <div key={post.id} className='profile-images-item'>
-                        <img src={changeImagePath(post.image)} alt={post.image} onClick={() => { navigate(`/p/${post.id}`) }} ref={lastPostElementRef} />
+                        <img src={changeImagePath(post.image)} alt={'image'} onClick={() => { navigate(`/p/${post.id}`) }} ref={lastPostElementRef} />
                       </div>
                     )
                   }
                   return (
                     <div key={post.id} className='profile-images-item'>
-                      <img src={changeImagePath(post.image)} alt={post.image} onClick={() => { navigate(`/p/${post.id}`) }} />
+                      <img src={changeImagePath(post.image)} alt={'image'} onClick={() => { navigate(`/p/${post.id}`) }} />
                     </div>
                   )
                 })}

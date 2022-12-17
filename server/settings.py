@@ -15,6 +15,9 @@ import os
 import environ
 from decouple import config
 from dj_database_url import parse as dburl
+import mimetypes
+
+mimetypes.add_type("text/javascript", ".js", True)
 # 2 Following lines is required to getenv()
 # from dotenv import load_dotenv
 # load_dotenv()
@@ -39,16 +42,16 @@ DEBUG = 'RENDER' not in os.environ
 
 # ALLOWED_HOSTS = ["*"]
 # Must include localhost and 127.0.0.1 when using django-react
-# ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
-# RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-# if RENDER_EXTERNAL_HOSTNAME:
-#     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Application definition
 
 INSTALLED_APPS = [
     'instagram',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -56,7 +59,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'corsheaders',
     'rest_framework.authtoken',
     'django_cleanup.apps.CleanupConfig',
 ]
@@ -65,6 +67,7 @@ AUTH_USER_MODEL = "instagram.User"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
@@ -72,7 +75,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 # REST_FRAMEWORK = {

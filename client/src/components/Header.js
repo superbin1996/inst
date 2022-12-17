@@ -16,6 +16,7 @@ export default function Header() {
     setShowDropdown,
     logout,
   } = useAppContext()
+
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -37,6 +38,7 @@ export default function Header() {
     // getProfilePosts(userId)
     // showProfile(userId)
     navigate(`/${user.username}`)
+    setShowDropdown()
   }
 
   return (
