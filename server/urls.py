@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.authtoken import views
 from django.views.generic import TemplateView
+from django.views.static import serve
 
 # Add prefix to url will allow access browser url both having prefix or not
 # Not add prefix to url will only allow access browser url not having prefix
@@ -32,5 +33,10 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html')),
     path('register/', TemplateView.as_view(template_name='index.html')),
     path('<path:profileName>/', TemplateView.as_view(template_name='index.html')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # re_path(r'^media/(?P<path>.*$)', serve, {'document_root': settings.MEDIA_ROOT})
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
 # Add static path so you can render image from server
