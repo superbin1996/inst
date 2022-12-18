@@ -37,8 +37,8 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'RENDER' not in os.environ
-# DEBUG = True
+# DEBUG = 'RENDER' not in os.environ
+DEBUG = True
 
 # ALLOWED_HOSTS = ["*"]
 # Must include localhost and 127.0.0.1 when using django-react
@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
 ]
 
+# Added
 AUTH_USER_MODEL = "instagram.User"
 
 MIDDLEWARE = [
@@ -97,7 +98,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL")
-if DEBUG and RENDER_EXTERNAL_URL:
+if RENDER_EXTERNAL_URL:
     CORS_ALLOWED_ORIGINS.append(RENDER_EXTERNAL_URL)
 
 # CORS_ALLOW_ALL_ORIGINS = True
@@ -108,7 +109,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'client/build')
+            os.path.join(BASE_DIR, 'instagram/client/build/')
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -159,6 +160,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+# Changed
 TIME_ZONE = 'Asia/Tokyo'
 
 USE_I18N = True
@@ -174,21 +176,22 @@ STATIC_URL = 'static/'
 
 # Search static file on production in those folders
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'client/build/static/'),
+    os.path.join(BASE_DIR, 'instagram/client/build/static/'),
 )
 
 # Static folder for production
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 # Module used for searching static files
 
-# URL show on broser
+# URL show on broser.
+# If changing MEDIA_URL, need to change url in instagram/views.py and instagram/client/src/context/appContext.js, 
 MEDIA_URL = 'instagram/media/'
 
 # Folder stores uploaded files
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
 # On Render production, media files can only be access via staticfiles/ folders
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'client/build/static/media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
 
 # Package allow to store media file in local on deployment
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -203,12 +206,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SUPERUSER_NAME = env('SUPERUSER_NAME')
 SUPERUSER_EMAIL = env('SUPERUSER_EMAIL')
 SUPERUSER_PASSWORD = env('SUPERUSER_PASSWORD')
-
-# To be sure in case don"t know variables were defined or not
-# SUPERUSER_NAME = os.environ.get('SUPERUSER_NAME', default="superbin1996")
-# SUPERUSER_EMAIL = os.environ.get('SUPERUSER_EMAIL', default="superbin1996@gmail.com")
-# SUPERUSER_PASSWORD = os.environ.get('SUPERUSER_PASSWORD', default="secret")
-
-# f = open("./client/.env.production", "w")
-# f.write(f"REACT_APP_RENDER_EXTERNAL_URL={RENDER_EXTERNAL_URL}")
-# f.close()
