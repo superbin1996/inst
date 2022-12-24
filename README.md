@@ -1,5 +1,7 @@
 # Project App: `Instagram`
 
+https://youtu.be/lt2pLhJaFck
+
 ## Project structure
 
 > `server` directory is project folder, `instagram` directory is app folder, `instagram/client` is client-frontend, `instagram/media` directory stores media/image files
