@@ -39,14 +39,16 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = 'RENDER' not in os.environ
 # Must set to true if using whitenoise to upload media files
+
+# DEBUG = False will lead to cors_headers block static file
 DEBUG = True
 
-# ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*"]
 # Must include localhost and 127.0.0.1 when using django-react
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+# RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+# if RENDER_EXTERNAL_HOSTNAME:
+#     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Application definition
 
@@ -58,6 +60,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
+    'cloudinary',
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
@@ -90,19 +94,19 @@ MIDDLEWARE = [
 # hostname
 # Dont't add default, it will use default. Change url in frontend
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://localhost:3001',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+#     'http://127.0.0.1:3000',
+#     'http://localhost:3001',
+#     'http://localhost:8000',
+#     'http://127.0.0.1:8000',
+# ]
 
-RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL")
-if RENDER_EXTERNAL_URL:
-    CORS_ALLOWED_ORIGINS.append(RENDER_EXTERNAL_URL)
+# RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL")
+# if RENDER_EXTERNAL_URL:
+#     CORS_ALLOWED_ORIGINS.append(RENDER_EXTERNAL_URL)
 
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'server.urls'
 
@@ -194,9 +198,15 @@ MEDIA_URL = 'instagram/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
 
-# Package allow to store media file in local on deployment
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': env('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': env('CLOUDINARY_API_KEY'),
+    'API_SECRET': env('CLOUDINARY_API_SECRET')
+}
+
+# Package allow to store media file in local on deployment
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

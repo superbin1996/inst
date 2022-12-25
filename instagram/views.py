@@ -42,8 +42,9 @@ def getPosts(request):
         ic(page)
         ic(request.get_host())
         try:
+            # image url cannot get by values() method, so add another attribute to models field
             all_posts = Post.objects.all().values(
-                'id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
+                'id', 'status', 'user__username', 'user__id', 'user__avatar', 'user__avatar_url', 'image_url', 'image', 'timestamp')
         except Post.DoesNotExist:
             return Response({'status': False, 'detail': 'Cannot get posts'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -75,8 +76,15 @@ def posts(request):
         if not image:
             # Not image means using default image
             Post.objects.create(user=user, status=post_status)
+            # Post.objects.get(a) 
+
         else:
-            Post.objects.create(user=user, status=post_status, image=image)
+            a = Post(user=user, status=post_status, image=image)
+            a.save()
+            a.id
+            b = Post.objects.get(id = a.id)
+            b.image_url = a.image.url
+            b.save()
         return Response({'status': True, 'detail': 'create post success'}, status=status.HTTP_200_OK)
 
     if request.method == 'PATCH':
@@ -109,7 +117,7 @@ def post(request, post_id):
     try:
         # get cannot use values(), so need to use filter, it will return an array of object
         post = Post.objects.filter(id=post_id).values(
-            'id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
+            'id', 'status', 'user__username', 'user__id', 'user__avatar', 'user__avatar_url', 'image', 'image_url', 'timestamp')
     except Post.DoesNotExist:
         return Response({'status': False, 'detail': 'Post does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -128,7 +136,7 @@ def profile_posts(request):
 
     try:
         all_posts = Post.objects.filter(user=an_user).values(
-            'id', 'status', 'user__username', 'user__info', 'user__id', 'user__avatar', 'image', 'timestamp')
+            'id', 'status', 'user__username', 'user__info', 'user__id', 'user__avatar', 'user__avatar_url', 'image', 'image_url', 'timestamp')
     except Post.DoesNotExist:
         return Response({'status': False, "detail": "User don't have any post yet."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -153,7 +161,8 @@ def profile_posts(request):
     profile_user = {
         'id': an_user.id,
         'username': an_user.username,
-        'avatar': an_user.avatar.url.replace('/instagram/media/', ''),
+        'avatar': an_user.avatar.url,
+        # 'avatar': str(an_user.avatar).replace('/instagram/media/', ''),
         'info': an_user.info
     }
 
@@ -194,7 +203,7 @@ def following_posts(request):
     else:
         following_posts = Post.objects.filter(
             user__in=users_following).values(
-            'id', 'status', 'user__username', 'user__id', 'user__avatar', 'image', 'timestamp')
+            'id', 'status', 'user__username', 'user__id', 'user__avatar', 'user__avatar_url', 'image', 'image_url', 'timestamp')
 
         posts_length = len(following_posts)
         num_of_pages = math.ceil(posts_length/10)
@@ -218,7 +227,8 @@ def user(request):
         user = {
             'id': current_user.id,
             'username': current_user.username,
-            'avatar': current_user.avatar.url.replace('/instagram/media/', ''),
+            'avatar': current_user.avatar.url,
+            # 'avatar': str(current_user.avatar).replace('/instagram/media/', ''),
             # 'info': current_user.info,
         }
 
@@ -239,7 +249,8 @@ def user(request):
         user = {
             'id': newUser.id,
             'username': newUser.username,
-            'avatar': newUser.avatar.url.replace('/instagram/media/', ''),
+            # 'avatar': newUser.avatar.url.replace('/instagram/media/', ''),
+            'avatar': newUser.avatar.url,
             # 'info': newUser.info,
         }
 
@@ -306,7 +317,7 @@ def getPostComments(request, post_id):
     # Get comments
     if request.method == "GET":
         comments = post.comments.all().values(
-            'id', 'post', 'content', 'user__username', 'user__id', 'user__avatar', 'timestamp')
+            'id', 'post', 'content', 'user__username', 'user__id', 'user__avatar', 'user__avatar_url', 'timestamp')
 
         return Response(comments, status=status.HTTP_200_OK)
 

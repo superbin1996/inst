@@ -75,7 +75,7 @@ export default function Header() {
         <FaRegCompass className='icon' />
         <AiOutlineHeart className='icon' />
         <div className='dropdown' onClick={(e) => e.stopPropagation()}>
-          <img className='icon-user' src={changeImagePath(user.avatar)} alt={"avatar"} onClick={setShowDropdown} />
+          <img className='icon-user' src={user.avatar} alt={"avatar"} onClick={setShowDropdown} />
           <div id='myDropDown' className={showDropdown ? 'dropdown-content show-dropdown' : 'dropdown-content'}>
             <div onClick={navigateProfile}>
               Profile

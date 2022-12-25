@@ -145,7 +145,7 @@ const PostModal = () => {
           {/* Image */}
           <div className='modal-image'>
             <div className='modal-file-1'>
-              <img src={changeImagePath(post.image)} alt={post.image} onDoubleClick={toggleIsLike} />
+              <img src={changeImagePath(post.image_url)} alt={'image'} onDoubleClick={toggleIsLike} />
             </div>
           </div>
 
@@ -154,7 +154,7 @@ const PostModal = () => {
 
             {/* Post owner info */}
             <div className='post-info-1'>
-              <img className='icon-user-1 icon' style={{minWidth:'52px'}} src={changeImagePath(post.user__avatar)} alt={post.user__avatar} onClick={()=>navigate(`/${post.user__username}`)} />
+              <img className='icon-user-1 icon' style={{minWidth:'52px'}} src={changeImagePath(post.user__avatar_url)} alt={'avatar'} onClick={()=>navigate(`/${post.user__username}`)} />
 
               {/* Follow Btn */}
               <div className='username-and-caption'>
@@ -172,7 +172,7 @@ const PostModal = () => {
               {post.status &&
                 <div className='post-info-1'>
                   <div>
-                    <img className='icon-user-1 icon' src={changeImagePath(post.user__avatar)} alt={post.user__avatar} onClick={()=>navigate(`/${post.user__username}`)} />
+                    <img className='icon-user-1 icon' src={changeImagePath(post.user__avatar_url)} alt={'avatar'} onClick={()=>navigate(`/${post.user__username}`)} />
                   </div>
 
                   <div className='username-and-caption'>
@@ -202,7 +202,7 @@ const PostModal = () => {
                 return (
                   <div className='post-info-1' key={comment.id}>
                     <div>
-                      <img className='icon-user-1 icon' src={changeImagePath(comment.user__avatar)} alt={comment.user__avatar} onClick={()=>navigate(`/${comment.user__username}`)} />
+                      <img className='icon-user-1 icon' src={changeImagePath(comment.user__avatar_url)} alt={'avatar'} onClick={()=>navigate(`/${comment.user__username}`)} />
                     </div>
 
                     <div className='username-and-caption'>

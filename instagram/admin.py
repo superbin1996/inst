@@ -3,10 +3,10 @@ from django.contrib.auth.admin import UserAdmin
 from .models import User, Post, Follow, Comment, Like
 
 UserAdmin.list_filter += ('avatar',)
-UserAdmin.fieldsets += (('avatar', {'fields': ('avatar','info',)}),)
+UserAdmin.fieldsets += (('avatar', {'fields': ('avatar', "avatar_url", 'info')}),)
 
 class UserAdmin(UserAdmin):
-    list_display = ("id", "username", "avatar")
+    list_display = ("id", "username", "avatar", "avatar_url")
 
 
 class PostAdmin(admin.ModelAdmin):

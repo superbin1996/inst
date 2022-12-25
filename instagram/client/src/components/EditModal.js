@@ -95,14 +95,14 @@ const EditModal = () => {
               {/* Image */}
               <div className='modal-preview-image'>
                 <div className='modal-file'>
-                  <img src={changeImagePath(post.image)} alt={post.image} style={{borderRadius:'0px'}} />
+                  <img src={changeImagePath(post.image_url)} alt={'image'} style={{borderRadius:'0px'}} />
                 </div>
               </div>
 
               {/* Caption input */}
               <div className='modal-upload-caption'>
                 <div className='post-info'>
-                  <img className='icon-user-1 icon' src={changeImagePath(`/${user.avatar}`)} alt={user.avatar} />
+                  <img className='icon-user-1 icon' src={user.avatar} alt={'avatar'} />
                   <p>{user.username}</p>
                 </div>
                 <textarea name="" id="" cols="30" rows="13" placeholder='Write a caption...' autoFocus value={eCaption} onChange={inputECaption} />

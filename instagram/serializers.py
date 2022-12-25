@@ -1,9 +1,10 @@
 from rest_framework import serializers
-from instagram.models import User, Follow, Like
+from instagram.models import User
 from django.conf import settings
 from django.db.models.signals import post_save
-from django.dispatch import receiver
-from rest_framework.authtoken.models import Token
+# from django.dispatch import receiver
+# from rest_framework.authtoken.models import Token
+from icecream import ic
 
 # @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 # def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -23,7 +24,13 @@ class UserSerializer(serializers.ModelSerializer):
   }}
 
   def create(self, validated_data):
+    """
+    Token will be created on models.py by signal
+    """
     user = User.objects.create_user(**validated_data)
+    a = User.objects.get(id = user.id)
+    a.avatar_url = user.avatar.url
+    a.save()
     # Token.objects.create(user=user)
     # Follow.objects.create(user=user)
     # Like.objects.create(user=user)

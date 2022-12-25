@@ -125,7 +125,7 @@ const Home = () => {
       <div className={'bar-right'}>
         <div className='post-info-1' style={{ paddingTop: '50px' }}>
           <div className='bar-right-avatar'>
-            <img src={changeImagePath(user.avatar)} alt={user.avatar} onClick={navigateToProfile} />
+            <img src={user.avatar} alt={'avatar'} onClick={navigateToProfile} />
           </div>
 
           <div className='username-and-caption' onClick={navigateToProfile}>

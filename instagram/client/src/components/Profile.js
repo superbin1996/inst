@@ -27,6 +27,7 @@ export default function Profile() {
   } = useAppContext()
 
   const params = useParams()
+  console.log(params);
   const navigate = useNavigate()
 
   const observer = useRef()
@@ -70,12 +71,12 @@ export default function Profile() {
   }
 
   useEffect(() => {
-    if (profilePosts.length === 0) {
+    if (profilePosts.length === 0 || params.profileName !== profileUser.username)  {
       window.scrollTo({ top: 0 })
       // document.body.style.overflowY = 'hidden'
       getProfilePosts(params.profileName)
     }
-  }, [])
+  }, [params])
 
   if (isLoading) {
     return (
@@ -102,7 +103,7 @@ export default function Profile() {
           <header className='profile-header'>
 
             <label className='profile-avatar' htmlFor='avatar'>
-              <img src={changeImagePath(profileUser.avatar)} alt={"avatar"} />
+              <img src={profileUser.avatar} alt={"avatar"} />
               {checkUser() &&
                 <input type="file" id='avatar' onChange={changeAvatar} />
               }
@@ -126,8 +127,7 @@ export default function Profile() {
               disabled
               style={{ height: '100px' }}
               defaultValue={profileUser.info}
-            >
-            </textarea>
+            />
           </header>
 
 
@@ -148,13 +148,13 @@ export default function Profile() {
                   if (profilePosts.length === index + 1) {
                     return (
                       <div key={post.id} className='profile-images-item'>
-                        <img src={changeImagePath(post.image)} alt={'image'} onClick={() => { navigate(`/p/${post.id}`) }} ref={lastPostElementRef} />
+                        <img src={changeImagePath(post.image_url)} alt={'image'} onClick={() => { navigate(`/p/${post.id}`) }} ref={lastPostElementRef} />
                       </div>
                     )
                   }
                   return (
                     <div key={post.id} className='profile-images-item'>
-                      <img src={changeImagePath(post.image)} alt={'image'} onClick={() => { navigate(`/p/${post.id}`) }} />
+                      <img src={changeImagePath(post.image_url)} alt={'image'} onClick={() => { navigate(`/p/${post.id}`) }} />
                     </div>
                   )
                 })}

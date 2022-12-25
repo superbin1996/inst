@@ -10,7 +10,7 @@
     "setup-server": "npm install && pip install -r requirements.txt",
     "server": "python manage.py runserver",
     "server-ubuntu": "python manage.py runserver",
-    "client": "npm start --prefix client",
+    "client": "npm start --prefix instagram/client",
     "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
     "start-ubuntu": "concurrently --kill-others-on-fail \"npm run server-ubuntu\" \"npm run client\""
   },

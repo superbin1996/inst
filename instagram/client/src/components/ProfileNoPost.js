@@ -56,9 +56,11 @@ const ProfileNoPost = () => {
             <div className='profile-posts'>{totalProfilePosts} posts</div>
             <div className='profile-followers'>{followers} followers</div>
             <div className='profile-following'>{following} following</div>
-            <div className='profile-info'>
-              I am {profileUser.username} and I am awesome
-            </div>
+            <textarea className='profile-info'
+              disabled
+              style={{ height: '100px' }}
+              defaultValue={profileUser.info}
+            />
           </header>
 
 

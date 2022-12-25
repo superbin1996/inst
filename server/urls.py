@@ -35,9 +35,9 @@ urlpatterns = [
     path('<path:profileName>/', TemplateView.as_view(template_name='index.html')),
 
     # Not really need. Splice to remove prefix
-    path(f'{settings.MEDIA_URL[1:]}<path:image>/', TemplateView.as_view(template_name='index.html')),
+    # path(f'{settings.MEDIA_URL[1:]}<path:image>/', TemplateView.as_view(template_name='index.html')),
 ]
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # Add static path so you can render image from server
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# if settings.DEBUG:
+#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

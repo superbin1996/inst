@@ -5,22 +5,42 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
+from icecream import ic
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
+  """
+  Create token for created user
+  """
+  if created:
+    Token.objects.create(user=instance)
 
 class User(AbstractUser):
-  avatar = models.ImageField(default='ahri.jpg', upload_to='')
+  avatar = models.ImageField(default='ahri_dpogkv.jpg', upload_to='')
+  avatar_url = models.TextField(null=True, blank=True)
   info = models.TextField(null=True, blank=True)
 
+  # Correct image.url can only be created after models field created.
+  def save(self, *args, **kwargs):
+    super().save(*args, **kwargs)
+    self.avatar_url = self.avatar.url
+    super().save(*args, **kwargs)
+
 class Post(models.Model):
-  status = models.CharField(max_length=800, null=True)
+  status = models.CharField(max_length=800, null=True, blank=True)
   user = models.ForeignKey(User, on_delete = models.CASCADE, related_name = 'posts')
-  image = models.ImageField(default='default.jpg', upload_to='')
+  image = models.ImageField(default='default_kggq2b.jpg', upload_to='')
+  image_url = models.TextField(null=True, blank=True)
   timestamp = models.DateTimeField(auto_now_add=True)
+
+  # Correct image.url can only be created after models field created.
+  # Following method is applied for upload on admin side only.
+  # For Client side upload, go to views.py instead
+  def save(self, *args, **kwargs):
+    super().save(*args, **kwargs)
+    self.image_url = self.image.url
+    super().save(*args, **kwargs)
 
   class Meta:
     ordering = ['-timestamp']

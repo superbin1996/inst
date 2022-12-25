@@ -857,15 +857,16 @@ code {
   /* background-color: salmon; */
   display: grid;
   grid-template-columns: repeat(3, minmax(20px, 33%));
-  /* grid-template-rows: repeat(auto-fit, minmax(20px, 33%)); */
+  /* grid-template-rows: repeat(auto-fit, minmax(100px, 33%)); */
   gap: 10px;
 }
 
 .profile-images-item {
   /* border: 1px solid #0000ff; */
   background-color: lightblue;
-  place-self: stretch;
+  /* place-self: stretch; */
   height: 100%;
+  max-height: 250px;
   cursor: pointer;
 }
 

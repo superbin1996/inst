@@ -112,7 +112,7 @@ const Post = ({ post, lastPostElementRef }) => {
         <div className='post-info-cover'>
           {/* Post owner */}
           <div className='post-info'>
-            <img className='icon-user-1 icon' src={changeImagePath(post.user__avatar)} alt="haku" onClick={() => navigateProfile(post.user__username)} />
+            <img className='icon-user-1 icon' src={changeImagePath(post.user__avatar_url)} alt="haku" onClick={() => navigateProfile(post.user__username)} />
             <div style={{ fontWeight: '500' }} onClick={() => navigateProfile(post.user__username)}>
               {post.user__username}
             </div>
@@ -122,7 +122,7 @@ const Post = ({ post, lastPostElementRef }) => {
 
         {/* Post picture */}
         <div className='post-picture'>
-          <img src={changeImagePath(post.image)} alt={post.image} onDoubleClick={toggleIsLike} />
+          <img src={changeImagePath(post.image_url)} alt={post.image} onDoubleClick={toggleIsLike} />
           <div className='post-picture-number'>
             <VscDebugStackframeDot style={{ transform: 'scale(1.5)' }} />
           </div>

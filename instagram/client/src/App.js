@@ -12,7 +12,7 @@ function App() {
           <Route index element={<ProtectedRoute><SharedLayout/></ProtectedRoute>}/>
           {/* <Route index element={<SharedLayout/>}/> */}
           <Route path='p/:postId' element={<PostModal/>}/>
-          <Route path=':profileName' element={<Profile/>} />
+          <Route path='/:profileName' element={<Profile/>} />
         </Route>
         <Route path='/register' element={<Register/>} />
         <Route path='*' element={<Error />}></Route>

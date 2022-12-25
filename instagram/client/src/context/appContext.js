@@ -359,14 +359,16 @@ const AppProvider = ({ children }) => {
 
   // Change img url
   function changeImagePath(image) {
-    const baseUrl = `${host}/instagram/media/`
-    // const baseUrl = '/media/'
-    if ((image || '').includes(baseUrl)) {
+    // const baseUrl = `${host}/instagram/media/`
+    // const baseUrl = `https://res.cloudinary.com/df5gnelxq/image/upload/v1671943791/`
+    // // const baseUrl = '/media/'
+    // if ((image || '').includes(baseUrl)) {
+    //   return image
+    // }
+    // else {
+    //   return baseUrl + image
+    // }
       return image
-    }
-    else {
-      return baseUrl + image
-    }
   }
 
 
