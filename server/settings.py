@@ -40,7 +40,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 # Must set to true if using whitenoise to upload media files
 
 # DEBUG = False will lead to cors_headers block static file
-DEBUG = False
+DEBUG = True
+RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL", default='https://instagram-3mke.onrender.com')
+if RENDER_EXTERNAL_URL:
+    DEBUG = False
 
 # ALLOWED_HOSTS = ["*"]
 # Must include localhost and 127.0.0.1 when using django-react
@@ -100,7 +103,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:8000',
 ]
 
-RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL")
+# RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL", default='https://instagram-3mke.onrender.com')
 if RENDER_EXTERNAL_URL:
     CORS_ALLOWED_ORIGINS.append(RENDER_EXTERNAL_URL)
 
