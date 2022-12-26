@@ -246,7 +246,7 @@ const PostModal = () => {
                 <input type="text" value={comment} onChange={e=>setComment(e.target.value)} /> */}
               <div className='post-comment-icon'>
                 <HiOutlineEmojiHappy className='HiOutlineEmojiHappy' />
-                <input placeholder='Add comment...' name='comment' value={comment} onChange={handleCommentChange} />
+                <input disabled={user?false:true} placeholder='Add comment...' name='comment' value={comment} onChange={handleCommentChange} />
               </div>
 
               <div className='post-comment-post' onClick={submitComment}>

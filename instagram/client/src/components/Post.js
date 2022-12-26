@@ -179,7 +179,7 @@ const Post = ({ post, lastPostElementRef }) => {
 
           <div className='post-comment-icon'>
             <HiOutlineEmojiHappy className='HiOutlineEmojiHappy' />
-            <input placeholder='Add comment...' value={comment} onChange={handleChange} />
+            <input disabled={user?false:true} placeholder='Add comment...' value={comment} onChange={handleChange} />
           </div>
 
           <div className='post-comment-post' onClick={submitComment}>

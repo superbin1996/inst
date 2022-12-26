@@ -15,9 +15,8 @@ import os
 import environ
 from decouple import config
 from dj_database_url import parse as dburl
-import mimetypes
 
-mimetypes.add_type("text/javascript", ".js", True)
+
 # 2 Following lines is required to getenv()
 # from dotenv import load_dotenv
 # load_dotenv()
@@ -41,14 +40,14 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 # Must set to true if using whitenoise to upload media files
 
 # DEBUG = False will lead to cors_headers block static file
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = ["*"]
 # Must include localhost and 127.0.0.1 when using django-react
-# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-# RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-# if RENDER_EXTERNAL_HOSTNAME:
-#     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Application definition
 
@@ -60,9 +59,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     'cloudinary_storage',
     'cloudinary',
-    'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
     'django_cleanup.apps.CleanupConfig',
@@ -73,7 +72,6 @@ AUTH_USER_MODEL = "instagram.User"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
@@ -94,19 +92,19 @@ MIDDLEWARE = [
 # hostname
 # Dont't add default, it will use default. Change url in frontend
 
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:3000',
-#     'http://127.0.0.1:3000',
-#     'http://localhost:3001',
-#     'http://localhost:8000',
-#     'http://127.0.0.1:8000',
-# ]
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:3001',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
 
-# RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL")
-# if RENDER_EXTERNAL_URL:
-#     CORS_ALLOWED_ORIGINS.append(RENDER_EXTERNAL_URL)
+RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL")
+if RENDER_EXTERNAL_URL:
+    CORS_ALLOWED_ORIGINS.append(RENDER_EXTERNAL_URL)
 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'server.urls'
 

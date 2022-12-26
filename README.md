@@ -11,23 +11,46 @@ ________________
   
 On terminal in `root directory` run (if `npm` was installed):  
 
-> npm run setup-production  
+```js
+npm run setup-project  
+```
 
 ________________
-## To run project (for both client and server simultaneously)  
+## To run project (for both client and server simultaneously, for development)  
 
-on terminal in `root directory` run (if `npm` was installed):  
+on terminal in `root directory`, run (if `npm` was installed):  
 
-On `windows`
-> npm start
+On `windows`:
+```js
+npm start
+```
 
-On `ubuntu`
+On `ubuntu`:
+```js
 > npm start-ubuntu
+```
 
 ________________
-## Run server and client separately, more details about setup and operate command
+## Run server and client separately or more details about setup and operate command
 
-> Open package.jon and look at scripts
+> Open package.jon and refer to scripts
+
+________________
+## Run server only (production)
+
+on terminal in `root directory`, run:  
+
+For `windows`:  
+```py
+python manage.py runserver --insecure
+```
+
+For 'ubuntu':
+
+```py
+python3 manage.py runserver --insecure
+```
+Add `--insecure` because in `server/settings.py`, DEBUG=False
 
 ________________
 ## For deployment on Render
