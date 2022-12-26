@@ -15,6 +15,7 @@ import os
 import environ
 from decouple import config
 from dj_database_url import parse as dburl
+from icecream import ic
 
 
 # 2 Following lines is required to getenv()
@@ -41,9 +42,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 # DEBUG = False will lead to cors_headers block static file
 DEBUG = True
-RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL", default='https://instagram-3mke.onrender.com')
+RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL")
 if RENDER_EXTERNAL_URL:
     DEBUG = False
+ic(DEBUG)
 
 # ALLOWED_HOSTS = ["*"]
 # Must include localhost and 127.0.0.1 when using django-react
@@ -75,6 +77,8 @@ AUTH_USER_MODEL = "instagram.User"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # Whitenoise helps read static file like js, css
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
@@ -199,6 +203,7 @@ MEDIA_URL = 'instagram/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
 
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': env('CLOUDINARY_CLOUD_NAME'),

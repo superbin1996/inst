@@ -32,7 +32,9 @@ urlpatterns = [
     # re_path won't work for template, so don't use it for production
     path('', TemplateView.as_view(template_name='index.html')),
     path('register/', TemplateView.as_view(template_name='index.html')),
-    path('<path:profileName>/', TemplateView.as_view(template_name='index.html')),
+    path('<profileName>/', TemplateView.as_view(template_name='index.html')),
+    # re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}), 
+    # re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}), 
 
     # Not really need. Splice to remove prefix
     # path(f'{settings.MEDIA_URL[1:]}<path:image>/', TemplateView.as_view(template_name='index.html')),
