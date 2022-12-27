@@ -86,7 +86,7 @@ export default function UploadModal() {
     const formData = new FormData()
     try {
       formData.append('status', status)
-      formData.append('iamge_url', '')
+      // formData.append('iamge_url', '')
       if (uploadImage) {
         formData.append('image', uploadImage)
       }

@@ -75,10 +75,18 @@ def posts(request):
         user = request.user
         if not image:
             # Not image means using default image
-            Post.objects.create(user=user, status=post_status)
-            # Post.objects.get(a) 
+            # image.url is correct only after image is saved to database. 
+            # So save create object first, then edit image instance later
+            a = Post(user=user, status=post_status)
+            a.save()
+            a.id
+            b = Post.objects.get(id = a.id)
+            b.image_url = a.image.url
+            b.save()
 
         else:
+            # image.url is correct only after image is saved to database. 
+            # So save create object first, then edit image instance later
             a = Post(user=user, status=post_status, image=image)
             a.save()
             a.id

@@ -40,7 +40,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 # DEBUG = 'RENDER' not in os.environ
 # Must set to true if using whitenoise to upload media files
 
-# DEBUG = False will lead to cors_headers block static file
+# DEBUG = False will lead to cors_headers block static files, need whitenoise in middleware to server static files
 DEBUG = True
 RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL")
 if RENDER_EXTERNAL_URL:
@@ -203,16 +203,19 @@ MEDIA_URL = 'instagram/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
 
-# STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': env('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': env('CLOUDINARY_API_KEY'),
-    'API_SECRET': env('CLOUDINARY_API_SECRET')
-}
+# If DEBUG = TRUE, serve images file on local; else, serve on cloudinary
+if not DEBUG:
+    # Cloud service for serving image files
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': env('CLOUDINARY_CLOUD_NAME'),
+        'API_KEY': env('CLOUDINARY_API_KEY'),
+        'API_SECRET': env('CLOUDINARY_API_SECRET')
+    }
 
-# Package allow to store media file in local on deployment
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    # Package allow to store media file in local on deployment
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

@@ -64,7 +64,7 @@ const Home = () => {
           return getFollowingPosts()  
         }
         getPosts()
-        console.log('getPost in useEffect');
+        // console.log('getPost in useEffect');
       }
   }, [allPost])
 
@@ -72,7 +72,7 @@ const Home = () => {
     // only clear states when navigate back to home
     // console.log(params);
     if (Object.keys(params).length === 0) {
-      console.log(params, 'clear state run')
+      // console.log(params, 'clear state run')
       clearStates()
     }
   }, [params])
@@ -125,7 +125,7 @@ const Home = () => {
       <div className={'bar-right'}>
         <div className='post-info-1' style={{ paddingTop: '50px' }}>
           <div className='bar-right-avatar'>
-            <img src={user.avatar} alt={'avatar'} onClick={navigateToProfile} />
+            <img src={changeImagePath(user.avatar)} alt={'avatar'} onClick={navigateToProfile} />
           </div>
 
           <div className='username-and-caption' onClick={navigateToProfile}>

@@ -42,12 +42,12 @@ const token = localStorage.getItem('token')
 // const RENDER_EXTERNAL_URL = process.env.REACT_APP_RENDER_EXTERNAL_URL
 // || new Set("127.0.0.1", "localhost").has(window.location.hostname)
 // const host = (process.env.NODE_ENV === "development") ? "http://127.0.0.1:8000" : RENDER_EXTERNAL_URL.replace(/[/]$/, "")
-console.log(process.env.NODE_ENV);
+// console.log(process.env.NODE_ENV);
 
 // Test if really nead host or let host blank on production
 const host = (process.env.NODE_ENV === "development") ? "http://127.0.0.1:8000" : ""
 
-console.log("host:", host);
+// console.log("host:", host);
 // Check if `production` or `development`
 
 
@@ -284,14 +284,14 @@ const AppProvider = ({ children }) => {
   const togglePostModal = async (postId, hide) => {
     // use for close postModal
     if (hide === true) {
-      console.log('hidePostModal');
+      // console.log('hidePostModal');
       return dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post: {}, showPostModal: false } })
     }
 
     // if use url to get to postModal without open home or profile first
     if (state.posts.length === 0 && state.profilePosts.length === 0) {
       const { data: { post } } = await customAxios(`post/${postId}/`)
-      console.log(post);
+      // console.log(post);
       dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post, showPostModal: true } })
       getFollowCondition(post.user__id)
       return
@@ -357,18 +357,18 @@ const AppProvider = ({ children }) => {
     dispatch({ type: TOGGLE_UPLOAD_MODAL })
   }
 
-  // Change img url
+  // Change iamge url, on development, react need host to serve image files
+  // On production, we don't need host
   function changeImagePath(image) {
-    // const baseUrl = `${host}/instagram/media/`
-    // const baseUrl = `https://res.cloudinary.com/df5gnelxq/image/upload/v1671943791/`
+    const baseUrl = `${host}`
     // // const baseUrl = '/media/'
     // if ((image || '').includes(baseUrl)) {
     //   return image
     // }
     // else {
-    //   return baseUrl + image
+      return baseUrl + image
     // }
-      return image
+
   }
 
 

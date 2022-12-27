@@ -27,7 +27,7 @@ export default function Profile() {
   } = useAppContext()
 
   const params = useParams()
-  console.log(params);
+  // console.log(params);
   const navigate = useNavigate()
 
   const observer = useRef()
@@ -51,9 +51,9 @@ export default function Profile() {
 
   const checkUser = () => {
     // I will soon remove restriction for view image before login, so other can view images without login
-    console.log('not user');
+    // console.log('not user');
     if (user) {
-      console.log('user logged in');
+      // console.log('user logged in');
       if (String(profileUser.id) === String(user.id)) return true
       else return false
     }
@@ -103,7 +103,7 @@ export default function Profile() {
           <header className='profile-header'>
 
             <label className='profile-avatar' htmlFor='avatar'>
-              <img src={profileUser.avatar} alt={"avatar"} />
+              <img src={changeImagePath(profileUser.avatar)} alt={"avatar"} />
               {checkUser() &&
                 <input type="file" id='avatar' onChange={changeAvatar} />
               }

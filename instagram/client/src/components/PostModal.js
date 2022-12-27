@@ -46,7 +46,7 @@ const PostModal = () => {
 
     navigate(-1)
     // window.history.back()
-    console.log('navigate back');
+    // console.log('navigate back');
     
     document.body.style.overflowY = 'auto'
     // window.history.replaceState(null, "Instagram", "/")
