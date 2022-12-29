@@ -247,6 +247,7 @@ const reducer = (state, action) => {
       showPostModal: action.payload.showPostModal,
       postId: action.payload.postId,
       post: action.payload.post,
+      showOptionModal: action.payload.showOptionModal,
     }
   }
 

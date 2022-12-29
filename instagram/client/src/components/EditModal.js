@@ -102,7 +102,7 @@ const EditModal = () => {
               {/* Caption input */}
               <div className='modal-upload-caption'>
                 <div className='post-info'>
-                  <img className='icon-user-1 icon' src={user.avatar} alt={'avatar'} />
+                  <img className='icon-user-1 icon' src={changeImagePath(user.avatar_url)} alt={'avatar'} />
                   <p>{user.username}</p>
                 </div>
                 <textarea name="" id="" cols="30" rows="13" placeholder='Write a caption...' autoFocus value={eCaption} onChange={inputECaption} />

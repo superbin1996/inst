@@ -170,6 +170,7 @@ def profile_posts(request):
         'id': an_user.id,
         'username': an_user.username,
         'avatar': an_user.avatar.url,
+        'avatar_url': an_user.avatar_url,
         # 'avatar': str(an_user.avatar).replace('/instagram/media/', ''),
         'info': an_user.info
     }
@@ -236,6 +237,7 @@ def user(request):
             'id': current_user.id,
             'username': current_user.username,
             'avatar': current_user.avatar.url,
+            'avatar_url': current_user.avatar_url,
             # 'avatar': str(current_user.avatar).replace('/instagram/media/', ''),
             # 'info': current_user.info,
         }
@@ -259,6 +261,7 @@ def user(request):
             'username': newUser.username,
             # 'avatar': newUser.avatar.url.replace('/instagram/media/', ''),
             'avatar': newUser.avatar.url,
+            'avatar_url': newUser.avatar_url,
             # 'info': newUser.info,
         }
 

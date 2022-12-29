@@ -285,7 +285,7 @@ const AppProvider = ({ children }) => {
     // use for close postModal
     if (hide === true) {
       // console.log('hidePostModal');
-      return dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post: {}, showPostModal: false } })
+      return dispatch({ type: TOGGLE_POST_MODAL, payload: { postId, post: {}, showPostModal: false, showOptionModal: false } })
     }
 
     // if use url to get to postModal without open home or profile first
@@ -361,13 +361,12 @@ const AppProvider = ({ children }) => {
   // On production, we don't need host
   function changeImagePath(image) {
     const baseUrl = `${host}`
-    // // const baseUrl = '/media/'
-    // if ((image || '').includes(baseUrl)) {
-    //   return image
-    // }
-    // else {
+    if ((image || '').includes(baseUrl)) {
+      return image
+    }
+    else {
       return baseUrl + image
-    // }
+    }
 
   }
 

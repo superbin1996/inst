@@ -25,7 +25,7 @@ from icecream import ic
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# For Render deployment
+# For deployment
 env = environ.Env()
 # environ.Env() will connect with .env in root folder
 env.read_env(os.path.join(BASE_DIR, '.env'))
