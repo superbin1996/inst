@@ -28,8 +28,8 @@ const PostModal = () => {
     customAxios,
     // Toggle modal
     showOptionModal,
-    // profileUser,
-    // rememberPosts,
+    posts,
+    profilePosts,
   } = useAppContext()
 
   const navigate = useNavigate()
@@ -42,13 +42,14 @@ const PostModal = () => {
   date = date.startOf('day').fromNow()
 
   const hidePostModal = () => {
-    togglePostModal('', true)
-
-    navigate(-1)
+    if (profilePosts.length !== 0 || posts.length !== 0){
+      togglePostModal('', true)
+      navigate(-1)
+      document.body.style.overflowY = 'auto'
+    }
     // window.history.back()
     // console.log('navigate back');
     
-    document.body.style.overflowY = 'auto'
     // window.history.replaceState(null, "Instagram", "/")
   }
 

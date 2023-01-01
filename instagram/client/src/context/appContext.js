@@ -367,10 +367,7 @@ const AppProvider = ({ children }) => {
     else {
       return baseUrl + image
     }
-
   }
-
-
 
   const toggleOptionModal = (post) => {
     // turn on option modal from post

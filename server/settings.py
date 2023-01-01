@@ -201,6 +201,7 @@ MEDIA_URL = 'instagram/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
 # On Render production, media files can only be access via staticfiles/ folders
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
+# MEDIA_ROOT should have the same url with MEDIA_URL, if you want upload by backend admin or upload by frontend have the save url
 MEDIA_ROOT = os.path.join(BASE_DIR, 'instagram/media/')
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"

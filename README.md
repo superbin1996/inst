@@ -1,40 +1,37 @@
-# Project App: `Instagram`
+> # Project App: `Instagram`
 
 https://youtu.be/lt2pLhJaFck
 
 ## Project structure
 
-> `server` directory is project folder, `instagram` directory is app folder, `instagram/client` is client-frontend, `instagram/media` directory stores media/image files
+- `server` directory is project folder,   
+- `instagram` directory is app folder,   
+- `instagram/client` is client-frontend,   
+- `instagram/media` directory stores media/image files  
 
 ________________
 ## To setup project (work both for production and development)  
   
-On terminal in `root directory` run (if `npm` was installed):  
+- On terminal in `root directory` run (if `npm` was installed):  
 
-```js
-npm run setup-project  
-```
+    ```js
+    npm run setup-project  
+    ```
 
 ________________
 ## To run project (for both client and server simultaneously, for development)  
 
 on terminal in `root directory`, run (if `npm` was installed):  
 
-On `windows`:
-```js
-npm start
-```
+- On `windows`:
+    ```js
+    npm start
+    ```
 
-On `ubuntu`:
-```js
-> npm start-ubuntu
-```
-
-________________
-## Run server and client separately or more details about setup and operate command
-
-> Open package.jon and refer to scripts
-
+- On `ubuntu`:
+    ```js
+    npm start-ubuntu
+    ```
 ________________
 ## Run server only (production)
 
@@ -51,6 +48,12 @@ For 'ubuntu':
 python3 manage.py runserver --insecure
 ```
 Add `--insecure` because in `server/settings.py`, DEBUG=False
+
+________________
+## Run server and client separately or more details about setup and operate command
+
+> Open package.jon and refer to scripts
+
 
 ________________
 ## For deployment on Render
