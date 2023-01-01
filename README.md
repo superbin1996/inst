@@ -12,12 +12,14 @@ https://youtu.be/lt2pLhJaFck
 ________________
 ## To setup project (work both for production and development)  
   
-- On terminal in `root directory` run (if `npm` was installed):  
+On terminal in `root directory` (if `npm` and `python` was installed):  
+Create python visual environment and activate it. After that, run:  
 
-    ```js
-    npm run setup-project  
-    ```
 
+```js
+npm run setup-project  
+```
+> Open package.jon and refer to scripts for more details
 ________________
 ## To run project (for both client and server simultaneously, for development)  
 
@@ -30,7 +32,7 @@ on terminal in `root directory`, run (if `npm` was installed):
 
 - On `ubuntu`:
     ```js
-    npm start-ubuntu
+    npm run start-ubuntu
     ```
 ________________
 ## Run server only (production)
