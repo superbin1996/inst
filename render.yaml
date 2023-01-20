@@ -7,7 +7,7 @@ databases:
 
 services:
   - type: web
-    name: instagram
+    name: inst
     env: python
     region: singapore
     plan: free
