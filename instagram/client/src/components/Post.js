@@ -122,7 +122,7 @@ const Post = ({ post, lastPostElementRef }) => {
 
         {/* Post picture */}
         <div className='post-picture'>
-          <img src={changeImagePath(post.image_url)} alt={post.image} onDoubleClick={toggleIsLike} />
+          <img src={changeImagePath(post.image_url)} alt={'img'} onDoubleClick={toggleIsLike} />
           <div className='post-picture-number'>
             <VscDebugStackframeDot style={{ transform: 'scale(1.5)' }} />
           </div>

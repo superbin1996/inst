@@ -957,8 +957,10 @@ code {
 }
 
 .post-picture img {
-  width: auto;
+  width: 100%;
+  height: auto;
   max-width: 100%;
+  max-height: 500px;
 }
 
 .post-picture-number {
@@ -1143,8 +1145,8 @@ code {
   background-color: #fefefe;
   /* background-color: (var(--b3f, 250, 250, 250), 1); */
   border: 1px solid #888;
-  flex: 0 0 750px;
-  height: 80%;
+  flex: 0 0 500px;
+  height: 70%;
   border-radius: 15px;
   display: flex;
   flex-direction: column;
@@ -1158,8 +1160,8 @@ code {
   /* margin: auto; */
   /* padding: 20px; */
   border: 1px solid #888;
-  flex: 0 0 70rem;
-  height: 82%;
+  flex: 0 0 50rem;
+  height: 78%;
   border-radius: 15px;
   display: flex;
   flex-direction: column;
@@ -1260,7 +1262,7 @@ code {
   /* flex row item */
   /* border: 1px solid greenyellow; */
   background-color: black;
-  flex: 0 1 750px;
+  flex: 0 1 500px;
   /* width: 750px; */
   align-self: center;
   height: 100%;
@@ -1372,7 +1374,7 @@ textarea {
   border-radius: 15px;
   /* flex: 0 0 1150px; */
   flex: 0 0 68vw;
-  height: 48vw;
+  height: 46vw;
   display: flex;
   justify-content: flex-start;
   /* align-items: stretch;    */
@@ -1414,7 +1416,7 @@ textarea {
 .modal-file-1>img {
   /* Flex row item */
   flex-shrink: 1;
-  flex-grow: 1;
+  /* flex-grow: 1; */
   width: 100%;
   /* height: 100%; */
 }

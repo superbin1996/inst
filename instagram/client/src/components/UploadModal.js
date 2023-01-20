@@ -134,7 +134,7 @@ export default function UploadModal() {
               // After choosing picture
               <div className='modal-preview'>
 
-                <div className='modal-preview-image' style={addStatus?{flex: '0 1 70%'}:{}}>
+                <div className='modal-preview-image' style={addStatus?{flex: '0 1 62%'}:{}}>
                   <div className='modal-file'>
                     <img src={previewImage} alt={previewImage} onLoad={changeImageSize} style={{ transform: `scale(${imgScale})` }} />
                   </div>
