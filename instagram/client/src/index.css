@@ -938,7 +938,6 @@ code {
 .post-info {
   /* border: 1px solid chartreuse; */
   border-bottom: var(--border-i);
-  ;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -1265,7 +1264,7 @@ code {
   /* flex row item */
   /* border: 1px solid greenyellow; */
   background-color: black;
-  flex: 0 1 500px;
+  flex: 1 1 500px;
   /* width: 750px; */
   align-self: center;
   height: 100%;
@@ -1278,6 +1277,7 @@ code {
 }
 
 .modal-file {
+  /* border: 1px solid green; */
   width: 100%;
   height: 100%;
   display: flex;
@@ -1286,7 +1286,8 @@ code {
   /* transform: scale(1.52); */
 }
 
-.modal-file>img {
+.modal-file > img {
+  /* border: 1px solid red; */
   border-radius: 0 0 15px 15px;
   width: 100%;
   height: 100%;
