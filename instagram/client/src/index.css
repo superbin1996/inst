@@ -958,7 +958,10 @@ code {
 
 .post-picture img {
   width: 100%;
-  height: auto;
+  object-fit: cover;
+
+  /* object-fit: stretch; */
+  /* height: auto; */
   max-width: 100%;
   max-height: 500px;
 }
