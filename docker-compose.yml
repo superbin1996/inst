@@ -2,28 +2,28 @@
 services:
   backend: 
     build:
-      context: ./server
+      context: ./django
       dockerfile: Dockerfile.dev
     ports:
       - 8000:8000
     env_file:
-      - ./env/server.env
-    container_name: server_container
+      - ./env/django.env
+    container_name: django_container
   frontend:
     build: 
-        context: ./client
+        context: ./react
         dockerfile: Dockerfile.dev
     volumes:
-      - ./client/src:/app/src
+      - ./react/src:/app/src
     ports:
       - 3000:3000
     env_file:
-      - ./env/client.env
+      - ./env/react.env
     depends_on:
       - backend
     stdin_open: true
     tty: true
-    container_name: client_container
+    container_name: react_container
 
 
 # version: '3'
