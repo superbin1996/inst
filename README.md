@@ -4,10 +4,10 @@ https://youtu.be/lt2pLhJaFck
 
 ## Project structure
 
-- `server` directory is project folder,   
-- `instagram` directory is app folder,   
-- `instagram/client` is client-frontend,   
-- `instagram/media` directory stores media/image files  
+- `django/server` directory is project folder,   
+- `django/instagram` directory is app folder,   
+- `react` is client-frontend,   
+- `django/instagram/media` directory stores media/image files  
 
 ________________
 
@@ -15,7 +15,7 @@ ________________
 
 
 #### Setup backend
-- In `root directory` on terminal i (if `npm` and `python` was installed):  
+- In `django directory` on terminal i (if `npm` and `python` was installed):  
     - **Create python visual environment and activate it**.   
     After that, run:  
 

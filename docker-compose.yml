@@ -1,0 +1,54 @@
+# For development
+services:
+  backend: 
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    ports:
+      - 8000:8000
+    env_file:
+      - ./env/server.env
+    container_name: server_container
+  frontend:
+    build: 
+        context: ./client
+        dockerfile: Dockerfile.dev
+    volumes:
+      - ./client/src:/app/src
+    ports:
+      - 3000:3000
+    env_file:
+      - ./env/client.env
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+    container_name: client_container
+
+
+# version: '3'
+
+# services:
+#   backend:
+#     build:
+#       context: ./django
+#     command: gunicorn core.wsgi --bind 0.0.0.0:8000
+#     ports:
+#       - "8000:8000"
+#   frontend:
+#     build:
+#       context: ./react/client
+#     volumes:
+#       - react_build:/react/build
+#   nginx:
+#     image: nginx:latest
+#     ports:
+#       - 80:8080
+#     volumes:
+#       - ./nginx/nginx-setup.conf:/etc/nginx/conf.d/default.conf:ro
+#       - react_build:/var/www/react
+#     depends_on:
+#       - backend
+#       - frontend
+# volumes:
+#   react_build:
