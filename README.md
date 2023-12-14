@@ -11,9 +11,14 @@ https://youtu.be/lt2pLhJaFck
 
 ________________
 
-> ### To setup project (work both for production and development)  
+### To run project (work both for production and development) 
+Make sure you have installed docker desktop and you are opening it. In bash terminal, run command:   
+```sh
+docker compose up
+```
 
 
+<!-- 
 #### Setup backend
 - In `django directory` on terminal i (if `npm` and `python` was installed):  
     - **Create python visual environment and activate it**.   
@@ -103,4 +108,4 @@ If login in `http:127.0.0.1:8000/admin` and `http:localhost:8000/admin` with the
 UserViewSet used for register need won't allow register if set permission_classes to permissions.IsAuthenticated  
 
 Cannot register if admin is login  
-
+ -->

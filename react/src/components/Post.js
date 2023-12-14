@@ -4,7 +4,7 @@ import { AiOutlineHeart } from 'react-icons/ai';
 import { FaRegComment } from 'react-icons/fa';
 import { FiSend } from 'react-icons/fi';
 import { BsBookmark } from 'react-icons/bs';
-import { VscDebugStackframeDot } from 'react-icons/vsc';
+import { VscCircleSmallFilled } from 'react-icons/vsc';
 import { HiOutlineEmojiHappy } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/appContext';
@@ -124,7 +124,7 @@ const Post = ({ post, lastPostElementRef }) => {
         <div className='post-picture'>
           <img src={changeImagePath(post.image_url)} alt={'img'} onDoubleClick={toggleIsLike} />
           <div className='post-picture-number'>
-            <VscDebugStackframeDot style={{ transform: 'scale(1.5)' }} />
+            <VscCircleSmallFilled style={{ transform: 'scale(1.5)' }} />
           </div>
         </div>
 

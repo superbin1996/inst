@@ -25,9 +25,9 @@ services:
     tty: true
     container_name: react_container
 
-
-# version: '3'
-
+## For production
+## Need to modify settings.py for postgresql database
+## Need nginx-setup.conf
 # services:
 #   backend:
 #     build:
@@ -37,7 +37,7 @@ services:
 #       - "8000:8000"
 #   frontend:
 #     build:
-#       context: ./react/client
+#       context: ./react
 #     volumes:
 #       - react_build:/react/build
 #   nginx:
@@ -52,3 +52,37 @@ services:
 #       - frontend
 # volumes:
 #   react_build:
+
+
+## Other production structure
+## Need to modify settings.py for postgresql database
+# services:
+#   postgres_db:
+#     image: postgres
+#     volumes:
+#       - ./data/db:/var/lib/postgresql/data
+#     env_file:
+#       - ./env/postgres_db.env
+#     container_name: postgres_db
+#   backend: 
+#     build: ./django
+#     command: gunicorn core.wsgi --bind 0.0.0.0:8000
+#     volumes: 
+#       - ./django/instagram/views.py:/app/instgram/views.py
+#       - ./django/instagram/urls.py:/app/instgram/urls.py
+#     ports:
+#       - 8000:8000
+#     env_file:
+#       - ./env/django.env
+#     depends_on:
+#       - postgres_db
+#     container_name: django_container
+#   frontend:
+#     build: ./react
+#     ports:
+#       - 80:80
+#     depends_on:
+#       - backend
+#     stdin_open: false
+#     tty: false
+#     container_name: react_container
