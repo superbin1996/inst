@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes, parser_classes
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.authentication import TokenAuthentication
 from .serializers import UserSerializer
 from .models import User, Post, Follow, Comment, Like
@@ -231,6 +231,7 @@ def following_posts(request):
 @authentication_classes([TokenAuthentication])
 def user(request):
     current_user = request.user
+    ic(current_user)
     if request.method == 'GET':
         # request.user only work when have token Authorization
         user = {
@@ -291,7 +292,7 @@ def getFollow(request, user_id):
         }, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PATCH'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def follow(request, user_id):
@@ -306,7 +307,8 @@ def follow(request, user_id):
         is_follow = users_following_obj.following.contains(an_user)
     else:
         is_follow = False
-
+    
+    # Update follow condition
     if request.method == "PATCH":
         users_following = Follow.objects.get(user=request.user).following
         if not is_follow:
@@ -357,12 +359,13 @@ def comment(request, post_id):
         else:
             return Response({'status': False, "detail": "Cannot leave comment blank"}, status=status.HTTP_400_BAD_REQUEST)
 
+    # Update comment
     if request.method == "PATCH":
         data = request.data
         commentId = data["id"]
 
         try:
-            comment = Comment.objects.prefetch_related('content').get(
+            comment = Comment.objects.only('content').get(
                 id=commentId)
         except Comment.DoesNotExist:
             return Response({'status': False, "detail": "Comment not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -378,11 +381,11 @@ def comment(request, post_id):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 @authentication_classes([TokenAuthentication])
 def post_user_comment(request, post_id):
     try:
-        comments = Comment.objects.prefetch_related(
+        comments = Comment.objects.select_related(
             'id', 'content', "user__username").filter(
             post=post_id, user=request.user).all()
     except User.DoesNotExist:
@@ -396,22 +399,29 @@ def post_user_comment(request, post_id):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def getLike(request, post_id):
+    """
+    For unauthenticated users see posts likes
+    """
     try:
-        post = Post.objects.get(id=post_id)
+        post = Post.objects.prefetch_related('likes').get(id=post_id)
     except Post.DoesNotExist:
         return Response({'status': False, "detail": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
-
     is_authenticated = request.user.is_authenticated
+    # ic('auth',request.auth)
+    # ic(is_authenticated)
 
+    # Get like condition
     if request.method == "GET":
         try:
             like_sum = Like.objects.filter(post=post_id, is_like=True).count()
         except Post.DoesNotExist:
             return Response({'status': False, "detail": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        if not is_authenticated:
+        if is_authenticated is False:
+            # ic('Not authenticated')
             return Response({"isLike": False, "likeSum": like_sum}, status=status.HTTP_201_CREATED)
 
         # Logged in
@@ -424,12 +434,12 @@ def getLike(request, post_id):
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def like(request, post_id):
-    try:
-        post = Post.objects.get(id=post_id)
-    except Post.DoesNotExist:
-        return Response({'status': False, "detail": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+    # try:
+    #     post = Post.objects.get(id=post_id)
+    # except Post.DoesNotExist:
+    #     return Response({'status': False, "detail": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    post_obj, created = post.likes.get_or_create(user=request.user)
+    # post_obj, created = post.likes.get_or_create(user=request.user)
 
     if request.method == "PATCH":
         data = request.data

@@ -30,8 +30,9 @@ const Post = ({ post, lastPostElementRef }) => {
   const getLikeCondition = async () => {
     const url = `getLike/${post.id}/`
     try {
-      const { data } = await customAxios(url)
+      const { data } = await authFetch(url)
       const { isLike, likeSum } = data
+      console.log(isLike);
       setIsLike(isLike)
       setLikeSum(likeSum)
     } catch (error) {

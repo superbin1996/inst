@@ -56,7 +56,7 @@ const PostModal = () => {
   const getLikeCondition = async () => {
     const url = `getLike/${params.postId}/`
     try {
-      const { data } = await customAxios(url)
+      const { data } = await authFetch(url)
       const { isLike, likeSum } = data
       setIsLike(isLike)
       setLikeSum(likeSum)
@@ -233,7 +233,7 @@ const PostModal = () => {
             {/* Like sum */}
             <div className='post-interact-info'>
               <div className='post-interact-like-sum'>
-                {likeSum > 0 && `${likeSum} like${likeSum > 1 && 's'}`}
+                {likeSum > 0 && `${likeSum} like${likeSum > 1 ? 's':''}`}
               </div>
 
               <div className='post-date'>
