@@ -231,7 +231,7 @@ def following_posts(request):
 @authentication_classes([TokenAuthentication])
 def user(request):
     current_user = request.user
-    ic(current_user)
+    # ic(current_user)
     if request.method == 'GET':
         # request.user only work when have token Authorization
         user = {
@@ -251,7 +251,7 @@ def user(request):
         data = request.data
         image = data.get('avatar')
         currentUser = User.objects.get(id=current_user.id)
-        ic(image)
+        # ic(image)
         if image:
             currentUser.avatar = image
             currentUser.save()

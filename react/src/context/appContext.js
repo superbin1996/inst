@@ -487,7 +487,11 @@ const AppProvider = ({ children }) => {
   const updateAvatar = async (avatar) => {
     const url = `user/`
     try {
-      const { data } = await authFetch.patch(url, avatar)
+      const { data } = await authFetch.patch(url, avatar, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
       console.log(data);
 
       localStorage.setItem('user', JSON.stringify(data))

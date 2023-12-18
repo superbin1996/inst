@@ -61,11 +61,11 @@ export default function Profile() {
 
   const changeAvatar = (e) => {
     e.preventDefault()
-
+    const imageFile = e.target.files[0]
     const formData = new FormData()
-    formData.append('avatar', e.target.files[0])
-    if (e.target.files[0]) {
-      formData.append('avatar', e.target.files[0])
+    // formData.append('avatar', imageFile)
+    if (imageFile) {
+      formData.append('avatar', imageFile)
     }
     updateAvatar(formData)
   }
